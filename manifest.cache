@@ -1,0 +1,15 @@
+CACHE MANIFEST
+# version 1
+index.html
+dist/fonts/glyphicons-halflings-regular.eot
+dist/fonts/glyphicons-halflings-regular.svg
+dist/fonts/glyphicons-halflings-regular.ttf
+dist/fonts/glyphicons-halflings-regular.woff
+dist/fonts/glyphicons-halflings-regular.woff2
+dist/css/vendor.css
+dist/css/index.css
+dist/js/vendor.js
+dist/js/index.js
+
+NETWORK:
+*

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="In Mind Notes">
+    <meta name="author" content="Redneckz">
+    <title>Redneckz </title>
+    <!-- Vendor CSS-->
+    <link href="/dist/css/vendor.css" rel="stylesheet">
+    <!-- Custom CSS-->
+    <link href="/dist/css/index.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="conatiner">
+      <div style="padding-top: 2px; padding-bottom: 15px" class="row">
+        <div class="col-md-12"><span id="directMode" class="label label-default pull-right">Direct mode</span><span id="reverseMode" style="display: none;" class="label label-warning pull-right">Reverse mode</span></div>
+      </div>
+      <form role="form">
+        <div class="form-group">
+          <div class="input-group input-group-lg">
+            <input id="passphrase" type="password" placeholder="Passphrase" title="Passphrase" autofocus="" required="" autocomplete="off" tabindex="1" class="form-control"><span class="input-group-btn">
+              <button id="showPassphraseButton" type="button" tabindex="-1" class="btn btn-default btn-lg"><span id="passphraseClose" class="glyphicon glyphicon-eye-close"></span><span id="passphraseOpen" style="display: none;" class="glyphicon glyphicon-eye-open"></span></button></span>
+          </div>
+        </div>
+        <div id="publicKeyFormGroup" class="form-group">
+          <div class="input-group input-group-lg">
+            <input id="publicKey" type="text" placeholder="Public key" title="Public key" autocomplete="on" tabindex="2" class="form-control"><span class="input-group-btn">
+              <button id="qrcodeButton" type="button" tabindex="-1" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-qrcode"></span></button></span>
+          </div>
+        </div>
+        <div id="modeButtonFormGroup" title="Mode trigger" class="form-group text-center">
+          <button id="modeButton" type="button" tabindex="-1" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-sort"></span></button>
+        </div>
+        <div id="noteFormGroup" class="form-group">
+          <div class="input-group input-group-lg"><span class="input-group-btn">
+              <button id="rndButton" type="button" tabindex="-1" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-chevron-right"></span><span style="display: none" class="glyphicon glyphicon-random"></span></button></span>
+            <input id="note" type="text" placeholder="Secret" title="Secret" autocomplete="off" tabindex="3" readonly="true" class="form-control">
+          </div>
+        </div>
+      </form>
+    </div>
+    <div id="qrcodeDownloadDialog" tabindex="-1" role="dialog" aria-hidden="true" class="modal fade">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" data-dismiss="modal" aria-hidden="true" class="close">&times;</button>
+          </div>
+          <div class="modal-body"><a id="qrcodeDownload" href="javascript:void(0)" download="publickey.png">
+              <div id="qrcode"></div></a></div>
+        </div>
+      </div>
+    </div>
+    <form id="qrcodeUploadDialog" style="display: none;">
+      <input name="fileQR" type="file">
+    </form>
+    <footer><a href="https://docs.google.com/presentation/d/1ZnEOJmroB_GmzV5ukgMryF9Mb2WN7EEsS53kv_KUaFg/edit?usp=sharing" role="button" target="help" style="margin-left: 15px;" class="btn btn-info btn-xs pull-right"><span class="glyphicon glyphicon-question-sign"></span></a>
+      <p class="text-right text-muted small pull-right">© 2014, Redneckz</p>
+    </footer>
+    <script src="/dist/js/vendor.js"></script>
+    <script src="/dist/js/index.js"></script>
+  </body>
+</html>
