@@ -16,10 +16,10 @@
     "temp"
   ],
   "dependencies": {
+    "bootstrap": "^3.3.5",
     "jquery": "^2.1.4",
-    "bootstrap": "^3.3.5"
-  },
-  "devDependencies": {
-    "lodash": "~3.10.1"
+    "jsqrcode": "*",
+    "lodash": "^3.10.1",
+    "qr-js": "^1.1.3"
   }
 }

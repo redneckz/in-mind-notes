@@ -2101,21 +2101,15 @@ function generateRandomSecret(length) {
   return [].concat(_toConsumableArray((0, _utilsGeneratorsRandomCharsJs2["default"])(length, abc))).join("");
 }
 
-function computeSecret(passphraseStr, publicKeyStr) {
-  var publicKey = (0, _utilsStringToBufferJs.stringToBuffer)(publicKeyStr);
+function computeSecret(passphraseStr, publicKey) {
   return computePrivateKey(passphraseStr).then(function (privateKey) {
     return window.crypto.subtle.decrypt(ALGO, privateKey, publicKey);
-  }).then(function (secret) {
-    return (0, _utilsStringToBufferJs.bufferToString)(secret);
   });
 }
 
-function computePublicKey(passphraseStr, secretStr) {
-  var secret = (0, _utilsStringToBufferJs.stringToBuffer)(secretStr);
+function computePublicKey(passphraseStr, secret) {
   return computePrivateKey(passphraseStr).then(function (privateKey) {
     return window.crypto.subtle.encrypt(ALGO, privateKey, secret);
-  }).then(function (publicKey) {
-    return (0, _utilsStringToBufferJs.bufferToString)(publicKey);
   });
 }
 
@@ -2126,7 +2120,7 @@ function computePrivateKey(passphraseStr) {
   });
 }
 
-},{"../../utils/generators/chars.js":79,"../../utils/generators/random-chars.js":80,"../../utils/string-to-buffer.js":81,"babel-runtime/helpers/interop-require-default":6,"babel-runtime/helpers/to-consumable-array":7}],76:[function(require,module,exports){
+},{"../../utils/generators/chars.js":79,"../../utils/generators/random-chars.js":80,"../../utils/string-to-buffer.js":82,"babel-runtime/helpers/interop-require-default":6,"babel-runtime/helpers/to-consumable-array":7}],76:[function(require,module,exports){
 "use strict";
 
 },{}],77:[function(require,module,exports){
@@ -2213,6 +2207,19 @@ module.exports = exports["default"];
 },{"babel-runtime/helpers/to-consumable-array":7,"babel-runtime/regenerator":72}],81:[function(require,module,exports){
 "use strict";
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.toQR = toQR;
+exports.fromQR = fromQR;
+
+function toQR() {}
+
+function fromQR() {}
+
+},{}],82:[function(require,module,exports){
+"use strict";
+
 var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
 
 Object.defineProperty(exports, "__esModule", {
@@ -2245,4 +2252,4 @@ function bufferToString(buffer) {
   return String.fromCharCode.apply(String, _toConsumableArray(array));
 }
 
-},{"babel-runtime/helpers/to-consumable-array":7}]},{},[75,76,77,78,79,80,81]);
+},{"babel-runtime/helpers/to-consumable-array":7}]},{},[75,76,77,78,79,80,81,82]);

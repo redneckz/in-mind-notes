@@ -1,4 +1,4 @@
-import {stringToBuffer, bufferToString} from "../../utils/string-to-buffer.js";
+import {stringToBuffer} from "../../utils/string-to-buffer.js";
 import chars from "../../utils/generators/chars.js";
 import randomChars from "../../utils/generators/random-chars.js";
 
@@ -15,18 +15,14 @@ function generateRandomSecret(length, abc = DEFAULT_ABC) {
   return [...randomChars(length, abc)].join("");
 }
 
-function computeSecret(passphraseStr, publicKeyStr) {
-  let publicKey = stringToBuffer(publicKeyStr);
+function computeSecret(passphraseStr, publicKey) {
   return computePrivateKey(passphraseStr)
-      .then(privateKey => window.crypto.subtle.decrypt(ALGO, privateKey, publicKey))
-      .then(secret => bufferToString(secret));
+      .then(privateKey => window.crypto.subtle.decrypt(ALGO, privateKey, publicKey));
 }
 
-function computePublicKey(passphraseStr, secretStr) {
-  let secret = stringToBuffer(secretStr);
+function computePublicKey(passphraseStr, secret) {
   return computePrivateKey(passphraseStr)
-      .then(privateKey => window.crypto.subtle.encrypt(ALGO, privateKey, secret))
-      .then(publicKey => bufferToString(publicKey));
+      .then(privateKey => window.crypto.subtle.encrypt(ALGO, privateKey, secret));
 }
 
 function computePrivateKey(passphraseStr) {

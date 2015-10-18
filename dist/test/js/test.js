@@ -2101,21 +2101,15 @@ function generateRandomSecret(length) {
   return [].concat(_toConsumableArray((0, _utilsGeneratorsRandomCharsJs2["default"])(length, abc))).join("");
 }
 
-function computeSecret(passphraseStr, publicKeyStr) {
-  var publicKey = (0, _utilsStringToBufferJs.stringToBuffer)(publicKeyStr);
+function computeSecret(passphraseStr, publicKey) {
   return computePrivateKey(passphraseStr).then(function (privateKey) {
     return window.crypto.subtle.decrypt(ALGO, privateKey, publicKey);
-  }).then(function (secret) {
-    return (0, _utilsStringToBufferJs.bufferToString)(secret);
   });
 }
 
-function computePublicKey(passphraseStr, secretStr) {
-  var secret = (0, _utilsStringToBufferJs.stringToBuffer)(secretStr);
+function computePublicKey(passphraseStr, secret) {
   return computePrivateKey(passphraseStr).then(function (privateKey) {
     return window.crypto.subtle.encrypt(ALGO, privateKey, secret);
-  }).then(function (publicKey) {
-    return (0, _utilsStringToBufferJs.bufferToString)(publicKey);
   });
 }
 
@@ -2126,10 +2120,12 @@ function computePrivateKey(passphraseStr) {
   });
 }
 
-},{"../../utils/generators/chars.js":80,"../../utils/generators/random-chars.js":82,"../../utils/string-to-buffer.js":84,"babel-runtime/helpers/interop-require-default":6,"babel-runtime/helpers/to-consumable-array":7}],76:[function(require,module,exports){
+},{"../../utils/generators/chars.js":80,"../../utils/generators/random-chars.js":82,"../../utils/string-to-buffer.js":85,"babel-runtime/helpers/interop-require-default":6,"babel-runtime/helpers/to-consumable-array":7}],76:[function(require,module,exports){
 "use strict";
 
 var _cryptoJs = require("./crypto.js");
+
+var _utilsStringToBufferJs = require("../../utils/string-to-buffer.js");
 
 chai.config.includeStack = true;
 
@@ -2150,19 +2146,18 @@ describe("generateRandomSecret", function () {
 
 describe("computePublicKey", function () {
 
-	var PASSPHRASE = "123456qwerty";
-	var SECRET = "asdfg12345";
+	var PASSPHRASE_STR = "123456qwerty";
+	var SECRET_STR = "asdfg12345";
 
-	it("should work symmetrically to computeSecret", function (done) {
-		var publicKeyPromise = (0, _cryptoJs.computePublicKey)(PASSPHRASE, SECRET);
-		expect(publicKeyPromise).to.be.fulfilled.and.then(function (publicKey) {
-			var secretPromise = (0, _cryptoJs.computeSecret)(PASSPHRASE, publicKey);
-			expect(secretPromise).to.eventually.equal(SECRET).and.notify(done);
-		});
+	it("should work symmetrically to computeSecret", function () {
+		var secret = (0, _utilsStringToBufferJs.stringToBuffer)(SECRET_STR);
+		return expect((0, _cryptoJs.computePublicKey)(PASSPHRASE_STR, secret).then(function (publicKey) {
+			return (0, _cryptoJs.computeSecret)(PASSPHRASE_STR, publicKey);
+		}).then(_utilsStringToBufferJs.bufferToString)).to.eventually.equal(SECRET_STR);
 	});
 });
 
-},{"./crypto.js":75}],77:[function(require,module,exports){
+},{"../../utils/string-to-buffer.js":85,"./crypto.js":75}],77:[function(require,module,exports){
 "use strict";
 
 },{}],78:[function(require,module,exports){
@@ -2304,6 +2299,19 @@ describe("Random chars generator", function () {
 },{"./random-chars.js":82,"babel-runtime/helpers/interop-require-default":6,"babel-runtime/helpers/to-consumable-array":7}],84:[function(require,module,exports){
 "use strict";
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.toQR = toQR;
+exports.fromQR = fromQR;
+
+function toQR() {}
+
+function fromQR() {}
+
+},{}],85:[function(require,module,exports){
+"use strict";
+
 var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
 
 Object.defineProperty(exports, "__esModule", {
@@ -2336,7 +2344,7 @@ function bufferToString(buffer) {
   return String.fromCharCode.apply(String, _toConsumableArray(array));
 }
 
-},{"babel-runtime/helpers/to-consumable-array":7}],85:[function(require,module,exports){
+},{"babel-runtime/helpers/to-consumable-array":7}],86:[function(require,module,exports){
 "use strict";
 
 var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
@@ -2404,4 +2412,4 @@ function generateRandomStr() {
   return [].concat(_toConsumableArray((0, _generatorsRandomCharsJs2["default"])(10, abc))).join("");
 }
 
-},{"./generators/chars.js":80,"./generators/random-chars.js":82,"./string-to-buffer.js":84,"babel-runtime/helpers/interop-require-default":6,"babel-runtime/helpers/to-consumable-array":7}]},{},[75,76,77,78,79,80,81,82,83,84,85]);
+},{"./generators/chars.js":80,"./generators/random-chars.js":82,"./string-to-buffer.js":85,"babel-runtime/helpers/interop-require-default":6,"babel-runtime/helpers/to-consumable-array":7}]},{},[75,76,77,78,79,80,81,82,83,84,85,86]);
