@@ -1,19 +1,11 @@
 import {stringToBuffer} from "../../utils/string-to-buffer.js";
-import chars from "../../utils/generators/chars.js";
-import randomChars from "../../utils/generators/random-chars.js";
 
-export {generateRandomSecret, computeSecret, computePublicKey};
+export {computeSecret, computePublicKey};
 
 const ALGO = {
   name: "AES-CBC",
   iv: new Uint8Array(16) // filled with zero
 };
-
-const DEFAULT_ABC = [...chars("A", "Z"), ...chars("a", "z"), ...chars("0", "9")];
-
-function generateRandomSecret(length, abc = DEFAULT_ABC) {
-  return [...randomChars(length, abc)].join("");
-}
 
 function computeSecret(passphraseStr, publicKey) {
   return computePrivateKey(passphraseStr)

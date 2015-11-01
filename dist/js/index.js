@@ -2066,6 +2066,21 @@ process.umask = function() { return 0; };
 },{}],75:[function(require,module,exports){
 "use strict";
 
+var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _secretFormJsSecretFormJs = require("./secret-form/js/secret-form.js");
+
+var _secretFormJsSecretFormJs2 = _interopRequireDefault(_secretFormJsSecretFormJs);
+
+exports.secretFormView = _secretFormJsSecretFormJs2["default"];
+
+},{"./secret-form/js/secret-form.js":79,"babel-runtime/helpers/interop-require-default":6}],76:[function(require,module,exports){
+"use strict";
+
 var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
 
 var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
@@ -2073,8 +2088,6 @@ var _interopRequireDefault = require("babel-runtime/helpers/interop-require-defa
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-var _utilsStringToBufferJs = require("../../utils/string-to-buffer.js");
 
 var _utilsGeneratorsCharsJs = require("../../utils/generators/chars.js");
 
@@ -2084,7 +2097,66 @@ var _utilsGeneratorsRandomCharsJs = require("../../utils/generators/random-chars
 
 var _utilsGeneratorsRandomCharsJs2 = _interopRequireDefault(_utilsGeneratorsRandomCharsJs);
 
-exports.generateRandomSecret = generateRandomSecret;
+exports.generateSecret = generateSecret;
+
+var DEFAULT_ABC = [].concat(_toConsumableArray((0, _utilsGeneratorsCharsJs2["default"])("A", "Z")), _toConsumableArray((0, _utilsGeneratorsCharsJs2["default"])("a", "z")), _toConsumableArray((0, _utilsGeneratorsCharsJs2["default"])("0", "9")));
+
+function generateSecret(length) {
+  var abc = arguments.length <= 1 || arguments[1] === undefined ? DEFAULT_ABC : arguments[1];
+
+  return [].concat(_toConsumableArray((0, _utilsGeneratorsRandomCharsJs2["default"])(length, abc))).join("");
+}
+
+},{"../../utils/generators/chars.js":81,"../../utils/generators/random-chars.js":82,"babel-runtime/helpers/interop-require-default":6,"babel-runtime/helpers/to-consumable-array":7}],77:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _generateSecretJs = require("./generate-secret.js");
+
+exports["default"] = Vue.extend({
+  template: "#secret-field-template",
+  props: {
+    directMode: {
+      type: Boolean,
+      required: true
+    },
+    secret: {
+      type: String,
+      required: true
+    },
+    length: {
+      type: Number,
+      "default": 16
+    },
+    title: {
+      type: String,
+      "default": "Secret"
+    },
+    tabIndex: {
+      type: String,
+      "default": "-1"
+    }
+  },
+  methods: {
+    generateSecret: function generateSecret() {
+      this.secret = (0, _generateSecretJs.generateSecret)(this.length);
+    }
+  }
+});
+module.exports = exports["default"];
+
+},{"./generate-secret.js":76}],78:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _utilsStringToBufferJs = require("../../utils/string-to-buffer.js");
+
 exports.computeSecret = computeSecret;
 exports.computePublicKey = computePublicKey;
 
@@ -2092,14 +2164,6 @@ var ALGO = {
   name: "AES-CBC",
   iv: new Uint8Array(16) // filled with zero
 };
-
-var DEFAULT_ABC = [].concat(_toConsumableArray((0, _utilsGeneratorsCharsJs2["default"])("A", "Z")), _toConsumableArray((0, _utilsGeneratorsCharsJs2["default"])("a", "z")), _toConsumableArray((0, _utilsGeneratorsCharsJs2["default"])("0", "9")));
-
-function generateRandomSecret(length) {
-  var abc = arguments.length <= 1 || arguments[1] === undefined ? DEFAULT_ABC : arguments[1];
-
-  return [].concat(_toConsumableArray((0, _utilsGeneratorsRandomCharsJs2["default"])(length, abc))).join("");
-}
 
 function computeSecret(passphraseStr, publicKey) {
   return computePrivateKey(passphraseStr).then(function (privateKey) {
@@ -2120,16 +2184,75 @@ function computePrivateKey(passphraseStr) {
   });
 }
 
-},{"../../utils/generators/chars.js":79,"../../utils/generators/random-chars.js":80,"../../utils/string-to-buffer.js":82,"babel-runtime/helpers/interop-require-default":6,"babel-runtime/helpers/to-consumable-array":7}],76:[function(require,module,exports){
+},{"../../utils/string-to-buffer.js":83}],79:[function(require,module,exports){
 "use strict";
 
-},{}],77:[function(require,module,exports){
+var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _secretFieldJsSecretFieldJs = require("../../secret-field/js/secret-field.js");
+
+var _secretFieldJsSecretFieldJs2 = _interopRequireDefault(_secretFieldJsSecretFieldJs);
+
+exports["default"] = new Vue({
+  el: "#secret-form",
+  data: {
+    directMode: true,
+    secret: "",
+    secretLength: 32
+  },
+  computed: {
+    reverseMode: function reverseMode() {
+      return !this.directMode;
+    }
+  },
+  methods: {
+    toggleMode: function toggleMode() {
+      this.directMode = !this.directMode;
+    }
+  },
+  components: {
+    "secret-field": _secretFieldJsSecretFieldJs2["default"]
+  }
+});
+module.exports = exports["default"];
+
+},{"../../secret-field/js/secret-field.js":77,"babel-runtime/helpers/interop-require-default":6}],80:[function(require,module,exports){
 "use strict";
 
-},{}],78:[function(require,module,exports){
-"use strict";
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
-},{}],79:[function(require,module,exports){
+var _stringToBufferJs = require("./string-to-buffer.js");
+
+exports.bufferToBase64 = bufferToBase64;
+exports.base64ToBuffer = base64ToBuffer;
+
+function bufferToBase64(buffer) {
+  if (!(buffer instanceof ArrayBuffer)) {
+    throw new Error("Invalid argument. ArrayBuffer is expected");
+  }
+  if (buffer.byteLength === 0) {
+    return "";
+  }
+  return btoa((0, _stringToBufferJs.bufferToString)(buffer, Uint8Array));
+}
+
+function base64ToBuffer(base64) {
+  if (!_.isString(base64)) {
+    throw new Error("Invalid argument. String is expected");
+  }
+  if (!base64) {
+    return new ArrayBuffer(0);
+  }
+  return (0, _stringToBufferJs.stringToBuffer)(atob(base64), Uint8Array);
+}
+
+},{"./string-to-buffer.js":83}],81:[function(require,module,exports){
 "use strict";
 
 var _regeneratorRuntime = require("babel-runtime/regenerator")["default"];
@@ -2170,7 +2293,7 @@ function chars(fromChar, toChar) {
 
 module.exports = exports["default"];
 
-},{"babel-runtime/regenerator":72}],80:[function(require,module,exports){
+},{"babel-runtime/regenerator":72}],82:[function(require,module,exports){
 "use strict";
 
 var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
@@ -2204,20 +2327,7 @@ function randomChars(count, abc) {
 
 module.exports = exports["default"];
 
-},{"babel-runtime/helpers/to-consumable-array":7,"babel-runtime/regenerator":72}],81:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.toQR = toQR;
-exports.fromQR = fromQR;
-
-function toQR() {}
-
-function fromQR() {}
-
-},{}],82:[function(require,module,exports){
+},{"babel-runtime/helpers/to-consumable-array":7,"babel-runtime/regenerator":72}],83:[function(require,module,exports){
 "use strict";
 
 var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
@@ -2229,6 +2339,8 @@ exports.stringToBuffer = stringToBuffer;
 exports.bufferToString = bufferToString;
 
 function stringToBuffer(str) {
+  var ArrayType = arguments.length <= 1 || arguments[1] === undefined ? Uint16Array : arguments[1];
+
   if (!_.isString(str)) {
     throw new Error("Invalid argument. String is expected");
   }
@@ -2238,18 +2350,20 @@ function stringToBuffer(str) {
   var charCodes = [].concat(_toConsumableArray(str)).map(function (char) {
     return char.charCodeAt(0);
   });
-  return Uint16Array.from(charCodes).buffer;
+  return ArrayType.from(charCodes).buffer;
 }
 
 function bufferToString(buffer) {
+  var ArrayType = arguments.length <= 1 || arguments[1] === undefined ? Uint16Array : arguments[1];
+
   if (!(buffer instanceof ArrayBuffer)) {
     throw new Error("Invalid argument. ArrayBuffer is expected");
   }
   if (buffer.byteLength === 0) {
     return "";
   }
-  var array = new Uint16Array(buffer);
+  var array = new ArrayType(buffer);
   return String.fromCharCode.apply(String, _toConsumableArray(array));
 }
 
-},{"babel-runtime/helpers/to-consumable-array":7}]},{},[75,76,77,78,79,80,81,82]);
+},{"babel-runtime/helpers/to-consumable-array":7}]},{},[75,76,77,78,79,80,81,82,83]);

@@ -9,10 +9,10 @@ module.exports = function(grunt) {
         browser: true,
         globals: {
           module: true, require: true,
-          $: true, jQuery: true, _: true,
+          $: true, jQuery: true, _: true, qr: true, qrcode: true,      // vendor
           console: true,
-          chai: true, describe: true, it: true,
-          beforeEach: true
+          chai: true, describe: true, it: true, beforeEach: true,      // BDD
+          Vue: true
         }
       },
       all: {
