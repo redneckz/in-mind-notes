@@ -2098,13 +2098,22 @@ var _utilsGeneratorsRandomCharsJs = require("../../utils/generators/random-chars
 var _utilsGeneratorsRandomCharsJs2 = _interopRequireDefault(_utilsGeneratorsRandomCharsJs);
 
 exports.generateSecret = generateSecret;
+exports.filterAlphabet = filterAlphabet;
 
-var DEFAULT_ABC = [].concat(_toConsumableArray((0, _utilsGeneratorsCharsJs2["default"])("A", "Z")), _toConsumableArray((0, _utilsGeneratorsCharsJs2["default"])("a", "z")), _toConsumableArray((0, _utilsGeneratorsCharsJs2["default"])("0", "9")));
+var ABC = [].concat(_toConsumableArray((0, _utilsGeneratorsCharsJs2["default"])("!", "~")));
 
 function generateSecret(length) {
-  var abc = arguments.length <= 1 || arguments[1] === undefined ? DEFAULT_ABC : arguments[1];
+  var alphabet = arguments.length <= 1 || arguments[1] === undefined ? ABC : arguments[1];
 
-  return [].concat(_toConsumableArray((0, _utilsGeneratorsRandomCharsJs2["default"])(length, abc))).join("");
+  return [].concat(_toConsumableArray((0, _utilsGeneratorsRandomCharsJs2["default"])(length, alphabet))).join("");
+}
+
+function filterAlphabet(regExp) {
+  var alphabet = arguments.length <= 1 || arguments[1] === undefined ? ABC : arguments[1];
+
+  return alphabet.filter(function (char) {
+    return regExp.test(char);
+  });
 }
 
 },{"../../utils/generators/chars.js":81,"../../utils/generators/random-chars.js":82,"babel-runtime/helpers/interop-require-default":6,"babel-runtime/helpers/to-consumable-array":7}],77:[function(require,module,exports){
@@ -2115,6 +2124,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 var _generateSecretJs = require("./generate-secret.js");
+
+var DEFAULT_ALPHABET_REGEXP = /[0-9a-zA-Z_]/;
 
 exports["default"] = Vue.extend({
   template: "#secret-field-template",
@@ -2140,9 +2151,24 @@ exports["default"] = Vue.extend({
       "default": "-1"
     }
   },
+  data: function data() {
+    return {
+      alphabetRegExps: [/[0-9a-zA-Z~!@#$%^&*_=]/, DEFAULT_ALPHABET_REGEXP, /[0-9a-z_]/, /[0-9]/],
+      currentAlphabetRegExp: DEFAULT_ALPHABET_REGEXP
+    };
+  },
   methods: {
     generateSecret: function generateSecret() {
-      this.secret = (0, _generateSecretJs.generateSecret)(this.length);
+      var alphabet = (0, _generateSecretJs.filterAlphabet)(this.currentAlphabetRegExp);
+      this.secret = (0, _generateSecretJs.generateSecret)(this.length, alphabet);
+      Vue.nextTick(this.selectSecret.bind(this));
+    },
+    chooseAlphabet: function chooseAlphabet(alphabetRegExp) {
+      this.currentAlphabetRegExp = alphabetRegExp;
+      this.generateSecret();
+    },
+    selectSecret: function selectSecret() {
+      this.$el.querySelector("input").select();
     }
   }
 });
@@ -2306,7 +2332,7 @@ Object.defineProperty(exports, "__esModule", {
 exports["default"] = randomChars;
 var marked0$0 = [randomChars].map(_regeneratorRuntime.mark);
 
-function randomChars(count, abc) {
+function randomChars(count, alphabet) {
   var indices;
   return _regeneratorRuntime.wrap(function randomChars$(context$1$0) {
     while (1) switch (context$1$0.prev = context$1$0.next) {
@@ -2315,7 +2341,7 @@ function randomChars(count, abc) {
 
         window.crypto.getRandomValues(indices);
         return context$1$0.delegateYield([].concat(_toConsumableArray(indices)).map(function (index) {
-          return abc[index % abc.length];
+          return alphabet[index % alphabet.length];
         }), "t0", 3);
 
       case 3:

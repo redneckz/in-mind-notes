@@ -2098,23 +2098,46 @@ var _utilsGeneratorsRandomCharsJs = require("../../utils/generators/random-chars
 var _utilsGeneratorsRandomCharsJs2 = _interopRequireDefault(_utilsGeneratorsRandomCharsJs);
 
 exports.generateSecret = generateSecret;
+exports.filterAlphabet = filterAlphabet;
 
-var DEFAULT_ABC = [].concat(_toConsumableArray((0, _utilsGeneratorsCharsJs2["default"])("A", "Z")), _toConsumableArray((0, _utilsGeneratorsCharsJs2["default"])("a", "z")), _toConsumableArray((0, _utilsGeneratorsCharsJs2["default"])("0", "9")));
+var ABC = [].concat(_toConsumableArray((0, _utilsGeneratorsCharsJs2["default"])("!", "~")));
 
 function generateSecret(length) {
-  var abc = arguments.length <= 1 || arguments[1] === undefined ? DEFAULT_ABC : arguments[1];
+  var alphabet = arguments.length <= 1 || arguments[1] === undefined ? ABC : arguments[1];
 
-  return [].concat(_toConsumableArray((0, _utilsGeneratorsRandomCharsJs2["default"])(length, abc))).join("");
+  return [].concat(_toConsumableArray((0, _utilsGeneratorsRandomCharsJs2["default"])(length, alphabet))).join("");
+}
+
+function filterAlphabet(regExp) {
+  var alphabet = arguments.length <= 1 || arguments[1] === undefined ? ABC : arguments[1];
+
+  return alphabet.filter(function (char) {
+    return regExp.test(char);
+  });
 }
 
 },{"../../utils/generators/chars.js":84,"../../utils/generators/random-chars.js":86,"babel-runtime/helpers/interop-require-default":6,"babel-runtime/helpers/to-consumable-array":7}],77:[function(require,module,exports){
 "use strict";
 
+var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
+
+var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
+
 var _generateSecretJs = require("./generate-secret.js");
+
+var _utilsGeneratorsCharsJs = require("../../utils/generators/chars.js");
+
+var _utilsGeneratorsCharsJs2 = _interopRequireDefault(_utilsGeneratorsCharsJs);
 
 chai.config.includeStack = true;
 
 var expect = chai.expect;
+
+describe("filterAlphabet", function () {
+	it("should reduce alphabet according to regular expression", function () {
+		expect((0, _generateSecretJs.filterAlphabet)(/[A-Z]/)).to.deep.equal([].concat(_toConsumableArray((0, _utilsGeneratorsCharsJs2["default"])("A", "Z"))));
+	});
+});
 
 describe("generateSecret", function () {
 
@@ -2124,12 +2147,12 @@ describe("generateSecret", function () {
 		expect((0, _generateSecretJs.generateSecret)(SECRET_LEN)).to.be.a("string").and.to.have.length(SECRET_LEN);
 	});
 
-	it("should return alphanumeric string", function () {
-		expect((0, _generateSecretJs.generateSecret)(SECRET_LEN)).to.match(/^[A-Za-z0-9]+$/);
+	it("should generate chars from specified alphabet", function () {
+		expect((0, _generateSecretJs.generateSecret)(SECRET_LEN, (0, _generateSecretJs.filterAlphabet)(/[A-Z]/))).to.match(/^[A-Z]+$/);
 	});
 });
 
-},{"./generate-secret.js":76}],78:[function(require,module,exports){
+},{"../../utils/generators/chars.js":84,"./generate-secret.js":76,"babel-runtime/helpers/interop-require-default":6,"babel-runtime/helpers/to-consumable-array":7}],78:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2137,6 +2160,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 var _generateSecretJs = require("./generate-secret.js");
+
+var DEFAULT_ALPHABET_REGEXP = /[0-9a-zA-Z_]/;
 
 exports["default"] = Vue.extend({
   template: "#secret-field-template",
@@ -2162,9 +2187,24 @@ exports["default"] = Vue.extend({
       "default": "-1"
     }
   },
+  data: function data() {
+    return {
+      alphabetRegExps: [/[0-9a-zA-Z~!@#$%^&*_=]/, DEFAULT_ALPHABET_REGEXP, /[0-9a-z_]/, /[0-9]/],
+      currentAlphabetRegExp: DEFAULT_ALPHABET_REGEXP
+    };
+  },
   methods: {
     generateSecret: function generateSecret() {
-      this.secret = (0, _generateSecretJs.generateSecret)(this.length);
+      var alphabet = (0, _generateSecretJs.filterAlphabet)(this.currentAlphabetRegExp);
+      this.secret = (0, _generateSecretJs.generateSecret)(this.length, alphabet);
+      Vue.nextTick(this.selectSecret.bind(this));
+    },
+    chooseAlphabet: function chooseAlphabet(alphabetRegExp) {
+      this.currentAlphabetRegExp = alphabetRegExp;
+      this.generateSecret();
+    },
+    selectSecret: function selectSecret() {
+      this.$el.querySelector("input").select();
     }
   }
 });
@@ -2426,7 +2466,7 @@ Object.defineProperty(exports, "__esModule", {
 exports["default"] = randomChars;
 var marked0$0 = [randomChars].map(_regeneratorRuntime.mark);
 
-function randomChars(count, abc) {
+function randomChars(count, alphabet) {
   var indices;
   return _regeneratorRuntime.wrap(function randomChars$(context$1$0) {
     while (1) switch (context$1$0.prev = context$1$0.next) {
@@ -2435,7 +2475,7 @@ function randomChars(count, abc) {
 
         window.crypto.getRandomValues(indices);
         return context$1$0.delegateYield([].concat(_toConsumableArray(indices)).map(function (index) {
-          return abc[index % abc.length];
+          return alphabet[index % alphabet.length];
         }), "t0", 3);
 
       case 3:

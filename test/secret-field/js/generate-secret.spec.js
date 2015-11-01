@@ -1,8 +1,15 @@
-import {generateSecret} from "./generate-secret.js";
+import {generateSecret, filterAlphabet} from "./generate-secret.js";
+import chars from "../../utils/generators/chars.js";
 
 chai.config.includeStack = true;
 
 let expect = chai.expect;
+
+describe("filterAlphabet", function () {
+	it("should reduce alphabet according to regular expression", function () {
+		expect(filterAlphabet(/[A-Z]/)).to.deep.equal([...chars("A", "Z")]);
+	});
+});
 
 describe("generateSecret", function () {
 
@@ -13,7 +20,7 @@ describe("generateSecret", function () {
 				.and.to.have.length(SECRET_LEN);
 	});
 
-	it("should return alphanumeric string", function () {
-		expect(generateSecret(SECRET_LEN)).to.match(/^[A-Za-z0-9]+$/);
+	it("should generate chars from specified alphabet", function () {
+		expect(generateSecret(SECRET_LEN, filterAlphabet(/[A-Z]/))).to.match(/^[A-Z]+$/);
 	});
 });

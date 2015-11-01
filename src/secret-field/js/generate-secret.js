@@ -1,10 +1,14 @@
 import chars from "../../utils/generators/chars.js";
 import randomChars from "../../utils/generators/random-chars.js";
 
-export {generateSecret};
+export {generateSecret, filterAlphabet};
 
-const DEFAULT_ABC = [...chars("A", "Z"), ...chars("a", "z"), ...chars("0", "9")];
+const ABC = [...chars("!", "~")];
 
-function generateSecret(length, abc = DEFAULT_ABC) {
-  return [...randomChars(length, abc)].join("");
+function generateSecret(length, alphabet = ABC) {
+  return [...randomChars(length, alphabet)].join("");
+}
+
+function filterAlphabet(regExp, alphabet = ABC) {
+  return alphabet.filter(char => regExp.test(char));
 }

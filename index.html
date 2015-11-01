@@ -14,8 +14,15 @@
   </head>
   <body>
     <template id="secret-field-template">
-      <div class="input-group input-group-lg"><span class="input-group-btn">
-          <button v-on:click="generateSecret" type="button" tabindex="-1" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-random"></span></button></span>
+      <div class="input-group input-group-lg">
+        <div class="input-group-btn">
+          <button v-on:click="selectSecret" v-if="directMode" type="button" tabindex="-1" class="btn btn-default"><span class="glyphicon glyphicon-chevron-right"></span></button>
+          <button v-on:click="generateSecret" v-bind:title="currentAlphabetRegExp" v-if="!directMode" type="button" tabindex="-1" class="btn btn-default"><span class="glyphicon glyphicon-random"></span></button>
+          <button v-if="!directMode" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-default dropdown-toggle"><span class="caret"></span><span class="sr-only">Toggle Dropdown</span></button>
+          <ul v-if="!directMode" class="dropdown-menu">
+            <li v-for="alphabetRegExp in alphabetRegExps"><a v-on:click="chooseAlphabet(alphabetRegExp)" href="#">{{alphabetRegExp}}</a></li>
+          </ul>
+        </div>
         <input v-model="secret" type="text" autocomplete="off" v-bind:placeholder="title" v-bind:title="title" v-bind:tabindex="tabIndex" v-bind:readonly="directMode" class="form-control">
       </div>
     </template>
