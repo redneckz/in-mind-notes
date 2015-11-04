@@ -1,0 +1,11 @@
+template#passphrase-field-template
+  .input-group.input-group-lg
+    input.form-control(v-model='passphrase', v-bind:type='passphraseFieldType',
+                       placeholder='Passphrase', title='Passphrase',
+                       autofocus='', required='', autocomplete='off', tabindex='1')
+    span.input-group-btn
+      button.btn.btn-default.btn-lg(v-on:click='togglePassphraseVisibility',
+                                    v-bind:class='{active: passphraseVisible}',
+                                    type='button', tabindex='-1')
+        span.glyphicon.glyphicon-eye-open(v-if='passphraseVisible')
+        span.glyphicon.glyphicon-eye-close(v-else)

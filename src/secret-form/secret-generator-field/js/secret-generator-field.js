@@ -1,21 +1,14 @@
 import {generateSecret, filterAlphabet} from "./generate-secret.js";
 
 const DEFAULT_ALPHABET_REGEXP = /[0-9a-zA-Z_]/;
+const DEFAULT_SECRET_LENGTH_VARIANT = {secretLength: 32, label: "Long"};
 
 export default Vue.extend({
-  template: "#secret-field-template",
+  template: "#secret-generator-field-template",
   props: {
-    directMode: {
-      type: Boolean,
-      required: true
-    },
     secret: {
       type: String,
       required: true
-    },
-    length: {
-      type: Number,
-      default: 16
     },
     title: {
       type: String,
@@ -28,18 +21,28 @@ export default Vue.extend({
   },
   data: function () {
     return {
-      alphabetRegExps: [/[0-9a-zA-Z~!@#$%^&*_=]/, DEFAULT_ALPHABET_REGEXP, /[0-9a-z_]/, /[0-9]/],
-      currentAlphabetRegExp: DEFAULT_ALPHABET_REGEXP
+      alphabetRegExpList: [/[0-9a-zA-Z~!@#$%^&*_=]/, DEFAULT_ALPHABET_REGEXP, /[0-9a-z_]/, /[0-9]/],
+      currentAlphabetRegExp: DEFAULT_ALPHABET_REGEXP,
+      secretLengthVariantList: [
+        {secretLength: 8, label: "Short"},
+        {secretLength: 16, label: "Medium"},
+        DEFAULT_SECRET_LENGTH_VARIANT
+      ],
+      currentSecretLengthVariant: DEFAULT_SECRET_LENGTH_VARIANT
     };
   },
   methods: {
     generateSecret: function () {
       let alphabet = filterAlphabet(this.currentAlphabetRegExp);
-      this.secret = generateSecret(this.length, alphabet);
+      this.secret = generateSecret(this.currentSecretLengthVariant.secretLength, alphabet);
       Vue.nextTick(this.selectSecret.bind(this));
     },
     chooseAlphabet: function (alphabetRegExp) {
       this.currentAlphabetRegExp = alphabetRegExp;
+      this.generateSecret();
+    },
+    chooseSecretLength: function (secretLengthVariant) {
+      this.currentSecretLengthVariant = secretLengthVariant;
       this.generateSecret();
     },
     selectSecret: function () {

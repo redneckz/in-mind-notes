@@ -2078,139 +2078,7 @@ var _secretFormJsSecretFormJs2 = _interopRequireDefault(_secretFormJsSecretFormJ
 
 exports.secretFormView = _secretFormJsSecretFormJs2["default"];
 
-},{"./secret-form/js/secret-form.js":81,"babel-runtime/helpers/interop-require-default":6}],76:[function(require,module,exports){
-"use strict";
-
-var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
-
-var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _utilsGeneratorsCharsJs = require("../../utils/generators/chars.js");
-
-var _utilsGeneratorsCharsJs2 = _interopRequireDefault(_utilsGeneratorsCharsJs);
-
-var _utilsGeneratorsRandomCharsJs = require("../../utils/generators/random-chars.js");
-
-var _utilsGeneratorsRandomCharsJs2 = _interopRequireDefault(_utilsGeneratorsRandomCharsJs);
-
-exports.generateSecret = generateSecret;
-exports.filterAlphabet = filterAlphabet;
-
-var ABC = [].concat(_toConsumableArray((0, _utilsGeneratorsCharsJs2["default"])("!", "~")));
-
-function generateSecret(length) {
-  var alphabet = arguments.length <= 1 || arguments[1] === undefined ? ABC : arguments[1];
-
-  return [].concat(_toConsumableArray((0, _utilsGeneratorsRandomCharsJs2["default"])(length, alphabet))).join("");
-}
-
-function filterAlphabet(regExp) {
-  var alphabet = arguments.length <= 1 || arguments[1] === undefined ? ABC : arguments[1];
-
-  return alphabet.filter(function (char) {
-    return regExp.test(char);
-  });
-}
-
-},{"../../utils/generators/chars.js":84,"../../utils/generators/random-chars.js":86,"babel-runtime/helpers/interop-require-default":6,"babel-runtime/helpers/to-consumable-array":7}],77:[function(require,module,exports){
-"use strict";
-
-var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
-
-var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
-
-var _generateSecretJs = require("./generate-secret.js");
-
-var _utilsGeneratorsCharsJs = require("../../utils/generators/chars.js");
-
-var _utilsGeneratorsCharsJs2 = _interopRequireDefault(_utilsGeneratorsCharsJs);
-
-chai.config.includeStack = true;
-
-var expect = chai.expect;
-
-describe("filterAlphabet", function () {
-	it("should reduce alphabet according to regular expression", function () {
-		expect((0, _generateSecretJs.filterAlphabet)(/[A-Z]/)).to.deep.equal([].concat(_toConsumableArray((0, _utilsGeneratorsCharsJs2["default"])("A", "Z"))));
-	});
-});
-
-describe("generateSecret", function () {
-
-	var SECRET_LEN = 10;
-
-	it("should return string with exact length", function () {
-		expect((0, _generateSecretJs.generateSecret)(SECRET_LEN)).to.be.a("string").and.to.have.length(SECRET_LEN);
-	});
-
-	it("should generate chars from specified alphabet", function () {
-		expect((0, _generateSecretJs.generateSecret)(SECRET_LEN, (0, _generateSecretJs.filterAlphabet)(/[A-Z]/))).to.match(/^[A-Z]+$/);
-	});
-});
-
-},{"../../utils/generators/chars.js":84,"./generate-secret.js":76,"babel-runtime/helpers/interop-require-default":6,"babel-runtime/helpers/to-consumable-array":7}],78:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _generateSecretJs = require("./generate-secret.js");
-
-var DEFAULT_ALPHABET_REGEXP = /[0-9a-zA-Z_]/;
-
-exports["default"] = Vue.extend({
-  template: "#secret-field-template",
-  props: {
-    directMode: {
-      type: Boolean,
-      required: true
-    },
-    secret: {
-      type: String,
-      required: true
-    },
-    length: {
-      type: Number,
-      "default": 16
-    },
-    title: {
-      type: String,
-      "default": "Secret"
-    },
-    tabIndex: {
-      type: String,
-      "default": "-1"
-    }
-  },
-  data: function data() {
-    return {
-      alphabetRegExps: [/[0-9a-zA-Z~!@#$%^&*_=]/, DEFAULT_ALPHABET_REGEXP, /[0-9a-z_]/, /[0-9]/],
-      currentAlphabetRegExp: DEFAULT_ALPHABET_REGEXP
-    };
-  },
-  methods: {
-    generateSecret: function generateSecret() {
-      var alphabet = (0, _generateSecretJs.filterAlphabet)(this.currentAlphabetRegExp);
-      this.secret = (0, _generateSecretJs.generateSecret)(this.length, alphabet);
-      Vue.nextTick(this.selectSecret.bind(this));
-    },
-    chooseAlphabet: function chooseAlphabet(alphabetRegExp) {
-      this.currentAlphabetRegExp = alphabetRegExp;
-      this.generateSecret();
-    },
-    selectSecret: function selectSecret() {
-      this.$el.querySelector("input").select();
-    }
-  }
-});
-module.exports = exports["default"];
-
-},{"./generate-secret.js":76}],79:[function(require,module,exports){
+},{"./secret-form/js/secret-form.js":78,"babel-runtime/helpers/interop-require-default":6}],76:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2246,7 +2114,7 @@ function computePrivateKey(passphraseStr) {
   });
 }
 
-},{"../../utils/string-to-buffer.js":88}],80:[function(require,module,exports){
+},{"../../utils/string-to-buffer.js":91}],77:[function(require,module,exports){
 "use strict";
 
 var _cryptoJs = require("./crypto.js");
@@ -2270,7 +2138,7 @@ describe("computePublicKey", function () {
 	});
 });
 
-},{"../../utils/string-to-buffer.js":88,"./crypto.js":79}],81:[function(require,module,exports){
+},{"../../utils/string-to-buffer.js":91,"./crypto.js":76}],78:[function(require,module,exports){
 "use strict";
 
 var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
@@ -2279,16 +2147,29 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _secretFieldJsSecretFieldJs = require("../../secret-field/js/secret-field.js");
+var _passphraseFieldPassphraseFieldJs = require("../passphrase-field/passphrase-field.js");
 
-var _secretFieldJsSecretFieldJs2 = _interopRequireDefault(_secretFieldJsSecretFieldJs);
+var _passphraseFieldPassphraseFieldJs2 = _interopRequireDefault(_passphraseFieldPassphraseFieldJs);
+
+var _publicKeyFieldPublicKeyFieldJs = require("../public-key-field/public-key-field.js");
+
+var _publicKeyFieldPublicKeyFieldJs2 = _interopRequireDefault(_publicKeyFieldPublicKeyFieldJs);
+
+var _secretGeneratorFieldJsSecretGeneratorFieldJs = require("../secret-generator-field/js/secret-generator-field.js");
+
+var _secretGeneratorFieldJsSecretGeneratorFieldJs2 = _interopRequireDefault(_secretGeneratorFieldJsSecretGeneratorFieldJs);
+
+var _secretFieldSecretFieldJs = require("../secret-field/secret-field.js");
+
+var _secretFieldSecretFieldJs2 = _interopRequireDefault(_secretFieldSecretFieldJs);
 
 exports["default"] = new Vue({
   el: "#secret-form",
   data: {
     directMode: true,
-    secret: "",
-    secretLength: 32
+    passphrase: "",
+    publicKey: "",
+    secret: ""
   },
   computed: {
     reverseMode: function reverseMode() {
@@ -2301,12 +2182,226 @@ exports["default"] = new Vue({
     }
   },
   components: {
-    "secret-field": _secretFieldJsSecretFieldJs2["default"]
+    "passphrase-field": _passphraseFieldPassphraseFieldJs2["default"],
+    "public-key-field": _publicKeyFieldPublicKeyFieldJs2["default"],
+    "secret-generator-field": _secretGeneratorFieldJsSecretGeneratorFieldJs2["default"],
+    "secret-field": _secretFieldSecretFieldJs2["default"]
   }
 });
 module.exports = exports["default"];
 
-},{"../../secret-field/js/secret-field.js":78,"babel-runtime/helpers/interop-require-default":6}],82:[function(require,module,exports){
+},{"../passphrase-field/passphrase-field.js":79,"../public-key-field/public-key-field.js":80,"../secret-field/secret-field.js":81,"../secret-generator-field/js/secret-generator-field.js":84,"babel-runtime/helpers/interop-require-default":6}],79:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = Vue.extend({
+  template: "#passphrase-field-template",
+  props: {
+    passphrase: {
+      type: String,
+      required: true
+    }
+  },
+  computed: {
+    passphraseFieldType: function passphraseFieldType() {
+      return this.passphraseVisible ? "text" : "password";
+    }
+  },
+  data: function data() {
+    return {
+      passphraseVisible: false
+    };
+  },
+  methods: {
+    togglePassphraseVisibility: function togglePassphraseVisibility() {
+      this.passphraseVisible = !this.passphraseVisible;
+    }
+  }
+});
+module.exports = exports["default"];
+
+},{}],80:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = Vue.extend({
+  template: "#public-key-field-template",
+  props: {
+    publicKey: {
+      type: String,
+      required: true
+    },
+    tabIndex: {
+      type: String,
+      "default": "-1"
+    }
+  },
+  methods: {}
+});
+module.exports = exports["default"];
+
+},{}],81:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = Vue.extend({
+  template: "#secret-field-template",
+  props: {
+    secret: {
+      type: String,
+      required: true
+    },
+    tabIndex: {
+      type: String,
+      "default": "-1"
+    }
+  },
+  methods: {
+    selectSecret: function selectSecret() {
+      this.$el.querySelector("input").select();
+    }
+  }
+});
+module.exports = exports["default"];
+
+},{}],82:[function(require,module,exports){
+"use strict";
+
+var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
+
+var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _utilsGeneratorsCharsJs = require("../../../utils/generators/chars.js");
+
+var _utilsGeneratorsCharsJs2 = _interopRequireDefault(_utilsGeneratorsCharsJs);
+
+var _utilsGeneratorsRandomCharsJs = require("../../../utils/generators/random-chars.js");
+
+var _utilsGeneratorsRandomCharsJs2 = _interopRequireDefault(_utilsGeneratorsRandomCharsJs);
+
+exports.generateSecret = generateSecret;
+exports.filterAlphabet = filterAlphabet;
+
+var ABC = [].concat(_toConsumableArray((0, _utilsGeneratorsCharsJs2["default"])("!", "~")));
+
+function generateSecret(length) {
+  var alphabet = arguments.length <= 1 || arguments[1] === undefined ? ABC : arguments[1];
+
+  return [].concat(_toConsumableArray((0, _utilsGeneratorsRandomCharsJs2["default"])(length, alphabet))).join("");
+}
+
+function filterAlphabet(regExp) {
+  var alphabet = arguments.length <= 1 || arguments[1] === undefined ? ABC : arguments[1];
+
+  return alphabet.filter(function (char) {
+    return regExp.test(char);
+  });
+}
+
+},{"../../../utils/generators/chars.js":87,"../../../utils/generators/random-chars.js":89,"babel-runtime/helpers/interop-require-default":6,"babel-runtime/helpers/to-consumable-array":7}],83:[function(require,module,exports){
+"use strict";
+
+var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
+
+var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
+
+var _generateSecretJs = require("./generate-secret.js");
+
+var _utilsGeneratorsCharsJs = require("../../../utils/generators/chars.js");
+
+var _utilsGeneratorsCharsJs2 = _interopRequireDefault(_utilsGeneratorsCharsJs);
+
+chai.config.includeStack = true;
+
+var expect = chai.expect;
+
+describe("filterAlphabet", function () {
+	it("should reduce alphabet according to regular expression", function () {
+		expect((0, _generateSecretJs.filterAlphabet)(/[A-Z]/)).to.deep.equal([].concat(_toConsumableArray((0, _utilsGeneratorsCharsJs2["default"])("A", "Z"))));
+	});
+});
+
+describe("generateSecret", function () {
+
+	var SECRET_LEN = 10;
+
+	it("should return string with exact length", function () {
+		expect((0, _generateSecretJs.generateSecret)(SECRET_LEN)).to.be.a("string").and.to.have.length(SECRET_LEN);
+	});
+
+	it("should generate chars from specified alphabet", function () {
+		expect((0, _generateSecretJs.generateSecret)(SECRET_LEN, (0, _generateSecretJs.filterAlphabet)(/[A-Z]/))).to.match(/^[A-Z]+$/);
+	});
+});
+
+},{"../../../utils/generators/chars.js":87,"./generate-secret.js":82,"babel-runtime/helpers/interop-require-default":6,"babel-runtime/helpers/to-consumable-array":7}],84:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _generateSecretJs = require("./generate-secret.js");
+
+var DEFAULT_ALPHABET_REGEXP = /[0-9a-zA-Z_]/;
+var DEFAULT_SECRET_LENGTH_VARIANT = { secretLength: 32, label: "Long" };
+
+exports["default"] = Vue.extend({
+  template: "#secret-generator-field-template",
+  props: {
+    secret: {
+      type: String,
+      required: true
+    },
+    title: {
+      type: String,
+      "default": "Secret"
+    },
+    tabIndex: {
+      type: String,
+      "default": "-1"
+    }
+  },
+  data: function data() {
+    return {
+      alphabetRegExpList: [/[0-9a-zA-Z~!@#$%^&*_=]/, DEFAULT_ALPHABET_REGEXP, /[0-9a-z_]/, /[0-9]/],
+      currentAlphabetRegExp: DEFAULT_ALPHABET_REGEXP,
+      secretLengthVariantList: [{ secretLength: 8, label: "Short" }, { secretLength: 16, label: "Medium" }, DEFAULT_SECRET_LENGTH_VARIANT],
+      currentSecretLengthVariant: DEFAULT_SECRET_LENGTH_VARIANT
+    };
+  },
+  methods: {
+    generateSecret: function generateSecret() {
+      var alphabet = (0, _generateSecretJs.filterAlphabet)(this.currentAlphabetRegExp);
+      this.secret = (0, _generateSecretJs.generateSecret)(this.currentSecretLengthVariant.secretLength, alphabet);
+      Vue.nextTick(this.selectSecret.bind(this));
+    },
+    chooseAlphabet: function chooseAlphabet(alphabetRegExp) {
+      this.currentAlphabetRegExp = alphabetRegExp;
+      this.generateSecret();
+    },
+    chooseSecretLength: function chooseSecretLength(secretLengthVariant) {
+      this.currentSecretLengthVariant = secretLengthVariant;
+      this.generateSecret();
+    },
+    selectSecret: function selectSecret() {
+      this.$el.querySelector("input").select();
+    }
+  }
+});
+module.exports = exports["default"];
+
+},{"./generate-secret.js":82}],85:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2338,7 +2433,7 @@ function base64ToBuffer(base64) {
   return (0, _stringToBufferJs.stringToBuffer)(atob(base64), Uint8Array);
 }
 
-},{"./string-to-buffer.js":88}],83:[function(require,module,exports){
+},{"./string-to-buffer.js":91}],86:[function(require,module,exports){
 "use strict";
 
 var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
@@ -2386,7 +2481,7 @@ function toArray(buffer) {
   return [].concat(_toConsumableArray(new Uint8Array(buffer)));
 }
 
-},{"./buffer-to-base64.js":82,"babel-runtime/helpers/to-consumable-array":7}],84:[function(require,module,exports){
+},{"./buffer-to-base64.js":85,"babel-runtime/helpers/to-consumable-array":7}],87:[function(require,module,exports){
 "use strict";
 
 var _regeneratorRuntime = require("babel-runtime/regenerator")["default"];
@@ -2427,7 +2522,7 @@ function chars(fromChar, toChar) {
 
 module.exports = exports["default"];
 
-},{"babel-runtime/regenerator":72}],85:[function(require,module,exports){
+},{"babel-runtime/regenerator":72}],88:[function(require,module,exports){
 "use strict";
 
 var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
@@ -2453,7 +2548,7 @@ describe("Chars generator", function () {
   });
 });
 
-},{"./chars.js":84,"babel-runtime/helpers/interop-require-default":6,"babel-runtime/helpers/to-consumable-array":7}],86:[function(require,module,exports){
+},{"./chars.js":87,"babel-runtime/helpers/interop-require-default":6,"babel-runtime/helpers/to-consumable-array":7}],89:[function(require,module,exports){
 "use strict";
 
 var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
@@ -2487,7 +2582,7 @@ function randomChars(count, alphabet) {
 
 module.exports = exports["default"];
 
-},{"babel-runtime/helpers/to-consumable-array":7,"babel-runtime/regenerator":72}],87:[function(require,module,exports){
+},{"babel-runtime/helpers/to-consumable-array":7,"babel-runtime/regenerator":72}],90:[function(require,module,exports){
 "use strict";
 
 var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
@@ -2516,7 +2611,7 @@ describe("Random chars generator", function () {
 	});
 });
 
-},{"./random-chars.js":86,"babel-runtime/helpers/interop-require-default":6,"babel-runtime/helpers/to-consumable-array":7}],88:[function(require,module,exports){
+},{"./random-chars.js":89,"babel-runtime/helpers/interop-require-default":6,"babel-runtime/helpers/to-consumable-array":7}],91:[function(require,module,exports){
 "use strict";
 
 var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
@@ -2555,7 +2650,7 @@ function bufferToString(buffer) {
   return String.fromCharCode.apply(String, _toConsumableArray(array));
 }
 
-},{"babel-runtime/helpers/to-consumable-array":7}],89:[function(require,module,exports){
+},{"babel-runtime/helpers/to-consumable-array":7}],92:[function(require,module,exports){
 "use strict";
 
 var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
@@ -2623,4 +2718,4 @@ function generateRandomStr() {
   return [].concat(_toConsumableArray((0, _generatorsRandomCharsJs2["default"])(10, abc))).join("");
 }
 
-},{"./generators/chars.js":84,"./generators/random-chars.js":86,"./string-to-buffer.js":88,"babel-runtime/helpers/interop-require-default":6,"babel-runtime/helpers/to-consumable-array":7}]},{},[75,76,77,78,79,80,81,82,83,84,85,86,87,88,89]);
+},{"./generators/chars.js":87,"./generators/random-chars.js":89,"./string-to-buffer.js":91,"babel-runtime/helpers/interop-require-default":6,"babel-runtime/helpers/to-consumable-array":7}]},{},[75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92]);

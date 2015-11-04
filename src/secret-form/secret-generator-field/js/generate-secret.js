@@ -1,5 +1,5 @@
-import chars from "../../utils/generators/chars.js";
-import randomChars from "../../utils/generators/random-chars.js";
+import chars from "../../../utils/generators/chars.js";
+import randomChars from "../../../utils/generators/random-chars.js";
 
 export {generateSecret, filterAlphabet};
 

@@ -1,5 +1,5 @@
 import {generateSecret, filterAlphabet} from "./generate-secret.js";
-import chars from "../../utils/generators/chars.js";
+import chars from "../../../utils/generators/chars.js";
 
 chai.config.includeStack = true;
 

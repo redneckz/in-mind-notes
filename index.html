@@ -6,24 +6,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="In Mind Notes">
     <meta name="author" content="Redneckz">
-    <title>Redneckz </title>
+    <title>In Mind Notes</title>
     <!-- Vendor CSS-->
     <link href="/dist/css/vendor.css" rel="stylesheet">
-    <!-- Custom CSS-->
-    <link href="/dist/css/index.css" rel="stylesheet">
   </head>
   <body>
+    <template id="passphrase-field-template">
+      <div class="input-group input-group-lg">
+        <input v-model="passphrase" v-bind:type="passphraseFieldType" placeholder="Passphrase" title="Passphrase" autofocus="" required="" autocomplete="off" tabindex="1" class="form-control"><span class="input-group-btn">
+          <button v-on:click="togglePassphraseVisibility" v-bind:class="{active: passphraseVisible}" type="button" tabindex="-1" class="btn btn-default btn-lg"><span v-if="passphraseVisible" class="glyphicon glyphicon-eye-open"></span><span v-else class="glyphicon glyphicon-eye-close"></span></button></span>
+      </div>
+    </template>
+    <template id="public-key-field-template">
+      <div class="input-group input-group-lg">
+        <input v-model="publicKey" v-bind:tabindex="tabIndex" type="text" placeholder="Public Key" title="Public Key" autocomplete="on" class="form-control"><span class="input-group-btn">
+          <button type="button" tabindex="-1" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-eye-open"></span></button></span>
+      </div>
+    </template>
+    <template id="secret-generator-field-template">
+      <div class="input-group input-group-lg">
+        <div class="input-group-btn">
+          <button v-on:click="generateSecret" v-bind:title="currentAlphabetRegExp" type="button" tabindex="-1" class="btn btn-default"><span class="glyphicon glyphicon-random"></span></button>
+          <button type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-default dropdown-toggle"><span class="caret"></span><span class="sr-only">Toggle Dropdown</span></button>
+          <ul class="dropdown-menu">
+            <li v-for="alphabetRegExp in alphabetRegExpList" v-bind:class="{active: currentAlphabetRegExp === alphabetRegExp}"><a v-on:click="chooseAlphabet(alphabetRegExp)" href="#">{{alphabetRegExp}}</a></li>
+            <li role="separator" class="divider"></li>
+            <li v-for="secretLengthVariant in secretLengthVariantList" v-bind:class="{active: currentSecretLengthVariant === secretLengthVariant}"><a v-on:click="chooseSecretLength(secretLengthVariant)" href="#">{{secretLengthVariant.label}}</a></li>
+          </ul>
+        </div>
+        <input v-model="secret" type="text" autocomplete="off" v-bind:placeholder="title" v-bind:title="title" v-bind:tabindex="tabIndex" class="form-control">
+      </div>
+    </template>
     <template id="secret-field-template">
       <div class="input-group input-group-lg">
         <div class="input-group-btn">
-          <button v-on:click="selectSecret" v-if="directMode" type="button" tabindex="-1" class="btn btn-default"><span class="glyphicon glyphicon-chevron-right"></span></button>
-          <button v-on:click="generateSecret" v-bind:title="currentAlphabetRegExp" v-if="!directMode" type="button" tabindex="-1" class="btn btn-default"><span class="glyphicon glyphicon-random"></span></button>
-          <button v-if="!directMode" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-default dropdown-toggle"><span class="caret"></span><span class="sr-only">Toggle Dropdown</span></button>
-          <ul v-if="!directMode" class="dropdown-menu">
-            <li v-for="alphabetRegExp in alphabetRegExps"><a v-on:click="chooseAlphabet(alphabetRegExp)" href="#">{{alphabetRegExp}}</a></li>
-          </ul>
+          <button v-on:click="selectSecret" type="button" tabindex="-1" class="btn btn-default"><span class="glyphicon glyphicon-chevron-right"></span></button>
         </div>
-        <input v-model="secret" type="text" autocomplete="off" v-bind:placeholder="title" v-bind:title="title" v-bind:tabindex="tabIndex" v-bind:readonly="directMode" class="form-control">
+        <input v-model="secret" v-bind:tabindex="tabIndex" type="text" placeholder="Secret" title="Secret" autocomplete="off" readonly="" class="form-control">
       </div>
     </template>
     <div id="secret-form" class="container">
@@ -33,23 +52,23 @@
       <div class="row">
         <div class="col-md-12">
           <form role="form">
-            <div class="form-group">
-              <div class="input-group input-group-lg">
-                <input id="passphrase" type="password" placeholder="Passphrase" title="Passphrase" autofocus="" required="" autocomplete="off" tabindex="1" class="form-control"><span class="input-group-btn">
-                  <button id="showPassphraseButton" type="button" tabindex="-1" class="btn btn-default btn-lg"><span id="passphraseClose" class="glyphicon glyphicon-eye-close"></span><span id="passphraseOpen" style="display: none;" class="glyphicon glyphicon-eye-open"></span></button></span>
-              </div>
+            <div v-bind:title="secret" class="form-group">
+              <passphrase-field v-bind:passphrase.sync="passphrase"></passphrase-field>
             </div>
-            <div class="form-group">
-              <div class="input-group input-group-lg">
-                <input id="publicKey" type="text" placeholder="Public key" title="Public key" autocomplete="on" tabindex="2" class="form-control"><span class="input-group-btn">
-                  <button id="qrcodeButton" type="button" tabindex="-1" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-qrcode"></span></button></span>
-              </div>
+            <div v-if="directMode" class="form-group">
+              <public-key-field v-bind:public-key.sync="publicKey" tab-index="2"></public-key-field>
+            </div>
+            <div v-if="reverseMode" class="form-group">
+              <secret-generator-field v-bind:secret.sync="secret" tab-index="2"></secret-generator-field>
             </div>
             <div title="Mode trigger" class="form-group text-center">
-              <button id="modeButton" v-on:click="toggleMode" type="button" tabindex="-1" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-sort"></span></button>
+              <button v-on:click="toggleMode" type="button" tabindex="-1" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-sort"></span></button>
             </div>
-            <div class="form-group">
-              <secret-field v-bind:direct-mode="directMode" v-bind:secret="secret" v-bind:length="secretLength" title="Secret" tab-index="3"></secret-field>
+            <div v-if="directMode" class="form-group">
+              <secret-field v-bind:secret.sync="secret" tab-index="3"></secret-field>
+            </div>
+            <div v-if="reverseMode" class="form-group">
+              <public-key-field v-bind:public-key.sync="publicKey" tab-index="3"></public-key-field>
             </div>
           </form>
         </div>
