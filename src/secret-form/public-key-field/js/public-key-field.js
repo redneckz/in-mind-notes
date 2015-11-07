@@ -1,7 +1,9 @@
+// import PublicKeyStorage from "./public-key-storage.js";
+
 export default Vue.extend({
-	template: "#secret-field-template",
+	template: "#public-key-field-template",
 	props: {
-		secret: {
+		publicKey: {
 			type: String,
 			required: true
 		},
@@ -11,8 +13,6 @@ export default Vue.extend({
 		}
 	},
 	methods: {
-		selectSecret: function () {
-			this.$el.querySelector("input").select();
-		}
+
 	}
 });

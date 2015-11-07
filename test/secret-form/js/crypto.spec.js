@@ -5,15 +5,18 @@ chai.config.includeStack = true;
 
 let expect = chai.expect;
 
-describe("computePublicKey", function () {
+describe("[Crypto module]", function () {
 
-	const PASSPHRASE_STR = "123456qwerty";
-	const SECRET_STR = "asdfg12345";
+	describe("computePublicKey", function () {
 
-	it("should work symmetrically to computeSecret", function () {
-		let secret = stringToBuffer(SECRET_STR);
-		return expect(computePublicKey(PASSPHRASE_STR, secret)
-				.then(publicKey => computeSecret(PASSPHRASE_STR, publicKey))
-				.then(bufferToString)).to.eventually.equal(SECRET_STR);
+		const PASSPHRASE_STR = "123456qwerty";
+		const SECRET_STR = "asdfg12345";
+
+		it("should work symmetrically to computeSecret", function () {
+			let secret = stringToBuffer(SECRET_STR);
+			return expect(computePublicKey(PASSPHRASE_STR, secret)
+					.then(publicKey => computeSecret(PASSPHRASE_STR, publicKey))
+					.then(bufferToString)).to.eventually.equal(SECRET_STR);
+		});
 	});
 });

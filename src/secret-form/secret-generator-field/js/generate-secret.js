@@ -6,9 +6,9 @@ export {generateSecret, filterAlphabet};
 const ABC = [...chars("!", "~")];
 
 function generateSecret(length, alphabet = ABC) {
-  return [...randomChars(length, alphabet)].join("");
+	return [...randomChars(length, alphabet)].join("");
 }
 
 function filterAlphabet(regExp, alphabet = ABC) {
-  return alphabet.filter(char => regExp.test(char));
+	return alphabet.filter(char => regExp.test(char));
 }

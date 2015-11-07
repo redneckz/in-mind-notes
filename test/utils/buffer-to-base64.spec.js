@@ -4,39 +4,34 @@ chai.config.includeStack = true;
 
 let expect = chai.expect;
 
-describe("bufferToBase64", function () {
+describe("[Base64 converter module]", function () {
 
-  let randomBuffer;
+	let randomBuffer;
 
-  beforeEach(function () {
-    randomBuffer = generateRandomBuffer();
-  });
-
-	it("should return string", function () {
-    expect(bufferToBase64(randomBuffer)).to.be.a("string").and.to.have.length.above(0);
+	beforeEach(function () {
+		randomBuffer = generateRandomBuffer();
 	});
-});
 
-describe("base64ToBuffer", function () {
+	describe("bufferToBase64", function () {
+		it("should return string", function () {
+			expect(bufferToBase64(randomBuffer)).to.be.a("string").and.to.have.length.above(0);
+		});
+	});
 
-  let randomBuffer;
-
-  beforeEach(function () {
-    randomBuffer = generateRandomBuffer();
-  });
-
-	it("should work symmetrically to bufferToBase64", function () {
-    let buffer = base64ToBuffer(bufferToBase64(randomBuffer));
-    expect(toArray(buffer)).to.deep.equal(toArray(randomBuffer));
+	describe("base64ToBuffer", function () {
+		it("should work symmetrically to bufferToBase64", function () {
+			let buffer = base64ToBuffer(bufferToBase64(randomBuffer));
+			expect(toArray(buffer)).to.deep.equal(toArray(randomBuffer));
+		});
 	});
 });
 
 function generateRandomBuffer() {
-  let result = new Uint8Array(10);
-  window.crypto.getRandomValues(result);
-  return result.buffer;
+	let result = new Uint8Array(10);
+	window.crypto.getRandomValues(result);
+	return result.buffer;
 }
 
 function toArray(buffer) {
-  return [...new Uint8Array(buffer)];
+	return [...new Uint8Array(buffer)];
 }
