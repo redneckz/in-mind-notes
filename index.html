@@ -19,11 +19,17 @@
           <button v-on:click="togglePassphraseVisibility" v-bind:class="{active: passphraseVisible}" type="button" tabindex="-1" class="btn btn-default btn-lg"><span v-if="passphraseVisible" class="glyphicon glyphicon-eye-open"></span><span v-else class="glyphicon glyphicon-eye-close"></span></button></span>
       </div>
     </template>
-    <template id="public-key-field-template">
-      <div class="input-group input-group-lg">
-        <input v-model="publicKey" v-bind:tabindex="tabIndex" type="text" placeholder="Public Key" title="Public Key" autocomplete="on" class="form-control"><span class="input-group-btn">
-          <button type="button" tabindex="-1" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-eye-open"></span></button></span>
-      </div>
+    <template id="public-key-reader-field-template">
+      <input v-model="publicKeyName" v-bind:tabindex="tabIndex" list="public-key-option-list" placeholder="Public Key" title="Public Key" class="form-control input-lg">
+      <datalist id="public-key-option-list">
+        <option v-for="entry in publicKeyStorage.entries" v-bind:value="entry.publicKeyName">{{entry.publicKey}}</option>
+      </datalist>
+    </template>
+    <template id="public-key-writer-field-template">
+      <input v-model="publicKeyName" v-bind:tabindex="tabIndex" list="public-key-option-list" placeholder="Public Key" title="Public Key" class="form-control input-lg">
+      <datalist id="public-key-option-list">
+        <option v-for="entry in publicKeyStorage.entries" v-bind:value="entry.publicKeyName">{{entry.publicKey}}</option>
+      </datalist>
     </template>
     <template id="secret-generator-field-template">
       <div class="input-group input-group-lg">
@@ -54,23 +60,23 @@
       <div class="row">
         <div class="col-md-12">
           <form role="form">
-            <div class="form-group">
+            <div v-bind:class="{&quot;has-warning&quot;: !passphrase}" class="form-group">
               <passphrase-field v-bind:passphrase.sync="passphrase"></passphrase-field>
             </div>
-            <div v-if="directMode" class="form-group">
-              <public-key-field v-bind:public-key.sync="publicKey" tab-index="2"></public-key-field>
+            <div v-if="directMode" v-bind:class="{&quot;has-warning&quot;: !chosenPublicKey}" class="form-group">
+              <public-key-reader-field v-bind:public-key.sync="chosenPublicKey" v-bind:public-key-name.sync="chosenPublicKeyName" tab-index="2"></public-key-reader-field>
             </div>
             <div v-if="reverseMode" class="form-group">
-              <secret-generator-field v-bind:secret.sync="secret" tab-index="2"></secret-generator-field>
+              <secret-generator-field v-bind:secret.sync="generatedSecret" tab-index="2"></secret-generator-field>
             </div>
             <div title="Mode trigger" class="form-group text-center">
               <button v-on:click="toggleMode" type="button" tabindex="-1" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-sort"></span></button>
             </div>
-            <div v-if="directMode" class="form-group">
-              <secret-field v-bind:secret.sync="secret" tab-index="3"></secret-field>
+            <div v-if="directMode" v-bind:class="{&quot;has-error&quot;: secretComputationError}" class="form-group">
+              <secret-field v-bind:secret="computedSecret" tab-index="3"></secret-field>
             </div>
-            <div v-if="reverseMode" class="form-group">
-              <public-key-field v-bind:public-key.sync="publicKey" tab-index="3"></public-key-field>
+            <div v-if="reverseMode" v-bind:class="{&quot;has-error&quot;: publicKeyComputationError}" class="form-group">
+              <public-key-writer-field v-bind:public-key="computedPublicKey" v-bind:public-key-name.sync="enteredPublicKeyName" tab-index="3"></public-key-writer-field>
             </div>
           </form>
         </div>

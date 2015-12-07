@@ -2120,7 +2120,7 @@ var _secretFormJsSecretFormJs2 = _interopRequireDefault(_secretFormJsSecretFormJ
 
 exports.secretFormView = _secretFormJsSecretFormJs2["default"];
 
-},{"./secret-form/js/secret-form.js":82,"babel-runtime/helpers/interop-require-default":9}],80:[function(require,module,exports){
+},{"./secret-form/js/secret-form.js":86,"babel-runtime/helpers/interop-require-default":9}],80:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2156,7 +2156,7 @@ function computePrivateKey(passphraseStr) {
 	});
 }
 
-},{"../../utils/string-to-buffer.js":97}],81:[function(require,module,exports){
+},{"../../utils/string-to-buffer.js":100}],81:[function(require,module,exports){
 "use strict";
 
 var _cryptoJs = require("./crypto.js");
@@ -2183,7 +2183,251 @@ describe("[Crypto module]", function () {
 	});
 });
 
-},{"../../utils/string-to-buffer.js":97,"./crypto.js":80}],82:[function(require,module,exports){
+},{"../../utils/string-to-buffer.js":100,"./crypto.js":80}],82:[function(require,module,exports){
+"use strict";
+
+var _createClass = require("babel-runtime/helpers/create-class")["default"];
+
+var _classCallCheck = require("babel-runtime/helpers/class-call-check")["default"];
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+var STORAGE_KEY_PREFIX = "35a5bcbb-edc7-4e48-ad29-dc9b2fc2fd54-pk-";
+
+var PublicKeyStorage = (function () {
+	function PublicKeyStorage(storage) {
+		_classCallCheck(this, PublicKeyStorage);
+
+		this.storage = storage;
+	}
+
+	_createClass(PublicKeyStorage, [{
+		key: "getPublicKey",
+		value: function getPublicKey(publicKeyName) {
+			return this.storage.getItem(computeStorageKeyName(publicKeyName));
+		}
+	}, {
+		key: "setPublicKey",
+		value: function setPublicKey(publicKeyName, publicKey) {
+			return this.storage.setItem(computeStorageKeyName(publicKeyName), publicKey);
+		}
+	}, {
+		key: "removePublicKey",
+		value: function removePublicKey(publicKeyName) {
+			this.storage.removeItem(computeStorageKeyName(publicKeyName));
+		}
+	}, {
+		key: "entries",
+		get: function get() {
+			return loadEntries.call(this);
+		},
+		set: function set(newEntries) {
+			saveEntries.call(this, newEntries);
+		}
+	}]);
+
+	return PublicKeyStorage;
+})();
+
+exports["default"] = new PublicKeyStorage(window.localStorage);
+
+function loadEntries() {
+	var result = [];
+	for (var i = 0; i < this.storage.length; i++) {
+		var storageKeyName = this.storage.key(i);
+		if (isAppropriateStorageKeyName(storageKeyName)) {
+			var publicKeyName = computePublicKeyName(storageKeyName);
+			var publicKey = this.storage.getItem(storageKeyName);
+			result.push({ publicKeyName: publicKeyName, publicKey: publicKey });
+		}
+	}
+	return result;
+}
+
+function saveEntries(newEntries) {
+	if (newEntries) {
+		newEntries.forEach(saveEntry.bind(this));
+	}
+}
+
+function saveEntry(newEntry) {
+	if (newEntry) {
+		var publicKeyName = newEntry.publicKeyName;
+		var publicKey = newEntry.publicKey;
+
+		this.storage.setItem(computeStorageKeyName(publicKeyName), publicKey);
+	}
+}
+
+function isAppropriateStorageKeyName(storageKeyName) {
+	return _.startsWith(storageKeyName, STORAGE_KEY_PREFIX);
+}
+
+function computeStorageKeyName(publicKeyName) {
+	return STORAGE_KEY_PREFIX + publicKeyName;
+}
+
+function computePublicKeyName(storageKeyName) {
+	return storageKeyName.substring(STORAGE_KEY_PREFIX.length);
+}
+module.exports = exports["default"];
+
+},{"babel-runtime/helpers/class-call-check":7,"babel-runtime/helpers/create-class":8}],83:[function(require,module,exports){
+"use strict";
+
+var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
+
+var _publicKeyStorageJs = require("./public-key-storage.js");
+
+var _publicKeyStorageJs2 = _interopRequireDefault(_publicKeyStorageJs);
+
+chai.config.includeStack = true;
+
+var expect = chai.expect;
+
+describe("[Public key storage module]", function () {
+
+	var PUBLIC_KEY_ENTRY_LIST = [{ publicKeyName: "foo", publicKey: "123456" }, { publicKeyName: "Foo", publicKey: "654321" }, { publicKeyName: "bar", publicKey: "qwerty" }, { publicKeyName: "bAr", publicKey: "ytrewq" }, { publicKeyName: "baz", publicKey: "asdfgh" }, { publicKeyName: "baZ", publicKey: "hgfdsa" }, { publicKeyName: "qux", publicKey: "zxcvbn" }, { publicKeyName: "QUX", publicKey: "nbvcxz" }];
+
+	beforeEach(function () {
+		window.localStorage.clear();
+	});
+
+	it("All saved public keys should be accessible (by entries)", function () {
+		_publicKeyStorageJs2["default"].entries = PUBLIC_KEY_ENTRY_LIST;
+		expect(entrtyListToMap(_publicKeyStorageJs2["default"].entries)).to.deep.equal(entrtyListToMap(PUBLIC_KEY_ENTRY_LIST));
+	});
+
+	it("If public key already exists it could be updated (by setPublicKey)", function () {
+		var _PUBLIC_KEY_ENTRY_LIST$0 = PUBLIC_KEY_ENTRY_LIST[0];
+		var publicKeyName = _PUBLIC_KEY_ENTRY_LIST$0.publicKeyName;
+		var publicKey = _PUBLIC_KEY_ENTRY_LIST$0.publicKey;
+
+		_publicKeyStorageJs2["default"].setPublicKey(publicKeyName, publicKey);
+		expect(_publicKeyStorageJs2["default"].entries).to.have.length(1);
+		_publicKeyStorageJs2["default"].setPublicKey(publicKeyName, publicKey);
+		expect(_publicKeyStorageJs2["default"].entries).to.have.length(1);
+	});
+
+	it("If public key exists it could be removed (by removePublicKey)", function () {
+		_publicKeyStorageJs2["default"].entries = PUBLIC_KEY_ENTRY_LIST;
+		var publicKeyName = PUBLIC_KEY_ENTRY_LIST[5].publicKeyName;
+
+		_publicKeyStorageJs2["default"].removePublicKey(publicKeyName);
+		var expectedPublicKeysMap = entrtyListToMap(PUBLIC_KEY_ENTRY_LIST);
+		delete expectedPublicKeysMap[publicKeyName];
+		expect(entrtyListToMap(_publicKeyStorageJs2["default"].entries)).to.deep.equal(expectedPublicKeysMap);
+	});
+});
+
+function entrtyListToMap(entryList) {
+	return _(entryList).indexBy("publicKeyName").mapValues("publicKey").value();
+}
+
+},{"./public-key-storage.js":82,"babel-runtime/helpers/interop-require-default":9}],84:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _cryptoJs = require("./crypto.js");
+
+var _utilsStringToBufferJs = require("../../utils/string-to-buffer.js");
+
+var _utilsBufferToBase64Js = require("../../utils/buffer-to-base64.js");
+
+exports["default"] = {
+	data: {
+		chosenPublicKey: "",
+		chosenPublicKeyName: "",
+		computedSecret: "",
+		secretComputationError: undefined
+	},
+	watch: {
+		"passphrase + chosenPublicKey": "updateComputedSecret"
+	},
+	methods: {
+		updateComputedSecret: function updateComputedSecret() {
+			var _this = this;
+
+			if (this.passphrase && this.chosenPublicKey) {
+				try {
+					(0, _cryptoJs.computeSecret)(this.passphrase, (0, _utilsBufferToBase64Js.base64ToBuffer)(this.chosenPublicKey)).then(function (secret) {
+						_this.computedSecret = (0, _utilsStringToBufferJs.bufferToString)(secret);
+						_this.secretComputationError = undefined;
+					})["catch"](handleComputationError.bind(this));
+				} catch (ex) {
+					handleComputationError.call(this, ex);
+				}
+			} else {
+				this.computedSecret = "";
+				this.secretComputationError = undefined;
+			}
+
+			function handleComputationError(ex) {
+				console.warn(ex);
+				this.computedSecret = "";
+				this.secretComputationError = ex;
+			}
+		}
+	}
+};
+module.exports = exports["default"];
+
+},{"../../utils/buffer-to-base64.js":94,"../../utils/string-to-buffer.js":100,"./crypto.js":80}],85:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _cryptoJs = require("./crypto.js");
+
+var _utilsStringToBufferJs = require("../../utils/string-to-buffer.js");
+
+var _utilsBufferToBase64Js = require("../../utils/buffer-to-base64.js");
+
+exports["default"] = {
+	data: {
+		generatedSecret: "",
+		enteredPublicKeyName: "",
+		computedPublicKey: "",
+		publicKeyComputationError: undefined
+	},
+	watch: {
+		"passphrase + generatedSecret": "updateComputedPublicKey"
+	},
+	methods: {
+		updateComputedPublicKey: function updateComputedPublicKey() {
+			var _this = this;
+
+			if (this.passphrase && this.generatedSecret) {
+				try {
+					(0, _cryptoJs.computePublicKey)(this.passphrase, (0, _utilsStringToBufferJs.stringToBuffer)(this.generatedSecret)).then(function (publicKey) {
+						_this.computedPublicKey = (0, _utilsBufferToBase64Js.bufferToBase64)(publicKey);
+						_this.publicKeyComputationError = undefined;
+					})["catch"](handleComputationError.bind(this));
+				} catch (ex) {
+					handleComputationError.call(this, ex);
+				}
+			} else {
+				this.computedPublicKey = "";
+				this.publicKeyComputationError = undefined;
+			}
+
+			function handleComputationError(ex) {
+				console.warn(ex);
+				this.computedPublicKey = "";
+				this.publicKeyComputationError = ex;
+			}
+		}
+	}
+};
+module.exports = exports["default"];
+
+},{"../../utils/buffer-to-base64.js":94,"../../utils/string-to-buffer.js":100,"./crypto.js":80}],86:[function(require,module,exports){
 "use strict";
 
 var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
@@ -2192,13 +2436,25 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
+var _secretFormDirectModeMixinJs = require("./secret-form-direct-mode-mixin.js");
+
+var _secretFormDirectModeMixinJs2 = _interopRequireDefault(_secretFormDirectModeMixinJs);
+
+var _secretFormReverseModeMixinJs = require("./secret-form-reverse-mode-mixin.js");
+
+var _secretFormReverseModeMixinJs2 = _interopRequireDefault(_secretFormReverseModeMixinJs);
+
 var _passphraseFieldPassphraseFieldJs = require("../passphrase-field/passphrase-field.js");
 
 var _passphraseFieldPassphraseFieldJs2 = _interopRequireDefault(_passphraseFieldPassphraseFieldJs);
 
-var _publicKeyFieldJsPublicKeyFieldJs = require("../public-key-field/js/public-key-field.js");
+var _publicKeyReaderFieldPublicKeyReaderFieldJs = require("../public-key-reader-field/public-key-reader-field.js");
 
-var _publicKeyFieldJsPublicKeyFieldJs2 = _interopRequireDefault(_publicKeyFieldJsPublicKeyFieldJs);
+var _publicKeyReaderFieldPublicKeyReaderFieldJs2 = _interopRequireDefault(_publicKeyReaderFieldPublicKeyReaderFieldJs);
+
+var _publicKeyWriterFieldPublicKeyWriterFieldJs = require("../public-key-writer-field/public-key-writer-field.js");
+
+var _publicKeyWriterFieldPublicKeyWriterFieldJs2 = _interopRequireDefault(_publicKeyWriterFieldPublicKeyWriterFieldJs);
 
 var _secretGeneratorFieldJsSecretGeneratorFieldJs = require("../secret-generator-field/js/secret-generator-field.js");
 
@@ -2210,11 +2466,10 @@ var _secretFieldSecretFieldJs2 = _interopRequireDefault(_secretFieldSecretFieldJ
 
 exports["default"] = new Vue({
 	el: "#secret-form",
+	mixins: [_secretFormDirectModeMixinJs2["default"], _secretFormReverseModeMixinJs2["default"]],
 	data: {
 		directMode: true,
-		passphrase: "",
-		publicKey: "",
-		secret: ""
+		passphrase: ""
 	},
 	computed: {
 		reverseMode: function reverseMode() {
@@ -2228,14 +2483,15 @@ exports["default"] = new Vue({
 	},
 	components: {
 		"passphrase-field": _passphraseFieldPassphraseFieldJs2["default"],
-		"public-key-field": _publicKeyFieldJsPublicKeyFieldJs2["default"],
+		"public-key-reader-field": _publicKeyReaderFieldPublicKeyReaderFieldJs2["default"],
+		"public-key-writer-field": _publicKeyWriterFieldPublicKeyWriterFieldJs2["default"],
 		"secret-generator-field": _secretGeneratorFieldJsSecretGeneratorFieldJs2["default"],
 		"secret-field": _secretFieldSecretFieldJs2["default"]
 	}
 });
 module.exports = exports["default"];
 
-},{"../passphrase-field/passphrase-field.js":83,"../public-key-field/js/public-key-field.js":84,"../secret-field/secret-field.js":87,"../secret-generator-field/js/secret-generator-field.js":90,"babel-runtime/helpers/interop-require-default":9}],83:[function(require,module,exports){
+},{"../passphrase-field/passphrase-field.js":87,"../public-key-reader-field/public-key-reader-field.js":88,"../public-key-writer-field/public-key-writer-field.js":89,"../secret-field/secret-field.js":90,"../secret-generator-field/js/secret-generator-field.js":93,"./secret-form-direct-mode-mixin.js":84,"./secret-form-reverse-mode-mixin.js":85,"babel-runtime/helpers/interop-require-default":9}],87:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2267,18 +2523,27 @@ exports["default"] = Vue.extend({
 });
 module.exports = exports["default"];
 
-},{}],84:[function(require,module,exports){
-// import PublicKeyStorage from "./public-key-storage.js";
-
+},{}],88:[function(require,module,exports){
 "use strict";
+
+var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+
+var _jsPublicKeyStorageJs = require("../js/public-key-storage.js");
+
+var _jsPublicKeyStorageJs2 = _interopRequireDefault(_jsPublicKeyStorageJs);
+
 exports["default"] = Vue.extend({
-	template: "#public-key-field-template",
+	template: "#public-key-reader-field-template",
 	props: {
 		publicKey: {
+			type: String,
+			required: true
+		},
+		publicKeyName: {
 			type: String,
 			required: true
 		},
@@ -2287,159 +2552,64 @@ exports["default"] = Vue.extend({
 			"default": "-1"
 		}
 	},
-	methods: {}
+	data: function data() {
+		return {
+			publicKeyStorage: _jsPublicKeyStorageJs2["default"],
+			publicKeyName: ""
+		};
+	},
+	watch: {
+		publicKeyName: function publicKeyName(_publicKeyName) {
+			this.publicKey = _jsPublicKeyStorageJs2["default"].getPublicKey(_publicKeyName);
+		}
+	}
 });
 module.exports = exports["default"];
 
-},{}],85:[function(require,module,exports){
-"use strict";
-
-var _createClass = require("babel-runtime/helpers/create-class")["default"];
-
-var _classCallCheck = require("babel-runtime/helpers/class-call-check")["default"];
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-var STORAGE_KEY_PREFIX = "35a5bcbb-edc7-4e48-ad29-dc9b2fc2fd54-pk-";
-
-var PublicKeyStorage = (function () {
-	function PublicKeyStorage() {
-		_classCallCheck(this, PublicKeyStorage);
-	}
-
-	_createClass(PublicKeyStorage, [{
-		key: "findEntries",
-		value: function findEntries(publicKeyNamePart) {
-			return findPublicKeyNames(publicKeyNamePart).map(createEntry);
-		}
-	}, {
-		key: "saveEntries",
-		value: function saveEntries(entries) {
-			if (!entries || !entries.length) {
-				return;
-			}
-			entries.forEach(this.saveEntry.bind(this));
-		}
-	}, {
-		key: "saveEntry",
-		value: function saveEntry(entry) {
-			if (!entry) {
-				return;
-			}
-			var publicKeyName = entry.publicKeyName;
-			var publicKey = entry.publicKey;
-
-			window.localStorage.setItem(computeStorageKeyName(publicKeyName), publicKey);
-		}
-	}, {
-		key: "removeEntry",
-		value: function removeEntry(publicKeyName) {
-			window.localStorage.removeItem(computeStorageKeyName(publicKeyName));
-		}
-	}, {
-		key: "entries",
-		get: function get() {
-			return this.findEntries();
-		}
-	}]);
-
-	return PublicKeyStorage;
-})();
-
-exports["default"] = PublicKeyStorage;
-
-function findPublicKeyNames(publicKeyNamePart) {
-	var result = [];
-	for (var i = 0; i < window.localStorage.length; i++) {
-		var storageKeyName = window.localStorage.key(i);
-		if (!isAppropriateStorageKeyName(storageKeyName)) {
-			continue;
-		}
-		var publicKeyName = computePublicKeyName(storageKeyName);
-		if (isPublicKeyNameContainsPart(publicKeyName, publicKeyNamePart)) {
-			result.push(publicKeyName);
-		}
-	}
-	return result;
-}
-
-function isPublicKeyNameContainsPart(publicKeyName, publicKeyNamePart) {
-	return !publicKeyNamePart || publicKeyName.toLowerCase().indexOf(publicKeyNamePart.toLowerCase()) !== -1;
-}
-
-function createEntry(publicKeyName) {
-	var publicKey = window.localStorage.getItem(computeStorageKeyName(publicKeyName));
-	return { publicKeyName: publicKeyName, publicKey: publicKey };
-}
-
-function isAppropriateStorageKeyName(storageKeyName) {
-	return _.startsWith(storageKeyName, STORAGE_KEY_PREFIX);
-}
-
-function computeStorageKeyName(publicKeyName) {
-	return STORAGE_KEY_PREFIX + publicKeyName;
-}
-
-function computePublicKeyName(storageKeyName) {
-	return storageKeyName.substring(STORAGE_KEY_PREFIX.length);
-}
-module.exports = exports["default"];
-
-},{"babel-runtime/helpers/class-call-check":7,"babel-runtime/helpers/create-class":8}],86:[function(require,module,exports){
+},{"../js/public-key-storage.js":82,"babel-runtime/helpers/interop-require-default":9}],89:[function(require,module,exports){
 "use strict";
 
 var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
 
-var _publicKeyStorageJs = require("./public-key-storage.js");
-
-var _publicKeyStorageJs2 = _interopRequireDefault(_publicKeyStorageJs);
-
-chai.config.includeStack = true;
-
-var expect = chai.expect;
-
-describe("[Public key storage module]", function () {
-
-	var PUBLIC_KEY_ENTRY_LIST = [{ publicKeyName: "foo", publicKey: "123456" }, { publicKeyName: "Foo", publicKey: "654321" }, { publicKeyName: "bar", publicKey: "qwerty" }, { publicKeyName: "bAr", publicKey: "ytrewq" }, { publicKeyName: "baz", publicKey: "asdfgh" }, { publicKeyName: "baZ", publicKey: "hgfdsa" }, { publicKeyName: "qux", publicKey: "zxcvbn" }, { publicKeyName: "QUX", publicKey: "nbvcxz" }];
-
-	var publicKeyStorage = undefined;
-
-	beforeEach(function () {
-		window.localStorage.clear();
-		publicKeyStorage = new _publicKeyStorageJs2["default"]();
-	});
-
-	it("All saved public keys should be accessible (saveEntry)", function () {
-		publicKeyStorage.saveEntry(PUBLIC_KEY_ENTRY_LIST[0]);
-		expect(publicKeyStorage.entries).to.have.length(1).and.deep.equal([PUBLIC_KEY_ENTRY_LIST[0]]);
-		publicKeyStorage.saveEntry(PUBLIC_KEY_ENTRY_LIST[1]);
-		expect(publicKeyStorage.entries).to.have.length(2);
-	});
-
-	it("All saved public keys should be accessible (saveEntries)", function () {
-		publicKeyStorage.saveEntries(PUBLIC_KEY_ENTRY_LIST);
-		expect(entrtyListToMap(publicKeyStorage.entries)).to.deep.equal(entrtyListToMap(PUBLIC_KEY_ENTRY_LIST));
-	});
-
-	it("If entry already exists it should be rewrited", function () {
-		publicKeyStorage.saveEntry(PUBLIC_KEY_ENTRY_LIST[0]);
-		expect(publicKeyStorage.entries).to.have.length(1);
-		publicKeyStorage.saveEntry(PUBLIC_KEY_ENTRY_LIST[0]);
-		expect(publicKeyStorage.entries).to.have.length(1);
-	});
-
-	it("Search by public key name should be case insensitive (findEntries)", function () {
-		publicKeyStorage.saveEntries(PUBLIC_KEY_ENTRY_LIST);
-		expect(entrtyListToMap(publicKeyStorage.findEntries("FOO"))).to.deep.equal(entrtyListToMap(PUBLIC_KEY_ENTRY_LIST.slice(0, 2)));
-	});
+Object.defineProperty(exports, "__esModule", {
+	value: true
 });
 
-function entrtyListToMap(entryList) {
-	return _(entryList).indexBy("publicKeyName").mapValues("publicKey").value();
-}
+var _jsPublicKeyStorageJs = require("../js/public-key-storage.js");
 
-},{"./public-key-storage.js":85,"babel-runtime/helpers/interop-require-default":9}],87:[function(require,module,exports){
+var _jsPublicKeyStorageJs2 = _interopRequireDefault(_jsPublicKeyStorageJs);
+
+exports["default"] = Vue.extend({
+	template: "#public-key-writer-field-template",
+	props: {
+		publicKey: {
+			type: String,
+			required: true
+		},
+		publicKeyName: {
+			type: String,
+			required: true
+		},
+		tabIndex: {
+			type: String,
+			"default": "-1"
+		}
+	},
+	data: function data() {
+		return {
+			publicKeyStorage: _jsPublicKeyStorageJs2["default"],
+			publicKeyName: ""
+		};
+	},
+	watch: {
+		publicKeyName: function publicKeyName(_publicKeyName) {
+			this.publicKey = _jsPublicKeyStorageJs2["default"].getPublicKey(_publicKeyName);
+		}
+	}
+});
+module.exports = exports["default"];
+
+},{"../js/public-key-storage.js":82,"babel-runtime/helpers/interop-require-default":9}],90:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2465,7 +2635,7 @@ exports["default"] = Vue.extend({
 });
 module.exports = exports["default"];
 
-},{}],88:[function(require,module,exports){
+},{}],91:[function(require,module,exports){
 "use strict";
 
 var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
@@ -2503,7 +2673,7 @@ function filterAlphabet(regExp) {
 	});
 }
 
-},{"../../../utils/generators/chars.js":93,"../../../utils/generators/random-chars.js":95,"babel-runtime/helpers/interop-require-default":9,"babel-runtime/helpers/to-consumable-array":10}],89:[function(require,module,exports){
+},{"../../../utils/generators/chars.js":96,"../../../utils/generators/random-chars.js":98,"babel-runtime/helpers/interop-require-default":9,"babel-runtime/helpers/to-consumable-array":10}],92:[function(require,module,exports){
 "use strict";
 
 var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
@@ -2542,7 +2712,7 @@ describe("[Secret generator module]", function () {
 	});
 });
 
-},{"../../../utils/generators/chars.js":93,"./generate-secret.js":88,"babel-runtime/helpers/interop-require-default":9,"babel-runtime/helpers/to-consumable-array":10}],90:[function(require,module,exports){
+},{"../../../utils/generators/chars.js":96,"./generate-secret.js":91,"babel-runtime/helpers/interop-require-default":9,"babel-runtime/helpers/to-consumable-array":10}],93:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2599,7 +2769,7 @@ exports["default"] = Vue.extend({
 });
 module.exports = exports["default"];
 
-},{"./generate-secret.js":88}],91:[function(require,module,exports){
+},{"./generate-secret.js":91}],94:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2631,7 +2801,7 @@ function base64ToBuffer(base64) {
 	return (0, _stringToBufferJs.stringToBuffer)(atob(base64), Uint8Array);
 }
 
-},{"./string-to-buffer.js":97}],92:[function(require,module,exports){
+},{"./string-to-buffer.js":100}],95:[function(require,module,exports){
 "use strict";
 
 var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
@@ -2674,7 +2844,7 @@ function toArray(buffer) {
 	return [].concat(_toConsumableArray(new Uint8Array(buffer)));
 }
 
-},{"./buffer-to-base64.js":91,"babel-runtime/helpers/to-consumable-array":10}],93:[function(require,module,exports){
+},{"./buffer-to-base64.js":94,"babel-runtime/helpers/to-consumable-array":10}],96:[function(require,module,exports){
 "use strict";
 
 var _regeneratorRuntime = require("babel-runtime/regenerator")["default"];
@@ -2715,7 +2885,7 @@ function chars(fromChar, toChar) {
 
 module.exports = exports["default"];
 
-},{"babel-runtime/regenerator":76}],94:[function(require,module,exports){
+},{"babel-runtime/regenerator":76}],97:[function(require,module,exports){
 "use strict";
 
 var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
@@ -2741,7 +2911,7 @@ describe("[Chars generator module]", function () {
 	});
 });
 
-},{"./chars.js":93,"babel-runtime/helpers/interop-require-default":9,"babel-runtime/helpers/to-consumable-array":10}],95:[function(require,module,exports){
+},{"./chars.js":96,"babel-runtime/helpers/interop-require-default":9,"babel-runtime/helpers/to-consumable-array":10}],98:[function(require,module,exports){
 "use strict";
 
 var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
@@ -2775,7 +2945,7 @@ function randomChars(count, alphabet) {
 
 module.exports = exports["default"];
 
-},{"babel-runtime/helpers/to-consumable-array":10,"babel-runtime/regenerator":76}],96:[function(require,module,exports){
+},{"babel-runtime/helpers/to-consumable-array":10,"babel-runtime/regenerator":76}],99:[function(require,module,exports){
 "use strict";
 
 var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
@@ -2804,7 +2974,7 @@ describe("[Random chars generator module]", function () {
 	});
 });
 
-},{"./random-chars.js":95,"babel-runtime/helpers/interop-require-default":9,"babel-runtime/helpers/to-consumable-array":10}],97:[function(require,module,exports){
+},{"./random-chars.js":98,"babel-runtime/helpers/interop-require-default":9,"babel-runtime/helpers/to-consumable-array":10}],100:[function(require,module,exports){
 "use strict";
 
 var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
@@ -2843,7 +3013,7 @@ function bufferToString(buffer) {
 	return String.fromCharCode.apply(String, _toConsumableArray(array));
 }
 
-},{"babel-runtime/helpers/to-consumable-array":10}],98:[function(require,module,exports){
+},{"babel-runtime/helpers/to-consumable-array":10}],101:[function(require,module,exports){
 "use strict";
 
 var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
@@ -2906,4 +3076,4 @@ function generateRandomStr() {
 	return [].concat(_toConsumableArray((0, _generatorsRandomCharsJs2["default"])(10, abc))).join("");
 }
 
-},{"./generators/chars.js":93,"./generators/random-chars.js":95,"./string-to-buffer.js":97,"babel-runtime/helpers/interop-require-default":9,"babel-runtime/helpers/to-consumable-array":10}]},{},[79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98]);
+},{"./generators/chars.js":96,"./generators/random-chars.js":98,"./string-to-buffer.js":100,"babel-runtime/helpers/interop-require-default":9,"babel-runtime/helpers/to-consumable-array":10}]},{},[79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101]);
