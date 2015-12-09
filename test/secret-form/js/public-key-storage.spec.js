@@ -17,6 +17,8 @@ describe("[Public key storage module]", function () {
 		{publicKeyName: "QUX", publicKey: "nbvcxz"}
 	];
 
+	const PUBLIC_KEY = PUBLIC_KEY_ENTRY_LIST[0];
+
 	beforeEach(function () {
 		window.localStorage.clear();
 	});
@@ -27,12 +29,24 @@ describe("[Public key storage module]", function () {
 				.to.deep.equal(entrtyListToMap(PUBLIC_KEY_ENTRY_LIST));
 	});
 
-	it("If public key already exists it could be updated (by setPublicKey)", function () {
-		let {publicKeyName, publicKey} = PUBLIC_KEY_ENTRY_LIST[0];
+	it("If public key with such name already exists it could be updated (by setPublicKey)", function () {
+		let {publicKeyName, publicKey} = PUBLIC_KEY;
 		publicKeyStorage.setPublicKey(publicKeyName, publicKey);
 		expect(publicKeyStorage.entries).to.have.length(1);
+		expect(publicKeyStorage.getPublicKey(publicKeyName)).to.equal(publicKey);
+		publicKeyStorage.setPublicKey(publicKeyName, "new-public-key");
+		expect(publicKeyStorage.entries).to.have.length(1);
+		expect(publicKeyStorage.getPublicKey(publicKeyName)).to.equal("new-public-key");
+	});
+
+	it("If public key already exists it could be renamed (by setPublicKey)", function () {
+		let {publicKeyName, publicKey} = PUBLIC_KEY;
 		publicKeyStorage.setPublicKey(publicKeyName, publicKey);
 		expect(publicKeyStorage.entries).to.have.length(1);
+		expect(publicKeyStorage.getPublicKey(publicKeyName)).to.equal(publicKey);
+		publicKeyStorage.setPublicKey("new-name", publicKey);
+		expect(publicKeyStorage.entries).to.have.length(1);
+		expect(publicKeyStorage.getPublicKey("new-name")).to.equal(publicKey);
 	});
 
 	it("If public key exists it could be removed (by removePublicKey)", function () {

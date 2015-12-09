@@ -1,67 +1,93 @@
-const STORAGE_KEY_PREFIX = "35a5bcbb-edc7-4e48-ad29-dc9b2fc2fd54-pk-";
+const STORAGE_ITEM_KEY_PREFIX = "35a5bcbb-edc7-4e48-ad29-dc9b2fc2fd54-pk-";
+const PK_TO_PK_NAME_MAP_FIELD = Symbol();
 
 class PublicKeyStorage {
 	constructor(storage) {
 		this.storage = storage;
+		initPublicKeyToPublicKeyNameMap.call(this);
 	}
 
 	get entries() {
-		return loadEntries.call(this);
+		return getEntries.call(this);
 	}
 
 	set entries(newEntries) {
-		saveEntries.call(this, newEntries);
+		setEntries.call(this, newEntries);
 	}
 
 	getPublicKey(publicKeyName) {
-		return this.storage.getItem(computeStorageKeyName(publicKeyName));
+		return getPublicKey.call(this, publicKeyName);
 	}
 
 	setPublicKey(publicKeyName, publicKey) {
-		return this.storage.setItem(computeStorageKeyName(publicKeyName), publicKey);
+		setPublicKey.call(this, publicKeyName, publicKey);
 	}
 
 	removePublicKey(publicKeyName) {
-		this.storage.removeItem(computeStorageKeyName(publicKeyName));
+		removePublicKey.call(this, publicKeyName);
 	}
 }
 
 export default new PublicKeyStorage(window.localStorage);
 
-function loadEntries() {
+function initPublicKeyToPublicKeyNameMap() {
+	this[PK_TO_PK_NAME_MAP_FIELD] = new Map();
+	this.entries.forEach(entry => {
+		this[PK_TO_PK_NAME_MAP_FIELD].set(entry.publicKey, entry.publicKeyName);
+	});
+}
+
+function getEntries() {
 	let result = [];
 	for (let i = 0; i < this.storage.length; i++) {
-		let storageKeyName = this.storage.key(i);
-		if (isAppropriateStorageKeyName(storageKeyName)) {
-			let publicKeyName = computePublicKeyName(storageKeyName);
-			let publicKey = this.storage.getItem(storageKeyName);
+		let storageItemKey = this.storage.key(i);
+		if (isAppropriateStorageItemKey(storageItemKey)) {
+			let publicKeyName = toPublicKeyName(storageItemKey);
+			let publicKey = this.storage.getItem(storageItemKey);
 			result.push({publicKeyName, publicKey});
 		}
 	}
 	return result;
 }
 
-function saveEntries(newEntries) {
+function setEntries(newEntries) {
 	if (newEntries) {
-		newEntries.forEach(saveEntry.bind(this));
+		newEntries.forEach(entry => {
+			setPublicKey.call(this, entry.publicKeyName, entry.publicKey);
+		});
 	}
 }
 
-function saveEntry(newEntry) {
-	if (newEntry) {
-		let {publicKeyName, publicKey} = newEntry;
-		this.storage.setItem(computeStorageKeyName(publicKeyName), publicKey);
+function getPublicKey(publicKeyName) {
+	return this.storage.getItem(toStorageItemKey(publicKeyName));
+}
+
+function setPublicKey(publicKeyName, publicKey) {
+	if (publicKeyName && publicKey) {
+		if (this[PK_TO_PK_NAME_MAP_FIELD].has(publicKey)) {
+			let oldPublicKeyName = this[PK_TO_PK_NAME_MAP_FIELD].get(publicKey);
+			removePublicKey.call(this, oldPublicKeyName);
+		}
+		this.storage.setItem(toStorageItemKey(publicKeyName), publicKey);
+		this[PK_TO_PK_NAME_MAP_FIELD].set(publicKey, publicKeyName);
 	}
 }
 
-function isAppropriateStorageKeyName(storageKeyName) {
-	return _.startsWith(storageKeyName, STORAGE_KEY_PREFIX);
+function removePublicKey(publicKeyName) {
+	let storageItemKey = toStorageItemKey(publicKeyName);
+	let publicKey = this.storage.getItem(storageItemKey);
+	this.storage.removeItem(storageItemKey);
+	this[PK_TO_PK_NAME_MAP_FIELD].delete(publicKey);
 }
 
-function computeStorageKeyName(publicKeyName) {
-	return (STORAGE_KEY_PREFIX + publicKeyName);
+function isAppropriateStorageItemKey(storageItemKey) {
+	return _.startsWith(storageItemKey, STORAGE_ITEM_KEY_PREFIX);
 }
 
-function computePublicKeyName(storageKeyName) {
-	return storageKeyName.substring(STORAGE_KEY_PREFIX.length);
+function toStorageItemKey(publicKeyName) {
+	return (STORAGE_ITEM_KEY_PREFIX + publicKeyName);
+}
+
+function toPublicKeyName(storageItemKey) {
+	return storageItemKey.substring(STORAGE_ITEM_KEY_PREFIX.length);
 }
