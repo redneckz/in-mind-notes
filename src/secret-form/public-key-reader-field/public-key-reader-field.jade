@@ -1,8 +1,6 @@
+include ../public-key-autocomplete/public-key-autocomplete.jade
+
 template#public-key-reader-field-template
 	.form-group(v-bind:class='{"has-warning": !publicKey}')
-		input.form-control.input-lg(v-model='publicKeyName', v-bind:tabindex='tabIndex',
-				list='public-key-option-list',
-				placeholder='Public Key', title='Public Key')
-		datalist#public-key-option-list
-			option(v-for='entry in publicKeyStorage.entries', v-bind:value='entry.publicKeyName')
-				| {{entry.publicKey}}
+		public-key-autocomplete(v-bind:public-key-name.sync='publicKeyName',
+				v-bind:tab-index='tabIndex')

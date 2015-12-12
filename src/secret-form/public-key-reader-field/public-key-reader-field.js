@@ -1,5 +1,7 @@
 import publicKeyStorage from "../js/public-key-storage.js";
 
+import PublicKeyAutocomplete from "../public-key-autocomplete/public-key-autocomplete.js";
+
 export default Vue.extend({
 	template: "#public-key-reader-field-template",
 	props: {
@@ -16,15 +18,12 @@ export default Vue.extend({
 			default: "-1"
 		}
 	},
-	data: function () {
-		return {
-			publicKeyStorage: publicKeyStorage,
-			publicKeyName: ""
-		};
-	},
 	watch: {
 		publicKeyName: function (publicKeyName) {
 			this.publicKey = publicKeyStorage.getPublicKey(publicKeyName);
 		}
+	},
+	components: {
+		"public-key-autocomplete": PublicKeyAutocomplete
 	}
 });

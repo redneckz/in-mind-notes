@@ -11,7 +11,7 @@
     <link href="/favicon-256x256.png" rel="icon" type="image/png" sizes="any">
     <!-- Vendor CSS-->
     <link href="/dist/css/vendor.css" rel="stylesheet">
-    <link href="/dist/css/in-mind-notes.css" rel="stylesheet">
+    <link href="/dist/css/index.css" rel="stylesheet">
   </head>
   <body>
     <template id="passphrase-field-template">
@@ -22,20 +22,26 @@
         </div>
       </div>
     </template>
+    <template id="public-key-autocomplete-template">
+      <input v-model="publicKeyName" v-bind:tabindex="tabIndex" list="public-key-option-list" placeholder="Public Key" title="Public Key" class="form-control input-lg">
+      <datalist id="public-key-option-list">
+        <option v-for="entry in publicKeyStorage.entries" v-bind:value="entry.publicKeyName">{{entry.publicKey}}</option>
+      </datalist>
+    </template>
     <template id="public-key-reader-field-template">
       <div v-bind:class="{&quot;has-warning&quot;: !publicKey}" class="form-group">
-        <input v-model="publicKeyName" v-bind:tabindex="tabIndex" list="public-key-option-list" placeholder="Public Key" title="Public Key" class="form-control input-lg">
-        <datalist id="public-key-option-list">
-          <option v-for="entry in publicKeyStorage.entries" v-bind:value="entry.publicKeyName">{{entry.publicKey}}</option>
-        </datalist>
+        <public-key-autocomplete v-bind:public-key-name.sync="publicKeyName" v-bind:tab-index="tabIndex"></public-key-autocomplete>
       </div>
+    </template>
+    <template id="public-key-autocomplete-template">
+      <input v-model="publicKeyName" v-bind:tabindex="tabIndex" list="public-key-option-list" placeholder="Public Key" title="Public Key" class="form-control input-lg">
+      <datalist id="public-key-option-list">
+        <option v-for="entry in publicKeyStorage.entries" v-bind:value="entry.publicKeyName">{{entry.publicKey}}</option>
+      </datalist>
     </template>
     <template id="public-key-writer-field-template">
       <div class="form-group">
-        <input v-model="publicKeyName" v-bind:tabindex="tabIndex" list="public-key-option-list" placeholder="Public Key" title="Public Key" class="form-control input-lg">
-        <datalist id="public-key-option-list">
-          <option v-for="entry in publicKeyStorage.entries" v-bind:value="entry.publicKeyName">{{entry.publicKey}}</option>
-        </datalist>
+        <public-key-autocomplete v-bind:public-key-name.sync="publicKeyName" v-bind:tab-index="tabIndex"></public-key-autocomplete>
       </div>
     </template>
     <template id="secret-generator-field-template">
@@ -78,7 +84,7 @@
               <button v-on:click="toggleMode" type="button" tabindex="-1" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-sort"></span></button>
             </div>
             <secret-field v-if="directMode" v-bind:class="{&quot;has-error&quot;: secretComputationError}" v-bind:secret="computedSecret" tab-index="3"></secret-field>
-            <public-key-writer-field v-if="reverseMode" v-bind:class="{&quot;has-error&quot;: !publicKeyComputationError}" v-bind:public-key="computedPublicKey" v-bind:public-key-name.sync="enteredPublicKeyName" tab-index="3"></public-key-writer-field>
+            <public-key-writer-field v-if="reverseMode" v-bind:class="{&quot;has-error&quot;: publicKeyComputationError}" v-bind:public-key="computedPublicKey" v-bind:public-key-name.sync="enteredPublicKeyName" tab-index="3"></public-key-writer-field>
           </form>
         </div>
       </div>

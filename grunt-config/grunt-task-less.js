@@ -3,7 +3,7 @@ module.exports = function(grunt) {
 		less: {
 			all: {
 				src: 'src/**/*.less',
-				dest: 'dist/css/in-mind-notes.css'
+				dest: 'dist/css/index.css'
 			}
 		}
 	});

@@ -44,7 +44,7 @@ describe("[Public key storage module]", function () {
 		publicKeyStorage.setPublicKey(publicKeyName, publicKey);
 		expect(publicKeyStorage.entries).to.have.length(1);
 		expect(publicKeyStorage.getPublicKey(publicKeyName)).to.equal(publicKey);
-		publicKeyStorage.setPublicKey("new-name", publicKey);
+		expect(publicKeyStorage.setPublicKey("new-name", publicKey)).to.equal(publicKeyName);
 		expect(publicKeyStorage.entries).to.have.length(1);
 		expect(publicKeyStorage.getPublicKey("new-name")).to.equal(publicKey);
 	});

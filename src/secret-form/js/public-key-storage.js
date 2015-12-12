@@ -20,7 +20,7 @@ class PublicKeyStorage {
 	}
 
 	setPublicKey(publicKeyName, publicKey) {
-		setPublicKey.call(this, publicKeyName, publicKey);
+		return setPublicKey.call(this, publicKeyName, publicKey);
 	}
 
 	removePublicKey(publicKeyName) {
@@ -63,14 +63,16 @@ function getPublicKey(publicKeyName) {
 }
 
 function setPublicKey(publicKeyName, publicKey) {
+	let oldPublicKeyName;
 	if (publicKeyName && publicKey) {
 		if (this[PK_TO_PK_NAME_MAP_FIELD].has(publicKey)) {
-			let oldPublicKeyName = this[PK_TO_PK_NAME_MAP_FIELD].get(publicKey);
+			oldPublicKeyName = this[PK_TO_PK_NAME_MAP_FIELD].get(publicKey);
 			removePublicKey.call(this, oldPublicKeyName);
 		}
 		this.storage.setItem(toStorageItemKey(publicKeyName), publicKey);
 		this[PK_TO_PK_NAME_MAP_FIELD].set(publicKey, publicKeyName);
 	}
+	return oldPublicKeyName;
 }
 
 function removePublicKey(publicKeyName) {
