@@ -1,6 +1,12 @@
-include ../public-key-autocomplete/public-key-autocomplete.jade
-
 template#public-key-writer-field-template
-	.form-group
-		public-key-autocomplete(v-bind:public-key-name.sync='publicKeyName',
-				v-bind:tab-index='tabIndex')
+	.form-group(v-bind:class='{"has-success": isSaved}')
+		.input-group.input-group-lg
+			input.form-control.input-lg(v-model='publicKeyName', v-bind:tabindex='tabIndex',
+					placeholder='Public Key Name', title='Public Key Name')
+			span.input-group-btn
+				button.btn.btn-lg(v-on:click='setPublicKey',
+						v-bind:class='{"btn-success": isSaved, "btn-default": !isSaved}',
+						v-bind:disabled='!isReadyForSave',
+						type='button', tabindex='-1')
+					span(v-show='isSaved').glyphicon.glyphicon.glyphicon-floppy-saved
+					span(v-show='!isSaved').glyphicon.glyphicon.glyphicon-floppy-save

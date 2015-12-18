@@ -2,6 +2,9 @@ import {computeSecret} from "./crypto.js";
 import {bufferToString} from "../../utils/string-to-buffer.js";
 import {base64ToBuffer} from "../../utils/buffer-to-base64.js";
 
+import PublicKeyReaderField from "../public-key-reader-field/public-key-reader-field.js";
+import SecretField from "../secret-field/secret-field.js";
+
 export default {
 	data: {
 		chosenPublicKey: "",
@@ -34,5 +37,9 @@ export default {
 				this.secretComputationError = ex;
 			}
 		}
+	},
+	components: {
+		"public-key-reader-field": PublicKeyReaderField,
+		"secret-field": SecretField
 	}
 };

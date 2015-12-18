@@ -1,7 +1,5 @@
 import publicKeyStorage from "../js/public-key-storage.js";
 
-import PublicKeyAutocomplete from "../public-key-autocomplete/public-key-autocomplete.js";
-
 export default Vue.extend({
 	template: "#public-key-writer-field-template",
 	props: {
@@ -11,22 +9,34 @@ export default Vue.extend({
 		},
 		publicKeyName: {
 			type: String,
-			required: true
+			required: true,
+			default: ""
 		},
 		tabIndex: {
 			type: String,
 			default: "-1"
 		}
 	},
-	watch: {
-		"publicKey + publicKeyName": function () {
+	data: {
+		lastSavedPublicKeyName: ""
+	},
+	computed: {
+		isSaved: function () {
+			let samePublicKeyName = this.publicKeyName && (this.publicKeyName === this.lastSavedPublicKeyName),
+				samePublicKey = this.publicKey && (this.publicKey === publicKeyStorage.getPublicKey(this.publicKeyName));
+			return samePublicKeyName && samePublicKey;
+		},
+		isReadyForSave: function () {
+			return this.publicKey && this.publicKeyName.trim();
+		}
+	},
+	methods: {
+		setPublicKey: function () {
 			let adjustedPublicKeyName = this.publicKeyName.trim();
 			if (this.publicKey && adjustedPublicKeyName) {
 				publicKeyStorage.setPublicKey(adjustedPublicKeyName, this.publicKey);
+				Vue.set(this, "lastSavedPublicKeyName", adjustedPublicKeyName);
 			}
 		}
-	},
-	components: {
-		"public-key-autocomplete": PublicKeyAutocomplete
 	}
 });
