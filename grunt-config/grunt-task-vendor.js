@@ -2,6 +2,9 @@ module.exports = function (grunt) {
 	grunt.config.merge({
 		bower_concat: {
 			vendor: {
+				mainFiles: {
+					'bootstrap': ['dist/css/bootstrap.css', 'dist/js/bootstrap.js']
+				},
 				dest: 'dist/js/vendor.js',
 				cssDest: 'dist/css/vendor.css',
 				callback: function (mainFiles) {

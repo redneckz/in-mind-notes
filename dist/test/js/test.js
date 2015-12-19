@@ -2579,6 +2579,21 @@ var PublicKeyStorage = (function () {
 			_removePublicKey.call(this, publicKeyName);
 		}
 	}, {
+		key: "doesPublicKeyNameExist",
+		value: function doesPublicKeyNameExist(publicKeyName) {
+			return Boolean(this.getPublicKey(publicKeyName));
+		}
+	}, {
+		key: "doesPublicKeyExist",
+		value: function doesPublicKeyExist(publicKey) {
+			return this[PK_TO_PK_NAME_MAP_FIELD].has(publicKey);
+		}
+	}, {
+		key: "getPublicKeyName",
+		value: function getPublicKeyName(publicKey) {
+			return this[PK_TO_PK_NAME_MAP_FIELD].get(publicKey);
+		}
+	}, {
 		key: "entries",
 		get: function get() {
 			return getEntries.call(this);
@@ -3007,29 +3022,45 @@ exports["default"] = Vue.extend({
 			"default": "-1"
 		}
 	},
-	data: {
-		lastSavedPublicKeyName: ""
-	},
 	computed: {
 		isSaved: function isSaved() {
-			var samePublicKeyName = this.publicKeyName && this.publicKeyName === this.lastSavedPublicKeyName,
-			    samePublicKey = this.publicKey && this.publicKey === _jsPublicKeyStorageJs2["default"].getPublicKey(this.publicKeyName);
-			return samePublicKeyName && samePublicKey;
+			var publicKeyNameExists = _jsPublicKeyStorageJs2["default"].doesPublicKeyNameExist(this.publicKeyName),
+			    samePublicKey = _jsPublicKeyStorageJs2["default"].getPublicKey(this.publicKeyName) === this.publicKey;
+			return publicKeyNameExists && samePublicKey;
 		},
 		isReadyForSave: function isReadyForSave() {
-			return this.publicKey && this.publicKeyName.trim();
+			return this.publicKey && this.publicKeyName;
 		}
 	},
 	methods: {
-		setPublicKey: function setPublicKey() {
-			var adjustedPublicKeyName = this.publicKeyName.trim();
-			if (this.publicKey && adjustedPublicKeyName) {
-				_jsPublicKeyStorageJs2["default"].setPublicKey(adjustedPublicKeyName, this.publicKey);
-				Vue.set(this, "lastSavedPublicKeyName", adjustedPublicKeyName);
+		tryToSavePublicKey: function tryToSavePublicKey() {
+			if (_jsPublicKeyStorageJs2["default"].doesPublicKeyNameExist(this.publicKeyName)) {
+				swal({
+					type: "warning",
+					title: "Are you sure?",
+					text: "You are going to rewrite public key with name \"" + this.publicKeyName + "\"...",
+					showCancelButton: true,
+					confirmButtonText: "Rewrite"
+				}, setPublicKey.bind(this));
+			} else if (_jsPublicKeyStorageJs2["default"].doesPublicKeyExist(this.publicKey)) {
+				var oldName = _jsPublicKeyStorageJs2["default"].getPublicKeyName(this.publicKey);
+				swal({
+					type: "warning",
+					title: "Are you sure?",
+					text: "You are going to change public key name from \"" + oldName + "\" to \"" + this.publicKeyName + "\"...",
+					showCancelButton: true,
+					confirmButtonText: "Rename"
+				}, setPublicKey.bind(this));
+			} else {
+				setPublicKey.call(this);
 			}
 		}
 	}
 });
+
+function setPublicKey() {
+	_jsPublicKeyStorageJs2["default"].setPublicKey(this.publicKeyName, this.publicKey);
+}
 module.exports = exports["default"];
 
 },{"../js/public-key-storage.js":91,"babel-runtime/helpers/interop-require-default":10}],99:[function(require,module,exports){

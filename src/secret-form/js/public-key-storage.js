@@ -26,6 +26,18 @@ class PublicKeyStorage {
 	removePublicKey(publicKeyName) {
 		removePublicKey.call(this, publicKeyName);
 	}
+
+	doesPublicKeyNameExist(publicKeyName) {
+		return Boolean(this.getPublicKey(publicKeyName));
+	}
+
+	doesPublicKeyExist(publicKey) {
+		return this[PK_TO_PK_NAME_MAP_FIELD].has(publicKey);
+	}
+
+	getPublicKeyName(publicKey) {
+		return this[PK_TO_PK_NAME_MAP_FIELD].get(publicKey);
+	}
 }
 
 export default new PublicKeyStorage(window.localStorage);

@@ -6,13 +6,10 @@ module.exports = function (grunt) {
 				immed: true, latedef: false, newcap: true,
 				noarg: true, sub: true, undef: true,
 				unused: true, boss: true, eqnull: true,
-				browser: true,
+				browser: true, mocha: true, jquery: true,
+				node: true, devel: true,
 				globals: {
-					module: true, require: true,
-					$: true, jQuery: true, _: true, qr: true, qrcode: true,      // vendor
-					console: true,
-					chai: true, describe: true, it: true, beforeEach: true,      // BDD
-					Vue: true
+					_: true, chai: true, Vue: true, "swal": true
 				}
 			},
 			all: {

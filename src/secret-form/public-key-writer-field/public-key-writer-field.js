@@ -17,26 +17,42 @@ export default Vue.extend({
 			default: "-1"
 		}
 	},
-	data: {
-		lastSavedPublicKeyName: ""
-	},
 	computed: {
 		isSaved: function () {
-			let samePublicKeyName = this.publicKeyName && (this.publicKeyName === this.lastSavedPublicKeyName),
-				samePublicKey = this.publicKey && (this.publicKey === publicKeyStorage.getPublicKey(this.publicKeyName));
-			return samePublicKeyName && samePublicKey;
+			let publicKeyNameExists = publicKeyStorage.doesPublicKeyNameExist(this.publicKeyName),
+				samePublicKey = publicKeyStorage.getPublicKey(this.publicKeyName) === this.publicKey;
+			return publicKeyNameExists && samePublicKey;
 		},
 		isReadyForSave: function () {
-			return this.publicKey && this.publicKeyName.trim();
+			return this.publicKey && this.publicKeyName;
 		}
 	},
 	methods: {
-		setPublicKey: function () {
-			let adjustedPublicKeyName = this.publicKeyName.trim();
-			if (this.publicKey && adjustedPublicKeyName) {
-				publicKeyStorage.setPublicKey(adjustedPublicKeyName, this.publicKey);
-				Vue.set(this, "lastSavedPublicKeyName", adjustedPublicKeyName);
+		tryToSavePublicKey: function () {
+			if (publicKeyStorage.doesPublicKeyNameExist(this.publicKeyName)) {
+				swal({
+					type: "warning",
+					title: "Are you sure?",
+					text: `You are going to rewrite public key with name "${this.publicKeyName}"...`,
+					showCancelButton: true,
+					confirmButtonText: "Rewrite"
+				}, setPublicKey.bind(this));
+			} else if (publicKeyStorage.doesPublicKeyExist(this.publicKey)) {
+				let oldName = publicKeyStorage.getPublicKeyName(this.publicKey);
+				swal({
+					type: "warning",
+					title: "Are you sure?",
+					text: `You are going to change public key name from "${oldName}" to "${this.publicKeyName}"...`,
+					showCancelButton: true,
+					confirmButtonText: "Rename"
+				}, setPublicKey.bind(this));
+			} else {
+				setPublicKey.call(this);
 			}
 		}
 	}
 });
+
+function setPublicKey() {
+	publicKeyStorage.setPublicKey(this.publicKeyName, this.publicKey);
+}
