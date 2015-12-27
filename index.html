@@ -15,11 +15,18 @@
   </head>
   <body>
     <template id="passphrase-field-template">
-      <div class="form-group">
+      <div style="margin-bottom: 2px;" class="form-group">
         <div class="col-md-12">
           <div class="input-group input-group-lg">
             <input v-model="passphrase" v-bind:type="passphraseFieldType" placeholder="Passphrase" title="Passphrase" autofocus="" required="" autocomplete="off" tabindex="1" class="form-control"><span class="input-group-btn">
               <button v-on:click="togglePassphraseVisibility" v-bind:class="{active: passphraseVisible}" type="button" tabindex="-1" class="btn btn-default btn-lg"><span v-show="passphraseVisible" class="glyphicon glyphicon-eye-open"></span><span v-show="!passphraseVisible" class="glyphicon glyphicon-eye-close"></span></button></span>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-md-12">
+          <div class="progress passphrase-score">
+            <div role="progressbar" aria-valuemin="0" aria-valuemax="100" v-bind:aria-valuenow="passphraseScorePercentage" v-bind:class="{&quot;progress-bar-success&quot;: passphraseBest, &quot;progress-bar-info&quot;: passphraseStrong, &quot;progress-bar-warning&quot;: passphraseNormal, &quot;progress-bar-danger&quot;: passphraseWeak}" v-bind:style="{width: passphraseScorePercentage + &quot;%&quot;}" class="progress-bar progress-bar-striped"></div>
           </div>
         </div>
       </div>

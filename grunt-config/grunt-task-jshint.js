@@ -9,7 +9,8 @@ module.exports = function (grunt) {
 				browser: true, mocha: true, jquery: true,
 				node: true, devel: true,
 				globals: {
-					_: true, chai: true, Vue: true, "swal": true
+					_: true, chai: true, Vue: true, "swal": true,
+					zxcvbn: true
 				}
 			},
 			all: {

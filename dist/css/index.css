@@ -5,3 +5,11 @@ input.form-control:read-only {
 [v-cloak] {
   display: none;
 }
+
+.passphrase-score {
+  height: 4px;
+  margin-bottom: 0px;
+}
+.passphrase-score .progress-bar {
+  transition-property: width, background-color;
+}

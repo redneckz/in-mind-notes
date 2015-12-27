@@ -1,5 +1,5 @@
 template#passphrase-field-template
-	.form-group
+	.form-group(style='margin-bottom: 2px;')
 		.col-md-12
 			.input-group.input-group-lg
 				input.form-control(v-model='passphrase', v-bind:type='passphraseFieldType',
@@ -11,3 +11,11 @@ template#passphrase-field-template
 							type='button', tabindex='-1')
 						span.glyphicon.glyphicon-eye-open(v-show='passphraseVisible')
 						span.glyphicon.glyphicon-eye-close(v-show='!passphraseVisible')
+	.form-group
+		.col-md-12
+			.progress.passphrase-score
+				.progress-bar.progress-bar-striped(
+						role='progressbar', aria-valuemin='0', aria-valuemax='100',
+						v-bind:aria-valuenow='passphraseScorePercentage',
+						v-bind:class='{"progress-bar-success": passphraseBest, "progress-bar-info": passphraseStrong, "progress-bar-warning": passphraseNormal, "progress-bar-danger": passphraseWeak}',
+						v-bind:style='{width: passphraseScorePercentage + "%"}')

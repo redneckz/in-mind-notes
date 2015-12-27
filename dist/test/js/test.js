@@ -2935,6 +2935,29 @@ exports["default"] = Vue.extend({
 	computed: {
 		passphraseFieldType: function passphraseFieldType() {
 			return this.passphraseVisible ? "text" : "password";
+		},
+		passphraseBest: function passphraseBest() {
+			return this.passphraseScore === 4;
+		},
+		passphraseStrong: function passphraseStrong() {
+			return this.passphraseScore === 3;
+		},
+		passphraseNormal: function passphraseNormal() {
+			return this.passphraseScore === 2;
+		},
+		passphraseWeak: function passphraseWeak() {
+			return this.passphraseScore < 2;
+		},
+		passphraseScorePercentage: function passphraseScorePercentage() {
+			if (this.passphrase) {
+				return Math.round((this.passphraseScore + 1) * 100 / 5);
+			} else {
+				return 0;
+			}
+		},
+		passphraseScore: function passphraseScore() {
+			var passphraseStat = zxcvbn(this.passphrase);
+			return passphraseStat.score;
 		}
 	},
 	data: function data() {
