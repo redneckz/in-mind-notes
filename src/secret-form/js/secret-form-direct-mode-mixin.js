@@ -10,7 +10,7 @@ export default {
 		chosenPublicKey: "",
 		chosenPublicKeyName: "",
 		computedSecret: "",
-		secretComputationError: undefined,
+		secretComputationError: undefined
 	},
 	watch: {
 		"passphrase + chosenPublicKey": "updateComputedSecret"

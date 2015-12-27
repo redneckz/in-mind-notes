@@ -2934,18 +2934,18 @@ exports["default"] = Vue.extend({
 	},
 	computed: {
 		passphraseFieldType: function passphraseFieldType() {
-			return this.passphraseVisible ? "text" : "password";
+			return this.isPassphraseVisible ? "text" : "password";
 		},
-		passphraseBest: function passphraseBest() {
+		isBestPassphrase: function isBestPassphrase() {
 			return this.passphraseScore === 4;
 		},
-		passphraseStrong: function passphraseStrong() {
+		isStrongPassphrase: function isStrongPassphrase() {
 			return this.passphraseScore === 3;
 		},
-		passphraseNormal: function passphraseNormal() {
+		isNormalPassphrase: function isNormalPassphrase() {
 			return this.passphraseScore === 2;
 		},
-		passphraseWeak: function passphraseWeak() {
+		isWeakPassphrase: function isWeakPassphrase() {
 			return this.passphraseScore < 2;
 		},
 		passphraseScorePercentage: function passphraseScorePercentage() {
@@ -2962,12 +2962,12 @@ exports["default"] = Vue.extend({
 	},
 	data: function data() {
 		return {
-			passphraseVisible: false
+			isPassphraseVisible: false
 		};
 	},
 	methods: {
 		togglePassphraseVisibility: function togglePassphraseVisibility() {
-			this.passphraseVisible = !this.passphraseVisible;
+			this.isPassphraseVisible = !this.isPassphraseVisible;
 		}
 	}
 });
@@ -3040,12 +3040,18 @@ exports["default"] = Vue.extend({
 			required: true,
 			"default": ""
 		},
+		error: {
+			required: true
+		},
 		tabIndex: {
 			type: String,
 			"default": "-1"
 		}
 	},
 	computed: {
+		hasError: function hasError() {
+			return Boolean(this.error);
+		},
 		isSaved: function isSaved() {
 			var publicKeyNameExists = _jsPublicKeyStorageJs2["default"].doesPublicKeyNameExist(this.publicKeyName),
 			    samePublicKey = _jsPublicKeyStorageJs2["default"].getPublicKey(this.publicKeyName) === this.publicKey;
@@ -3099,9 +3105,17 @@ exports["default"] = Vue.extend({
 			type: String,
 			required: true
 		},
+		error: {
+			required: true
+		},
 		tabIndex: {
 			type: String,
 			"default": "-1"
+		}
+	},
+	computed: {
+		hasError: function hasError() {
+			return Boolean(this.error);
 		}
 	},
 	methods: {

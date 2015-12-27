@@ -12,12 +12,18 @@ export default Vue.extend({
 			required: true,
 			default: ""
 		},
+		error: {
+			required: true
+		},
 		tabIndex: {
 			type: String,
 			default: "-1"
 		}
 	},
 	computed: {
+		hasError: function () {
+			return Boolean(this.error);
+		},
 		isSaved: function () {
 			let publicKeyNameExists = publicKeyStorage.doesPublicKeyNameExist(this.publicKeyName),
 				samePublicKey = publicKeyStorage.getPublicKey(this.publicKeyName) === this.publicKey;

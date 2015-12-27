@@ -19,14 +19,14 @@
         <div class="col-md-12">
           <div class="input-group input-group-lg">
             <input v-model="passphrase" v-bind:type="passphraseFieldType" placeholder="Passphrase" title="Passphrase" autofocus="" required="" autocomplete="off" tabindex="1" class="form-control"><span class="input-group-btn">
-              <button v-on:click="togglePassphraseVisibility" v-bind:class="{active: passphraseVisible}" type="button" tabindex="-1" class="btn btn-default btn-lg"><span v-show="passphraseVisible" class="glyphicon glyphicon-eye-open"></span><span v-show="!passphraseVisible" class="glyphicon glyphicon-eye-close"></span></button></span>
+              <button v-on:click="togglePassphraseVisibility" v-bind:class="{active: isPassphraseVisible}" type="button" tabindex="-1" class="btn btn-default btn-lg"><span v-show="isPassphraseVisible" class="glyphicon glyphicon-eye-open"></span><span v-show="!isPassphraseVisible" class="glyphicon glyphicon-eye-close"></span></button></span>
           </div>
         </div>
       </div>
       <div class="form-group">
         <div class="col-md-12">
           <div class="progress passphrase-score">
-            <div role="progressbar" aria-valuemin="0" aria-valuemax="100" v-bind:aria-valuenow="passphraseScorePercentage" v-bind:class="{&quot;progress-bar-success&quot;: passphraseBest, &quot;progress-bar-info&quot;: passphraseStrong, &quot;progress-bar-warning&quot;: passphraseNormal, &quot;progress-bar-danger&quot;: passphraseWeak}" v-bind:style="{width: passphraseScorePercentage + &quot;%&quot;}" class="progress-bar progress-bar-striped"></div>
+            <div role="progressbar" aria-valuemin="0" aria-valuemax="100" v-bind:aria-valuenow="passphraseScorePercentage" v-bind:class="{&quot;progress-bar-success&quot;: isBestPassphrase, &quot;progress-bar-info&quot;: isStrongPassphrase, &quot;progress-bar-warning&quot;: isNormalPassphrase, &quot;progress-bar-danger&quot;: isWeakPassphrase}" v-bind:style="{width: passphraseScorePercentage + &quot;%&quot;}" class="progress-bar progress-bar-striped"></div>
           </div>
         </div>
       </div>
@@ -42,11 +42,11 @@
       </div>
     </template>
     <template id="public-key-writer-field-template">
-      <div v-bind:class="{&quot;has-success&quot;: isSaved}" class="form-group">
+      <div v-bind:class="{&quot;has-success&quot;: isSaved, &quot;has-error&quot;: hasError}" class="form-group">
         <div class="col-md-12">
           <div class="input-group input-group-lg">
             <input v-model="publicKeyName" v-bind:tabindex="tabIndex" placeholder="Public Key Name" title="Public Key Name" class="form-control input-lg"><span class="input-group-btn">
-              <button v-on:click="tryToSavePublicKey" v-bind:class="{&quot;btn-success&quot;: isSaved, &quot;btn-default&quot;: !isSaved}" v-bind:disabled="!isReadyForSave" type="button" tabindex="-1" class="btn btn-lg"><span v-show="isSaved" class="glyphicon glyphicon glyphicon-floppy-saved"></span><span v-show="!isSaved" class="glyphicon glyphicon glyphicon-floppy-save"></span></button></span>
+              <button v-on:click="tryToSavePublicKey" v-bind:class="{&quot;btn-success&quot;: isSaved, &quot;btn-danger&quot;: hasError, &quot;btn-default&quot;: !isSaved &amp;amp;&amp;amp; !hasError}" v-bind:disabled="!isReadyForSave" type="button" tabindex="-1" class="btn btn-lg"><span v-show="isSaved" class="glyphicon glyphicon glyphicon-floppy-saved"></span><span v-show="!isSaved" class="glyphicon glyphicon glyphicon-floppy-save"></span></button></span>
           </div>
         </div>
       </div>
@@ -70,11 +70,11 @@
       </div>
     </template>
     <template id="secret-field-template">
-      <div class="form-group">
+      <div v-bind:class="{&quot;has-error&quot;: hasError}" class="form-group">
         <div class="col-md-12">
           <div class="input-group input-group-lg">
             <div class="input-group-btn">
-              <button v-on:click="selectSecret" type="button" tabindex="-1" class="btn btn-default"><span class="glyphicon glyphicon-chevron-right"></span></button>
+              <button v-on:click="selectSecret" v-bind:class="{&quot;btn-danger&quot;: hasError}" v-bind:disabled="hasError" type="button" tabindex="-1" class="btn btn-default"><span class="glyphicon glyphicon-chevron-right"></span></button>
             </div>
             <input v-model="secret" v-bind:tabindex="tabIndex" type="text" placeholder="Secret" title="Secret" autocomplete="off" readonly="" class="form-control">
           </div>
@@ -94,8 +94,8 @@
             <button v-on:click="toggleMode" type="button" tabindex="-1" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-sort"></span></button>
           </div>
         </div>
-        <secret-field v-show="directMode" v-bind:class="{&quot;has-error&quot;: secretComputationError}" v-bind:secret="computedSecret" tab-index="3"></secret-field>
-        <public-key-writer-field v-show="reverseMode" v-bind:class="{&quot;has-error&quot;: publicKeyComputationError}" v-bind:public-key="computedPublicKey" v-bind:public-key-name.sync="enteredPublicKeyName" tab-index="3"></public-key-writer-field>
+        <secret-field v-show="directMode" v-bind:secret="computedSecret" v-bind:error="secretComputationError" tab-index="3"></secret-field>
+        <public-key-writer-field v-show="reverseMode" v-bind:public-key="computedPublicKey" v-bind:public-key-name.sync="enteredPublicKeyName" v-bind:error="publicKeyComputationError" tab-index="3"></public-key-writer-field>
       </form>
     </div>
     <footer class="container"><a href="https://docs.google.com/presentation/d/1ZnEOJmroB_GmzV5ukgMryF9Mb2WN7EEsS53kv_KUaFg/edit?usp=sharing" role="button" target="help" style="margin-left: 15px;" class="btn btn-info btn-xs pull-right"><span class="glyphicon glyphicon-question-sign"></span></a>

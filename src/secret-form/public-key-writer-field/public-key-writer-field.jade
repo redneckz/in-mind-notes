@@ -1,12 +1,12 @@
 template#public-key-writer-field-template
-	.form-group(v-bind:class='{"has-success": isSaved}')
+	.form-group(v-bind:class='{"has-success": isSaved, "has-error": hasError}')
 		.col-md-12
 			.input-group.input-group-lg
 				input.form-control.input-lg(v-model='publicKeyName', v-bind:tabindex='tabIndex',
 						placeholder='Public Key Name', title='Public Key Name')
 				span.input-group-btn
 					button.btn.btn-lg(v-on:click='tryToSavePublicKey',
-							v-bind:class='{"btn-success": isSaved, "btn-default": !isSaved}',
+							v-bind:class='{"btn-success": isSaved, "btn-danger": hasError, "btn-default": !isSaved &amp;&amp; !hasError}',
 							v-bind:disabled='!isReadyForSave',
 							type='button', tabindex='-1')
 						span(v-show='isSaved').glyphicon.glyphicon.glyphicon-floppy-saved

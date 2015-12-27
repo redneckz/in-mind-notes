@@ -7,15 +7,15 @@ template#passphrase-field-template
 						autofocus='', required='', autocomplete='off', tabindex='1')
 				span.input-group-btn
 					button.btn.btn-default.btn-lg(v-on:click='togglePassphraseVisibility',
-							v-bind:class='{active: passphraseVisible}',
+							v-bind:class='{active: isPassphraseVisible}',
 							type='button', tabindex='-1')
-						span.glyphicon.glyphicon-eye-open(v-show='passphraseVisible')
-						span.glyphicon.glyphicon-eye-close(v-show='!passphraseVisible')
+						span.glyphicon.glyphicon-eye-open(v-show='isPassphraseVisible')
+						span.glyphicon.glyphicon-eye-close(v-show='!isPassphraseVisible')
 	.form-group
 		.col-md-12
 			.progress.passphrase-score
 				.progress-bar.progress-bar-striped(
 						role='progressbar', aria-valuemin='0', aria-valuemax='100',
 						v-bind:aria-valuenow='passphraseScorePercentage',
-						v-bind:class='{"progress-bar-success": passphraseBest, "progress-bar-info": passphraseStrong, "progress-bar-warning": passphraseNormal, "progress-bar-danger": passphraseWeak}',
+						v-bind:class='{"progress-bar-success": isBestPassphrase, "progress-bar-info": isStrongPassphrase, "progress-bar-warning": isNormalPassphrase, "progress-bar-danger": isWeakPassphrase}',
 						v-bind:style='{width: passphraseScorePercentage + "%"}')
