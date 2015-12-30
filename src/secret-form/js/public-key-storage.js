@@ -1,9 +1,11 @@
 const STORAGE_ITEM_KEY_PREFIX = "35a5bcbb-edc7-4e48-ad29-dc9b2fc2fd54-pk-";
 const PK_TO_PK_NAME_MAP_FIELD = Symbol();
+const OBSERVERS_FIELD = Symbol();
 
 class PublicKeyStorage {
 	constructor(storage) {
 		this.storage = storage;
+		this[OBSERVERS_FIELD] = new Set();
 		initPublicKeyToPublicKeyNameMap.call(this);
 	}
 
@@ -13,6 +15,7 @@ class PublicKeyStorage {
 
 	set entries(newEntries) {
 		setEntries.call(this, newEntries);
+		notifyObservers.call(this);
 	}
 
 	getPublicKey(publicKeyName) {
@@ -20,11 +23,13 @@ class PublicKeyStorage {
 	}
 
 	setPublicKey(publicKeyName, publicKey) {
-		return setPublicKey.call(this, publicKeyName, publicKey);
+		setPublicKey.call(this, publicKeyName, publicKey);
+		notifyObservers.call(this);
 	}
 
 	removePublicKey(publicKeyName) {
 		removePublicKey.call(this, publicKeyName);
+		notifyObservers.call(this);
 	}
 
 	doesPublicKeyNameExist(publicKeyName) {
@@ -37,6 +42,13 @@ class PublicKeyStorage {
 
 	getPublicKeyName(publicKey) {
 		return this[PK_TO_PK_NAME_MAP_FIELD].get(publicKey);
+	}
+
+	observe(observer) {
+		this[OBSERVERS_FIELD].add(observer);
+		return function unobserve() {
+			this[OBSERVERS_FIELD].delete(observer);
+		}.bind(this);
 	}
 }
 
@@ -75,23 +87,27 @@ function getPublicKey(publicKeyName) {
 }
 
 function setPublicKey(publicKeyName, publicKey) {
-	let oldPublicKeyName;
 	if (publicKeyName && publicKey) {
 		if (this[PK_TO_PK_NAME_MAP_FIELD].has(publicKey)) {
-			oldPublicKeyName = this[PK_TO_PK_NAME_MAP_FIELD].get(publicKey);
+			let oldPublicKeyName = this[PK_TO_PK_NAME_MAP_FIELD].get(publicKey);
 			removePublicKey.call(this, oldPublicKeyName);
 		}
 		this.storage.setItem(toStorageItemKey(publicKeyName), publicKey);
 		this[PK_TO_PK_NAME_MAP_FIELD].set(publicKey, publicKeyName);
 	}
-	return oldPublicKeyName;
 }
 
 function removePublicKey(publicKeyName) {
 	let storageItemKey = toStorageItemKey(publicKeyName);
 	let publicKey = this.storage.getItem(storageItemKey);
-	this.storage.removeItem(storageItemKey);
-	this[PK_TO_PK_NAME_MAP_FIELD].delete(publicKey);
+	if (publicKey) {
+		this.storage.removeItem(storageItemKey);
+		this[PK_TO_PK_NAME_MAP_FIELD].delete(publicKey);
+	}
+}
+
+function notifyObservers() {
+	this[OBSERVERS_FIELD].forEach(observer => observer.call(this));
 }
 
 function isAppropriateStorageItemKey(storageItemKey) {
