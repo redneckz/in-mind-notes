@@ -26,7 +26,7 @@
       <div class="form-group">
         <div class="col-md-12">
           <div class="progress passphrase-score">
-            <div role="progressbar" aria-valuemin="0" aria-valuemax="100" v-bind:aria-valuenow="passphraseScorePercentage" v-bind:class="{&quot;progress-bar-success&quot;: isBestPassphrase, &quot;progress-bar-info&quot;: isStrongPassphrase, &quot;progress-bar-warning&quot;: isNormalPassphrase, &quot;progress-bar-danger&quot;: isWeakPassphrase}" v-bind:style="{width: passphraseScorePercentage + &quot;%&quot;}" class="progress-bar progress-bar-striped"></div>
+            <div role="progressbar" aria-valuemin="0" aria-valuemax="100" v-bind:aria-valuenow="passphraseScorePercentage" v-bind:class="{&quot;progress-bar-success&quot;: isBestPassphrase || isStrongPassphrase, &quot;progress-bar-warning&quot;: isNormalPassphrase, &quot;progress-bar-danger&quot;: isWeakPassphrase}" v-bind:style="{width: passphraseScorePercentage + &quot;%&quot;}" class="progress-bar progress-bar-striped"></div>
           </div>
         </div>
       </div>
