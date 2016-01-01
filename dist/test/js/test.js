@@ -3098,7 +3098,7 @@ exports["default"] = Vue.extend({
 		var _this = this;
 
 		this[UNOBSERVE_METHOD] = _jsPublicKeyStorageJs2["default"].observe(function () {
-			_this.$set("entries", _jsPublicKeyStorageJs2["default"].entries);
+			_this.entries = _jsPublicKeyStorageJs2["default"].entries;
 			_this.publicKey = _jsPublicKeyStorageJs2["default"].getPublicKey(_this.publicKeyName);
 		});
 	},
@@ -3121,6 +3121,8 @@ module.exports = exports["default"];
 },{"../js/public-key-storage.js":95,"babel-runtime/core-js/symbol":8,"babel-runtime/helpers/interop-require-default":11}],102:[function(require,module,exports){
 "use strict";
 
+var _Symbol = require("babel-runtime/core-js/symbol")["default"];
+
 var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
 
 Object.defineProperty(exports, "__esModule", {
@@ -3130,6 +3132,8 @@ Object.defineProperty(exports, "__esModule", {
 var _jsPublicKeyStorageJs = require("../js/public-key-storage.js");
 
 var _jsPublicKeyStorageJs2 = _interopRequireDefault(_jsPublicKeyStorageJs);
+
+var UNOBSERVE_METHOD = _Symbol();
 
 exports["default"] = Vue.extend({
 	template: "#public-key-writer-field-template",
@@ -3151,17 +3155,31 @@ exports["default"] = Vue.extend({
 			"default": "-1"
 		}
 	},
+	created: function created() {
+		this[UNOBSERVE_METHOD] = _jsPublicKeyStorageJs2["default"].observe(recomputeSavedPublicKey.bind(this));
+		recomputeSavedPublicKey.call(this);
+	},
+	watch: {
+		publicKeyName: recomputeSavedPublicKey
+	},
+	data: function data() {
+		return {
+			savedPublicKey: null
+		};
+	},
 	computed: {
 		hasError: function hasError() {
 			return Boolean(this.error);
 		},
 		isSaved: function isSaved() {
-			var publicKeyNameExists = _jsPublicKeyStorageJs2["default"].doesPublicKeyNameExist(this.publicKeyName),
-			    samePublicKey = _jsPublicKeyStorageJs2["default"].getPublicKey(this.publicKeyName) === this.publicKey;
-			return publicKeyNameExists && samePublicKey;
+			var samePublicKey = this.savedPublicKey === this.publicKey;
+			return this.publicKeyName && samePublicKey;
 		},
 		isReadyForSave: function isReadyForSave() {
 			return this.publicKey && this.publicKeyName;
+		},
+		isDefault: function isDefault() {
+			return !this.isSaved() && !this.isReadyForSave();
 		}
 	},
 	methods: {
@@ -3173,7 +3191,7 @@ exports["default"] = Vue.extend({
 					text: "You are going to rewrite public key with name \"" + this.publicKeyName + "\"...",
 					showCancelButton: true,
 					confirmButtonText: "Rewrite"
-				}, setPublicKey.bind(this));
+				}, savePublicKey.bind(this));
 			} else if (_jsPublicKeyStorageJs2["default"].doesPublicKeyExist(this.publicKey)) {
 				var oldName = _jsPublicKeyStorageJs2["default"].getPublicKeyName(this.publicKey);
 				swal({
@@ -3182,20 +3200,27 @@ exports["default"] = Vue.extend({
 					text: "You are going to change public key name from \"" + oldName + "\" to \"" + this.publicKeyName + "\"...",
 					showCancelButton: true,
 					confirmButtonText: "Rename"
-				}, setPublicKey.bind(this));
+				}, savePublicKey.bind(this));
 			} else {
-				setPublicKey.call(this);
+				savePublicKey.call(this);
 			}
 		}
+	},
+	destroyed: function destroyed() {
+		this[UNOBSERVE_METHOD]();
 	}
 });
 
-function setPublicKey() {
+function savePublicKey() {
 	_jsPublicKeyStorageJs2["default"].setPublicKey(this.publicKeyName, this.publicKey);
+}
+
+function recomputeSavedPublicKey() {
+	this.savedPublicKey = _jsPublicKeyStorageJs2["default"].getPublicKey(this.publicKeyName);
 }
 module.exports = exports["default"];
 
-},{"../js/public-key-storage.js":95,"babel-runtime/helpers/interop-require-default":11}],103:[function(require,module,exports){
+},{"../js/public-key-storage.js":95,"babel-runtime/core-js/symbol":8,"babel-runtime/helpers/interop-require-default":11}],103:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {

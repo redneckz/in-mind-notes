@@ -20,7 +20,7 @@ export default Vue.extend({
 	},
 	created: function () {
 		this[UNOBSERVE_METHOD] = publicKeyStorage.observe(() => {
-			this.$set("entries", publicKeyStorage.entries);
+			this.entries = publicKeyStorage.entries;
 			this.publicKey = publicKeyStorage.getPublicKey(this.publicKeyName);
 		});
 	},

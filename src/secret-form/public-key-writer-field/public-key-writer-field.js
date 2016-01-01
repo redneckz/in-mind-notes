@@ -1,5 +1,7 @@
 import publicKeyStorage from "../js/public-key-storage.js";
 
+const UNOBSERVE_METHOD = Symbol();
+
 export default Vue.extend({
 	template: "#public-key-writer-field-template",
 	props: {
@@ -20,17 +22,31 @@ export default Vue.extend({
 			default: "-1"
 		}
 	},
+	created: function () {
+		this[UNOBSERVE_METHOD] = publicKeyStorage.observe(recomputeSavedPublicKey.bind(this));
+		recomputeSavedPublicKey.call(this);
+	},
+	watch: {
+		publicKeyName: recomputeSavedPublicKey
+	},
+	data: function ()  {
+		return {
+			savedPublicKey: null
+		};
+	},
 	computed: {
 		hasError: function () {
 			return Boolean(this.error);
 		},
 		isSaved: function () {
-			let publicKeyNameExists = publicKeyStorage.doesPublicKeyNameExist(this.publicKeyName),
-				samePublicKey = publicKeyStorage.getPublicKey(this.publicKeyName) === this.publicKey;
-			return publicKeyNameExists && samePublicKey;
+			let samePublicKey = this.savedPublicKey === this.publicKey;
+			return this.publicKeyName && samePublicKey;
 		},
 		isReadyForSave: function () {
 			return this.publicKey && this.publicKeyName;
+		},
+		isDefault: function () {
+			return !this.isSaved() && !this.isReadyForSave();
 		}
 	},
 	methods: {
@@ -42,7 +58,7 @@ export default Vue.extend({
 					text: `You are going to rewrite public key with name "${this.publicKeyName}"...`,
 					showCancelButton: true,
 					confirmButtonText: "Rewrite"
-				}, setPublicKey.bind(this));
+				}, savePublicKey.bind(this));
 			} else if (publicKeyStorage.doesPublicKeyExist(this.publicKey)) {
 				let oldName = publicKeyStorage.getPublicKeyName(this.publicKey);
 				swal({
@@ -51,14 +67,21 @@ export default Vue.extend({
 					text: `You are going to change public key name from "${oldName}" to "${this.publicKeyName}"...`,
 					showCancelButton: true,
 					confirmButtonText: "Rename"
-				}, setPublicKey.bind(this));
+				}, savePublicKey.bind(this));
 			} else {
-				setPublicKey.call(this);
+				savePublicKey.call(this);
 			}
 		}
+	},
+	destroyed: function () {
+		this[UNOBSERVE_METHOD]();
 	}
 });
 
-function setPublicKey() {
+function savePublicKey() {
 	publicKeyStorage.setPublicKey(this.publicKeyName, this.publicKey);
+}
+
+function recomputeSavedPublicKey() {
+	this.savedPublicKey = publicKeyStorage.getPublicKey(this.publicKeyName);
 }

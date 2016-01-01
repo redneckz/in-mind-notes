@@ -45,8 +45,8 @@
       <div v-bind:class="{&quot;has-success&quot;: isSaved, &quot;has-error&quot;: hasError}" class="form-group">
         <div class="col-md-12">
           <div class="input-group input-group-lg">
-            <input v-model="publicKeyName" v-bind:tabindex="tabIndex" placeholder="Public Key Name" title="Public Key Name" class="form-control input-lg"><span class="input-group-btn">
-              <button v-on:click="tryToSavePublicKey" v-bind:class="{&quot;btn-success&quot;: isSaved, &quot;btn-danger&quot;: hasError, &quot;btn-default&quot;: !isSaved &amp;amp;&amp;amp; !hasError}" v-bind:disabled="!isReadyForSave" type="button" tabindex="-1" class="btn btn-lg"><span v-show="isSaved" class="glyphicon glyphicon glyphicon-floppy-saved"></span><span v-show="!isSaved" class="glyphicon glyphicon glyphicon-floppy-save"></span></button></span>
+            <input v-model="publicKeyName" v-on:keyup.enter="tryToSavePublicKey" v-bind:tabindex="tabIndex" placeholder="Public Key Name" title="Public Key Name" class="form-control input-lg"><span class="input-group-btn">
+              <button v-on:click="tryToSavePublicKey" v-bind:class="{&quot;btn-success&quot;: isSaved, &quot;btn-danger&quot;: hasError, &quot;btn-default&quot;: isDefault}" v-bind:disabled="!isReadyForSave" type="button" tabindex="-1" class="btn btn-lg"><span v-show="isSaved" class="glyphicon glyphicon glyphicon-floppy-saved"></span><span v-show="!isSaved" class="glyphicon glyphicon glyphicon-floppy-save"></span></button></span>
           </div>
         </div>
       </div>
@@ -74,7 +74,7 @@
         <div class="col-md-12">
           <div class="input-group input-group-lg">
             <div class="input-group-btn">
-              <button v-on:click="selectSecret" v-bind:class="{&quot;btn-danger&quot;: hasError}" v-bind:disabled="hasError" type="button" tabindex="-1" class="btn btn-default"><span class="glyphicon glyphicon-chevron-right"></span></button>
+              <button v-on:click="selectSecret" v-bind:class="{&quot;btn-danger&quot;: hasError}" v-bind:disabled="!secret" type="button" tabindex="-1" class="btn btn-default"><span class="glyphicon glyphicon-chevron-right"></span></button>
             </div>
             <input v-model="secret" v-bind:tabindex="tabIndex" type="text" placeholder="Secret" title="Secret" autocomplete="off" readonly="" class="form-control">
           </div>
