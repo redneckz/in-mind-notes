@@ -46,7 +46,7 @@
         <div class="col-md-12">
           <div class="input-group input-group-lg">
             <input v-model="publicKeyName" v-on:keyup.enter="tryToSavePublicKey" v-bind:tabindex="tabIndex" placeholder="Public Key Name" title="Public Key Name" class="form-control input-lg"><span class="input-group-btn">
-              <button v-on:click="tryToSavePublicKey" v-bind:class="{&quot;btn-success&quot;: isSaved, &quot;btn-danger&quot;: hasError, &quot;btn-default&quot;: isDefault}" v-bind:disabled="!isReadyForSave" type="button" tabindex="-1" class="btn btn-lg"><span v-show="isSaved" class="glyphicon glyphicon glyphicon-floppy-saved"></span><span v-show="!isSaved" class="glyphicon glyphicon glyphicon-floppy-save"></span></button></span>
+              <button v-on:click="tryToSavePublicKey" v-bind:class="{&quot;btn-success&quot;: isSaved, &quot;btn-danger&quot;: hasError, &quot;btn-default&quot;: isDefault}" v-bind:disabled="isSaved || !isReadyForSave" type="button" tabindex="-1" class="btn btn-lg"><span v-show="isSaved" class="glyphicon glyphicon glyphicon-floppy-saved"></span><span v-show="!isSaved" class="glyphicon glyphicon glyphicon-floppy-save"></span></button></span>
           </div>
         </div>
       </div>

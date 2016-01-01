@@ -51,6 +51,9 @@ export default Vue.extend({
 	},
 	methods: {
 		tryToSavePublicKey: function () {
+			if (this.isSaved || !this.isReadyForSave) {
+				return;
+			}
 			if (publicKeyStorage.doesPublicKeyNameExist(this.publicKeyName)) {
 				swal({
 					type: "warning",

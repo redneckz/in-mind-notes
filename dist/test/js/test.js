@@ -3184,6 +3184,9 @@ exports["default"] = Vue.extend({
 	},
 	methods: {
 		tryToSavePublicKey: function tryToSavePublicKey() {
+			if (this.isSaved || !this.isReadyForSave) {
+				return;
+			}
 			if (_jsPublicKeyStorageJs2["default"].doesPublicKeyNameExist(this.publicKeyName)) {
 				swal({
 					type: "warning",

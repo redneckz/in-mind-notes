@@ -9,7 +9,7 @@ template#public-key-writer-field-template
 				span.input-group-btn
 					button.btn.btn-lg(v-on:click='tryToSavePublicKey',
 							v-bind:class='{"btn-success": isSaved, "btn-danger": hasError, "btn-default": isDefault}',
-							v-bind:disabled='!isReadyForSave',
+							v-bind:disabled='isSaved || !isReadyForSave',
 							type='button', tabindex='-1')
 						span(v-show='isSaved').glyphicon.glyphicon.glyphicon-floppy-saved
 						span(v-show='!isSaved').glyphicon.glyphicon.glyphicon-floppy-save
