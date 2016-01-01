@@ -84,18 +84,18 @@
     <div class="container">
       <form id="secret-form" role="form" v-cloak class="form-horizontal">
         <div style="padding-top: 2px;" class="form-group">
-          <div class="col-md-12"><span v-show="directMode" class="label label-default pull-right">Direct mode</span><span v-show="reverseMode" class="label label-warning pull-right">Reverse mode</span></div>
+          <div class="col-md-12"><span v-show="isDirectMode" class="label label-default pull-right">Direct mode</span><span v-show="isReverseMode" class="label label-warning pull-right">Reverse mode</span></div>
         </div>
         <passphrase-field v-bind:passphrase.sync="passphrase"></passphrase-field>
-        <public-key-reader-field v-show="directMode" v-bind:public-key.sync="chosenPublicKey" v-bind:public-key-name.sync="chosenPublicKeyName" tab-index="2"></public-key-reader-field>
-        <secret-generator-field v-show="reverseMode" v-bind:secret.sync="generatedSecret" tab-index="2"></secret-generator-field>
+        <public-key-reader-field v-show="isDirectMode" v-bind:public-key.sync="chosenPublicKey" v-bind:public-key-name.sync="chosenPublicKeyName" tab-index="2"></public-key-reader-field>
+        <secret-generator-field v-show="isReverseMode" v-bind:secret.sync="generatedSecret" tab-index="2"></secret-generator-field>
         <div title="Mode trigger" class="form-group text-center">
           <div class="col-md-12">
-            <button v-on:click="toggleMode" type="button" tabindex="-1" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-sort"></span></button>
+            <button v-on:click="toggleMode" v-bind:class="{&quot;btn-default&quot;: isDirectMode, &quot;btn-warning&quot;: isReverseMode}" type="button" tabindex="-1" class="btn btn-lg"><span class="glyphicon glyphicon-sort"></span></button>
           </div>
         </div>
-        <secret-field v-show="directMode" v-bind:secret="computedSecret" v-bind:error="secretComputationError" tab-index="3"></secret-field>
-        <public-key-writer-field v-show="reverseMode" v-bind:public-key="computedPublicKey" v-bind:public-key-name.sync="enteredPublicKeyName" v-bind:error="publicKeyComputationError" tab-index="3"></public-key-writer-field>
+        <secret-field v-show="isDirectMode" v-bind:secret="computedSecret" v-bind:error="secretComputationError" tab-index="3"></secret-field>
+        <public-key-writer-field v-show="isReverseMode" v-bind:public-key="computedPublicKey" v-bind:public-key-name.sync="enteredPublicKeyName" v-bind:error="publicKeyComputationError" tab-index="3"></public-key-writer-field>
       </form>
     </div>
     <footer class="container"><a href="https://docs.google.com/presentation/d/1ZnEOJmroB_GmzV5ukgMryF9Mb2WN7EEsS53kv_KUaFg/edit?usp=sharing" role="button" target="help" style="margin-left: 15px;" class="btn btn-info btn-xs pull-right"><span class="glyphicon glyphicon-question-sign"></span></a>

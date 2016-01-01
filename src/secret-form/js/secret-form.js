@@ -7,17 +7,17 @@ export default new Vue({
 	el: "#secret-form",
 	mixins: [directModeMixin, reverseModeMixin],
 	data: {
-		directMode: true,
+		isDirectMode: true,
 		passphrase: "",
 	},
 	computed: {
-		reverseMode: function () {
-			return !this.directMode;
+		isReverseMode: function () {
+			return !this.isDirectMode;
 		}
 	},
 	methods: {
 		toggleMode: function () {
-			this.directMode = !this.directMode;
+			this.isDirectMode = !this.isDirectMode;
 		}
 	},
 	components: {
