@@ -34,10 +34,15 @@
     <template id="public-key-reader-field-template">
       <div class="form-group">
         <div class="col-md-12">
-          <input v-model="publicKeyName" v-bind:tabindex="tabIndex" list="public-key-option-list" placeholder="Public Key" title="Public Key" class="form-control input-lg">
-          <datalist id="public-key-option-list">
-            <option v-for="entry in entries" v-bind:value="entry.publicKeyName">{{entry.publicKey}}</option>
-          </datalist>
+          <div class="input-group input-group-lg">
+            <input v-model="publicKeyName" v-bind:tabindex="tabIndex" list="public-key-option-list" placeholder="Public Key" title="Public Key" class="form-control input-lg">
+            <datalist id="public-key-option-list">
+              <option v-for="entry in entries" v-bind:value="entry.publicKeyName">{{entry.publicKey}}</option>
+            </datalist><span class="input-group-btn">
+              <button v-on:click="openFileChooserForImport" title="Import public keys" type="button" tabindex="-1" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-import"></span></button>
+              <button v-on:click="exportPublicKeys" title="Export public keys" v-bind:disabled="!entriesDownloadHref" type="button" tabindex="-1" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-export"></span></button></span>
+          </div>
+          <input v-on:change="importPublicKeys" type="file" style="display: none;"><a v-bind:href="entriesDownloadHref" download="public-keys.json" style="display: none;"></a>
         </div>
       </div>
     </template>
@@ -46,7 +51,7 @@
         <div class="col-md-12">
           <div class="input-group input-group-lg">
             <input v-model="publicKeyName" v-on:keyup.enter="tryToSavePublicKey" v-bind:tabindex="tabIndex" placeholder="Public Key Name" title="Public Key Name" class="form-control input-lg"><span class="input-group-btn">
-              <button v-on:click="tryToSavePublicKey" v-bind:class="{&quot;btn-success&quot;: isSaved, &quot;btn-danger&quot;: hasError, &quot;btn-default&quot;: isDefault}" v-bind:disabled="isSaved || !isReadyForSave" type="button" tabindex="-1" class="btn btn-lg"><span v-show="isSaved" class="glyphicon glyphicon glyphicon-floppy-saved"></span><span v-show="!isSaved" class="glyphicon glyphicon glyphicon-floppy-save"></span></button></span>
+              <button v-on:click="tryToSavePublicKey" v-bind:class="{&quot;btn-success&quot;: isSaved, &quot;btn-danger&quot;: hasError, &quot;btn-default&quot;: isDefault}" v-bind:disabled="isSaved || !isReadyForSave" type="button" tabindex="-1" class="btn btn-lg"><span v-show="isSaved" class="glyphicon glyphicon-floppy-saved"></span><span v-show="!isSaved" class="glyphicon glyphicon-floppy-save"></span></button></span>
           </div>
         </div>
       </div>

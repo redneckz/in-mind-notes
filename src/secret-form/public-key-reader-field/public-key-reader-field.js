@@ -34,7 +34,45 @@ export default Vue.extend({
 			this.publicKey = publicKeyStorage.getPublicKey(publicKeyName);
 		}
 	},
+	computed: {
+		entriesDownloadHref: function () {
+			if (this.entries && this.entries.length) {
+				let content = JSON.stringify(this.entries);
+				return `data:text/json;charset=utf-8,${encodeURIComponent(content)}`;
+			} else {
+				return "";
+			}
+		}
+	},
+	methods: {
+		openFileChooserForImport: function () {
+			getFileInputForImport.call(this).click();
+		},
+		importPublicKeys: function () {
+			let fileInput = getFileInputForImport.call(this);
+			if (!fileInput.files || !fileInput.files.length) {
+				return;
+			}
+			let fileReader = new FileReader();
+			fileReader.onload = () => {
+				try {
+					publicKeyStorage.entries = JSON.parse(fileReader.result);
+				} catch (ex) {
+					console.warn(ex);
+				}
+
+			};
+			fileReader.readAsText(fileInput.files[0]);
+		},
+		exportPublicKeys: function () {
+			this.$el.querySelector("a[download]").click();
+		}
+	},
 	destroyed: function () {
 		this[UNOBSERVE_METHOD]();
 	}
 });
+
+function getFileInputForImport() {
+	return this.$el.querySelector("input[type=file]");
+}

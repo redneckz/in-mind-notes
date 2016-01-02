@@ -11,5 +11,5 @@ template#public-key-writer-field-template
 							v-bind:class='{"btn-success": isSaved, "btn-danger": hasError, "btn-default": isDefault}',
 							v-bind:disabled='isSaved || !isReadyForSave',
 							type='button', tabindex='-1')
-						span(v-show='isSaved').glyphicon.glyphicon.glyphicon-floppy-saved
-						span(v-show='!isSaved').glyphicon.glyphicon.glyphicon-floppy-save
+						span(v-show='isSaved').glyphicon.glyphicon-floppy-saved
+						span(v-show='!isSaved').glyphicon.glyphicon-floppy-save

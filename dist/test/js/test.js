@@ -3112,10 +3112,47 @@ exports["default"] = Vue.extend({
 			this.publicKey = _jsPublicKeyStorageJs2["default"].getPublicKey(_publicKeyName);
 		}
 	},
+	computed: {
+		entriesDownloadHref: function entriesDownloadHref() {
+			if (this.entries && this.entries.length) {
+				var content = JSON.stringify(this.entries);
+				return "data:text/json;charset=utf-8," + encodeURIComponent(content);
+			} else {
+				return "";
+			}
+		}
+	},
+	methods: {
+		openFileChooserForImport: function openFileChooserForImport() {
+			getFileInputForImport.call(this).click();
+		},
+		importPublicKeys: function importPublicKeys() {
+			var fileInput = getFileInputForImport.call(this);
+			if (!fileInput.files || !fileInput.files.length) {
+				return;
+			}
+			var fileReader = new FileReader();
+			fileReader.onload = function () {
+				try {
+					_jsPublicKeyStorageJs2["default"].entries = JSON.parse(fileReader.result);
+				} catch (ex) {
+					console.warn(ex);
+				}
+			};
+			fileReader.readAsText(fileInput.files[0]);
+		},
+		exportPublicKeys: function exportPublicKeys() {
+			this.$el.querySelector("a[download]").click();
+		}
+	},
 	destroyed: function destroyed() {
 		this[UNOBSERVE_METHOD]();
 	}
 });
+
+function getFileInputForImport() {
+	return this.$el.querySelector("input[type=file]");
+}
 module.exports = exports["default"];
 
 },{"../js/public-key-storage.js":95,"babel-runtime/core-js/symbol":8,"babel-runtime/helpers/interop-require-default":11}],102:[function(require,module,exports){
