@@ -15,7 +15,7 @@
   </head>
   <body>
     <template id="passphrase-field-template">
-      <div style="margin-bottom: 2px;" class="form-group">
+      <div data-step-index="1" style="margin-bottom: 2px;" class="form-group">
         <div class="col-md-12">
           <div class="input-group input-group-lg">
             <input v-model="passphrase" v-bind:type="passphraseFieldType" placeholder="Passphrase" title="Passphrase" autofocus="" required="" autocomplete="off" tabindex="1" class="form-control"><span class="input-group-btn">
@@ -32,7 +32,7 @@
       </div>
     </template>
     <template id="public-key-reader-field-template">
-      <div class="form-group">
+      <div data-step-index="6" class="form-group">
         <div class="col-md-12">
           <div class="input-group input-group-lg">
             <input v-model="publicKeyName" v-bind:tabindex="tabIndex" list="public-key-option-list" placeholder="Public Key" title="Public Key" class="form-control input-lg">
@@ -47,17 +47,17 @@
       </div>
     </template>
     <template id="public-key-writer-field-template">
-      <div v-bind:class="{&quot;has-success&quot;: isSaved, &quot;has-error&quot;: hasError}" class="form-group">
+      <div v-bind:class="{&quot;has-success&quot;: isSaved, &quot;has-error&quot;: hasError}" data-step-index="3" class="form-group">
         <div class="col-md-12">
           <div class="input-group input-group-lg">
-            <input v-model="publicKeyName" v-on:keyup.enter="tryToSavePublicKey" v-bind:tabindex="tabIndex" placeholder="Public Key Name" title="Public Key Name" class="form-control input-lg"><span class="input-group-btn">
+            <input v-model="publicKeyName" v-on:keyup.enter="tryToSavePublicKey" v-bind:tabindex="tabIndex" placeholder="Public Key Name" title="Public Key Name" class="form-control input-lg"><span data-step-index="4" class="input-group-btn">
               <button v-on:click="tryToSavePublicKey" v-bind:class="{&quot;btn-success&quot;: isSaved, &quot;btn-danger&quot;: hasError, &quot;btn-default&quot;: isDefault}" v-bind:disabled="isSaved || !isReadyForSave" type="button" tabindex="-1" class="btn btn-lg"><span v-show="isSaved" class="glyphicon glyphicon-floppy-saved"></span><span v-show="!isSaved" class="glyphicon glyphicon-floppy-save"></span></button></span>
           </div>
         </div>
       </div>
     </template>
     <template id="secret-generator-field-template">
-      <div class="form-group">
+      <div data-step-index="2" class="form-group">
         <div class="col-md-12">
           <div class="input-group input-group-lg">
             <div class="input-group-btn">
@@ -75,7 +75,7 @@
       </div>
     </template>
     <template id="secret-field-template">
-      <div v-bind:class="{&quot;has-error&quot;: hasError}" class="form-group">
+      <div v-bind:class="{&quot;has-error&quot;: hasError}" data-step-index="7" class="form-group">
         <div class="col-md-12">
           <div class="input-group input-group-lg">
             <div class="input-group-btn">
@@ -89,22 +89,24 @@
     <div class="container">
       <form id="secret-form" role="form" v-cloak class="form-horizontal">
         <div style="padding-top: 2px;" class="form-group">
-          <div class="col-md-12"><span v-show="isDirectMode" class="label label-default pull-right">Direct mode</span><span v-show="isReverseMode" class="label label-warning pull-right">Reverse mode</span></div>
+          <div class="col-md-12">
+            <button type="button" v-on:click="startIntro" class="btn btn-info btn-xs pull-right"><span class="glyphicon glyphicon-question-sign"></span></button><span v-show="isDirectMode" class="label label-default pull-left">Direct mode</span><span v-show="isReverseMode" class="label label-warning pull-left">Reverse mode</span>
+          </div>
         </div>
         <passphrase-field v-bind:passphrase.sync="passphrase"></passphrase-field>
         <public-key-reader-field v-show="isDirectMode" v-bind:public-key.sync="chosenPublicKey" v-bind:public-key-name.sync="chosenPublicKeyName" tab-index="2"></public-key-reader-field>
         <secret-generator-field v-show="isReverseMode" v-bind:secret.sync="generatedSecret" tab-index="2"></secret-generator-field>
         <div title="Mode trigger" class="form-group text-center">
           <div class="col-md-12">
-            <button v-on:click="toggleMode" v-bind:class="{&quot;btn-default&quot;: isDirectMode, &quot;btn-warning&quot;: isReverseMode}" type="button" tabindex="-1" class="btn btn-lg"><span class="glyphicon glyphicon-sort"></span></button>
+            <button v-on:click="toggleMode" data-step-index="5" v-bind:class="{&quot;btn-default&quot;: isDirectMode, &quot;btn-warning&quot;: isReverseMode}" type="button" tabindex="-1" class="btn btn-lg"><span class="glyphicon glyphicon-sort"></span></button>
           </div>
         </div>
         <secret-field v-show="isDirectMode" v-bind:secret="computedSecret" v-bind:error="secretComputationError" tab-index="3"></secret-field>
         <public-key-writer-field v-show="isReverseMode" v-bind:public-key="computedPublicKey" v-bind:public-key-name.sync="enteredPublicKeyName" v-bind:error="publicKeyComputationError" tab-index="3"></public-key-writer-field>
       </form>
     </div>
-    <footer class="container"><a href="https://docs.google.com/presentation/d/1ZnEOJmroB_GmzV5ukgMryF9Mb2WN7EEsS53kv_KUaFg/edit?usp=sharing" role="button" target="help" style="margin-left: 15px;" class="btn btn-info btn-xs pull-right"><span class="glyphicon glyphicon-question-sign"></span></a>
-      <p class="text-right text-muted small pull-right">© 2015, Redneckz</p>
+    <footer class="container">
+      <p class="text-center text-muted small">© 2015, Redneckz</p>
     </footer>
     <script src="/dist/js/vendor.js"></script>
     <script src="/dist/js/index.js"></script>

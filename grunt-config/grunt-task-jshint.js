@@ -10,7 +10,7 @@ module.exports = function (grunt) {
 				node: true, devel: true,
 				globals: {
 					_: true, chai: true, Vue: true, "swal": true,
-					zxcvbn: true
+					zxcvbn: true, introJs: true
 				}
 			},
 			all: {
