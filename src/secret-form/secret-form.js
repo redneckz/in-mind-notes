@@ -2,9 +2,9 @@ import directModeMixin from "./secret-form-direct-mode-mixin.js";
 import reverseModeMixin from "./secret-form-reverse-mode-mixin.js";
 import introMixin from "./secret-form-intro-mixin.js";
 
-import PassphraseField from "../passphrase-field/passphrase-field.js";
+import PassphraseField from "secret-form/passphrase-field";
 
-import publicKeyStorage from "../js/public-key-storage.js";
+import publicKeyStorage from "public-key-storage";
 
 export default new Vue({
 	el: "#secret-form",

@@ -1,4 +1,4 @@
-import {bufferToBase64, base64ToBuffer} from "./buffer-to-base64.js";
+import {bufferToBase64, base64ToBuffer} from "utils/buffer-to-base64";
 
 chai.config.includeStack = true;
 

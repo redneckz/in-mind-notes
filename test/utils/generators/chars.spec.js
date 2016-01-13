@@ -1,4 +1,4 @@
-import chars from "./chars.js";
+import chars from "utils/generators/chars";
 
 chai.config.includeStack = true;
 

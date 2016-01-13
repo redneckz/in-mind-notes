@@ -1,6 +1,6 @@
-import {stringToBuffer, bufferToString} from "./string-to-buffer.js";
-import chars from "./generators/chars.js";
-import randomChars from "./generators/random-chars.js";
+import {stringToBuffer, bufferToString} from "utils/string-to-buffer";
+import chars from "utils/generators/chars";
+import randomChars from "utils/generators/random-chars";
 
 chai.config.includeStack = true;
 

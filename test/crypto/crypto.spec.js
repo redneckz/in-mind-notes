@@ -1,5 +1,5 @@
-import {computeSecret, computePublicKey} from "./crypto.js";
-import {stringToBuffer, bufferToString} from "../../utils/string-to-buffer.js";
+import {computeSecret, computePublicKey} from "crypto";
+import {stringToBuffer, bufferToString} from "utils/string-to-buffer";
 
 chai.config.includeStack = true;
 

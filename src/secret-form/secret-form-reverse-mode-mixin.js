@@ -1,9 +1,9 @@
-import {computePublicKey} from "./crypto.js";
-import {stringToBuffer} from "../../utils/string-to-buffer.js";
-import {bufferToBase64} from "../../utils/buffer-to-base64.js";
+import {computePublicKey} from "crypto";
+import {stringToBuffer} from "utils/string-to-buffer";
+import {bufferToBase64} from "utils/buffer-to-base64";
 
-import SecretGeneratorField from "../secret-generator-field/js/secret-generator-field.js";
-import PublicKeyWriterField from "../public-key-writer-field/public-key-writer-field.js";
+import SecretGeneratorField from "secret-form/secret-generator-field";
+import PublicKeyWriterField from "secret-form/public-key-writer-field";
 
 export default {
 	data: {

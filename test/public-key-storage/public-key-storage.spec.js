@@ -1,4 +1,4 @@
-import publicKeyStorage from "./public-key-storage.js";
+import publicKeyStorage from "public-key-storage";
 
 chai.config.includeStack = true;
 

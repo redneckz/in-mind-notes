@@ -1,4 +1,4 @@
-import {stringToBuffer} from "../../utils/string-to-buffer.js";
+import {stringToBuffer} from "utils/string-to-buffer";
 
 export {computeSecret, computePublicKey};
 

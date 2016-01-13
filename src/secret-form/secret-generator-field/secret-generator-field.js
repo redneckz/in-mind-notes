@@ -1,4 +1,4 @@
-import {generateSecret, filterAlphabet} from "./generate-secret.js";
+import {generateSecret, filterAlphabet} from "secret-form/secret-generator-field/generate-secret";
 
 const DEFAULT_ALPHABET_REGEXP = /[0-9a-zA-Z_]/;
 const DEFAULT_SECRET_LENGTH_VARIANT = {secretLength: 32, label: "Long"};

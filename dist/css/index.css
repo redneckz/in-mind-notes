@@ -2,14 +2,14 @@ input.form-control:read-only {
   background-color: transparent !important;
 }
 
-[v-cloak] {
-  display: none;
-}
-
 .passphrase-score {
   height: 0.4em;
   margin-bottom: 0px;
 }
 .passphrase-score .progress-bar {
   transition-property: width, background-color;
+}
+
+[v-cloak] {
+  display: none;
 }

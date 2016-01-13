@@ -1,4 +1,4 @@
-import {stringToBuffer, bufferToString} from "./string-to-buffer.js";
+import {stringToBuffer, bufferToString} from "utils/string-to-buffer";
 
 export {bufferToBase64, base64ToBuffer};
 

@@ -1,9 +1,9 @@
-import {computeSecret} from "./crypto.js";
-import {bufferToString} from "../../utils/string-to-buffer.js";
-import {base64ToBuffer} from "../../utils/buffer-to-base64.js";
+import {computeSecret} from "crypto";
+import {bufferToString} from "utils/string-to-buffer";
+import {base64ToBuffer} from "utils/buffer-to-base64";
 
-import PublicKeyReaderField from "../public-key-reader-field/public-key-reader-field.js";
-import SecretField from "../secret-field/secret-field.js";
+import PublicKeyReaderField from "secret-form/public-key-reader-field";
+import SecretField from "secret-form/secret-field";
 
 export default {
 	data: {

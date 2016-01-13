@@ -2490,26 +2490,11 @@ process.umask = function() { return 0; };
 },{}],92:[function(require,module,exports){
 "use strict";
 
-var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _secretFormJsSecretFormJs = require("./secret-form/js/secret-form.js");
-
-var _secretFormJsSecretFormJs2 = _interopRequireDefault(_secretFormJsSecretFormJs);
-
-exports.secretFormView = _secretFormJsSecretFormJs2["default"];
-
-},{"./secret-form/js/secret-form.js":100,"babel-runtime/helpers/interop-require-default":11}],93:[function(require,module,exports){
-"use strict";
-
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _utilsStringToBufferJs = require("../../utils/string-to-buffer.js");
+var _utilsStringToBuffer = require("utils/string-to-buffer");
 
 exports.computeSecret = computeSecret;
 exports.computePublicKey = computePublicKey;
@@ -2532,40 +2517,13 @@ function computePublicKey(passphraseStr, secret) {
 }
 
 function computePrivateKey(passphraseStr) {
-	var passphrase = (0, _utilsStringToBufferJs.stringToBuffer)(passphraseStr);
+	var passphrase = (0, _utilsStringToBuffer.stringToBuffer)(passphraseStr);
 	return window.crypto.subtle.digest("SHA-256", passphrase).then(function (passphraseDigest) {
 		return window.crypto.subtle.importKey("raw", passphraseDigest, "AES-CBC", true, ["encrypt", "decrypt"]);
 	});
 }
 
-},{"../../utils/string-to-buffer.js":114}],94:[function(require,module,exports){
-"use strict";
-
-var _cryptoJs = require("./crypto.js");
-
-var _utilsStringToBufferJs = require("../../utils/string-to-buffer.js");
-
-chai.config.includeStack = true;
-
-var expect = chai.expect;
-
-describe("[Crypto module]", function () {
-
-	describe("computePublicKey", function () {
-
-		var PASSPHRASE_STR = "123456qwerty";
-		var SECRET_STR = "asdfg12345";
-
-		it("should work symmetrically to computeSecret", function () {
-			var secret = (0, _utilsStringToBufferJs.stringToBuffer)(SECRET_STR);
-			return expect((0, _cryptoJs.computePublicKey)(PASSPHRASE_STR, secret).then(function (publicKey) {
-				return (0, _cryptoJs.computeSecret)(PASSPHRASE_STR, publicKey);
-			}).then(_utilsStringToBufferJs.bufferToString)).to.eventually.equal(SECRET_STR);
-		});
-	});
-});
-
-},{"../../utils/string-to-buffer.js":114,"./crypto.js":93}],95:[function(require,module,exports){
+},{"utils/string-to-buffer":107}],93:[function(require,module,exports){
 "use strict";
 
 var _createClass = require("babel-runtime/helpers/create-class")["default"];
@@ -2727,401 +2685,7 @@ function toPublicKeyName(storageItemKey) {
 }
 module.exports = exports["default"];
 
-},{"babel-runtime/core-js/map":2,"babel-runtime/core-js/set":7,"babel-runtime/core-js/symbol":8,"babel-runtime/helpers/class-call-check":9,"babel-runtime/helpers/create-class":10}],96:[function(require,module,exports){
-"use strict";
-
-var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
-
-var _publicKeyStorageJs = require("./public-key-storage.js");
-
-var _publicKeyStorageJs2 = _interopRequireDefault(_publicKeyStorageJs);
-
-chai.config.includeStack = true;
-
-var expect = chai.expect;
-
-describe("[Public key storage module]", function () {
-
-	describe("publicKeyStorage", function () {
-		var PUBLIC_KEY_ENTRY_LIST = [{ publicKeyName: "foo", publicKey: "123456" }, { publicKeyName: "Foo", publicKey: "654321" }, { publicKeyName: "bar", publicKey: "qwerty" }, { publicKeyName: "bAr", publicKey: "ytrewq" }, { publicKeyName: "baz", publicKey: "asdfgh" }, { publicKeyName: "baZ", publicKey: "hgfdsa" }, { publicKeyName: "qux", publicKey: "zxcvbn" }, { publicKeyName: "QUX", publicKey: "nbvcxz" }];
-
-		var PUBLIC_KEY = PUBLIC_KEY_ENTRY_LIST[0];
-
-		beforeEach(function () {
-			window.localStorage.clear();
-		});
-
-		it("should return all public keys by \"entries\" field", function () {
-			_publicKeyStorageJs2["default"].entries = PUBLIC_KEY_ENTRY_LIST;
-			expect(entrtyListToMap(_publicKeyStorageJs2["default"].entries)).to.deep.equal(entrtyListToMap(PUBLIC_KEY_ENTRY_LIST));
-		});
-
-		it("should replace public key with same name", function () {
-			var publicKeyName = PUBLIC_KEY.publicKeyName;
-			var publicKey = PUBLIC_KEY.publicKey;
-
-			_publicKeyStorageJs2["default"].setPublicKey(publicKeyName, publicKey);
-			expect(_publicKeyStorageJs2["default"].entries).to.have.length(1);
-			expect(_publicKeyStorageJs2["default"].getPublicKey(publicKeyName)).to.equal(publicKey);
-			_publicKeyStorageJs2["default"].setPublicKey(publicKeyName, "new-public-key");
-			expect(_publicKeyStorageJs2["default"].entries).to.have.length(1);
-			expect(_publicKeyStorageJs2["default"].getPublicKey(publicKeyName)).to.equal("new-public-key");
-		});
-
-		it("should rename public key entry with same public key inside", function () {
-			var publicKeyName = PUBLIC_KEY.publicKeyName;
-			var publicKey = PUBLIC_KEY.publicKey;
-
-			_publicKeyStorageJs2["default"].setPublicKey(publicKeyName, publicKey);
-			expect(_publicKeyStorageJs2["default"].entries).to.have.length(1);
-			expect(_publicKeyStorageJs2["default"].getPublicKey(publicKeyName)).to.equal(publicKey);
-			_publicKeyStorageJs2["default"].setPublicKey("new-name", publicKey);
-			expect(_publicKeyStorageJs2["default"].entries).to.have.length(1);
-			expect(_publicKeyStorageJs2["default"].getPublicKey("new-name")).to.equal(publicKey);
-		});
-
-		it("should remove public key by name", function () {
-			_publicKeyStorageJs2["default"].entries = PUBLIC_KEY_ENTRY_LIST;
-			var publicKeyName = PUBLIC_KEY_ENTRY_LIST[5].publicKeyName;
-
-			_publicKeyStorageJs2["default"].removePublicKey(publicKeyName);
-			var expectedPublicKeysMap = entrtyListToMap(PUBLIC_KEY_ENTRY_LIST);
-			delete expectedPublicKeysMap[publicKeyName];
-			expect(entrtyListToMap(_publicKeyStorageJs2["default"].entries)).to.deep.equal(expectedPublicKeysMap);
-		});
-
-		it("should notify observers on entries update", function () {
-			var observer = chai.spy();
-			_publicKeyStorageJs2["default"].observe(observer);
-			_publicKeyStorageJs2["default"].entries = PUBLIC_KEY_ENTRY_LIST;
-			expect(observer).to.have.been.called.once();
-		});
-
-		it("should notify observers on setPublicKey", function () {
-			var observer = chai.spy();
-			_publicKeyStorageJs2["default"].observe(observer);
-			var publicKeyName = PUBLIC_KEY.publicKeyName;
-			var publicKey = PUBLIC_KEY.publicKey;
-
-			_publicKeyStorageJs2["default"].setPublicKey(publicKeyName, publicKey);
-			expect(observer).to.have.been.called.once();
-		});
-
-		it("should notify observers on removePublicKey", function () {
-			var observer = chai.spy();
-			_publicKeyStorageJs2["default"].entries = PUBLIC_KEY_ENTRY_LIST;
-			_publicKeyStorageJs2["default"].observe(observer);
-			expect(observer).to.not.have.been.called();
-			var publicKeyName = PUBLIC_KEY_ENTRY_LIST[5].publicKeyName;
-
-			_publicKeyStorageJs2["default"].removePublicKey(publicKeyName);
-			expect(observer).to.have.been.called.once();
-		});
-
-		it("should NOT notify abandoned observers", function () {
-			var observer = chai.spy();
-			var unobserve = _publicKeyStorageJs2["default"].observe(observer);
-			unobserve();
-			_publicKeyStorageJs2["default"].entries = PUBLIC_KEY_ENTRY_LIST;
-			expect(observer).to.not.have.been.called();
-		});
-	});
-});
-
-function entrtyListToMap(entryList) {
-	return _(entryList).indexBy("publicKeyName").mapValues("publicKey").value();
-}
-
-},{"./public-key-storage.js":95,"babel-runtime/helpers/interop-require-default":11}],97:[function(require,module,exports){
-"use strict";
-
-var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _cryptoJs = require("./crypto.js");
-
-var _utilsStringToBufferJs = require("../../utils/string-to-buffer.js");
-
-var _utilsBufferToBase64Js = require("../../utils/buffer-to-base64.js");
-
-var _publicKeyReaderFieldPublicKeyReaderFieldJs = require("../public-key-reader-field/public-key-reader-field.js");
-
-var _publicKeyReaderFieldPublicKeyReaderFieldJs2 = _interopRequireDefault(_publicKeyReaderFieldPublicKeyReaderFieldJs);
-
-var _secretFieldSecretFieldJs = require("../secret-field/secret-field.js");
-
-var _secretFieldSecretFieldJs2 = _interopRequireDefault(_secretFieldSecretFieldJs);
-
-exports["default"] = {
-	data: {
-		chosenPublicKey: "",
-		chosenPublicKeyName: "",
-		computedSecret: "",
-		secretComputationError: undefined
-	},
-	watch: {
-		"passphrase + chosenPublicKey": "updateComputedSecret"
-	},
-	methods: {
-		updateComputedSecret: function updateComputedSecret() {
-			var _this = this;
-
-			if (this.passphrase && this.chosenPublicKey) {
-				try {
-					(0, _cryptoJs.computeSecret)(this.passphrase, (0, _utilsBufferToBase64Js.base64ToBuffer)(this.chosenPublicKey)).then(function (secret) {
-						_this.computedSecret = (0, _utilsStringToBufferJs.bufferToString)(secret);
-						_this.secretComputationError = undefined;
-					})["catch"](handleComputationError.bind(this));
-				} catch (ex) {
-					handleComputationError.call(this, ex);
-				}
-			} else {
-				this.computedSecret = "";
-				this.secretComputationError = undefined;
-			}
-
-			function handleComputationError(ex) {
-				console.warn(ex);
-				this.computedSecret = "";
-				this.secretComputationError = ex;
-			}
-		}
-	},
-	components: {
-		"public-key-reader-field": _publicKeyReaderFieldPublicKeyReaderFieldJs2["default"],
-		"secret-field": _secretFieldSecretFieldJs2["default"]
-	}
-};
-module.exports = exports["default"];
-
-},{"../../utils/buffer-to-base64.js":108,"../../utils/string-to-buffer.js":114,"../public-key-reader-field/public-key-reader-field.js":102,"../secret-field/secret-field.js":104,"./crypto.js":93,"babel-runtime/helpers/interop-require-default":11}],98:[function(require,module,exports){
-"use strict";
-
-var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _publicKeyStorageJs = require("./public-key-storage.js");
-
-var _publicKeyStorageJs2 = _interopRequireDefault(_publicKeyStorageJs);
-
-var INTRO_OPTIONS = {
-	tooltipPosition: "auto",
-	showBullets: false,
-	showProgress: true,
-	showButtons: true,
-	scrollToElement: true,
-	showStepNumbers: false,
-	keyboardNavigation: false,
-	steps: prepareSteps([{
-		intro: "<strong>In Mind Notes</strong> is here to help you keep your secrets\n\t\t\t\t\tin the most safe place... <strong>in your mind</strong>."
-	}, {
-		intro: "Please think up <strong>the strongest passphrase</strong> you can remember."
-	}, {
-		intro: "Generate <strong>your secret</strong>\n\t\t\t\t\tto use it in any <strong>service</strong> you want:\n\t\t\t\t\tmail, social network, online banking, ...",
-		preProcess: function preProcess() {
-			if (!this.passphrase) {
-				this.passphrase = "qwerty";
-			}
-			this.isDirectMode = false;
-		}
-	}, {
-		intro: "Name your secret. Appropriate service name is the better choice.\n\t\t\t\t\tFor example <strong>facebook</strong> or <strong>mail.ru</strong>.",
-		preProcess: function preProcess() {
-			if (!this.generatedSecret) {
-				this.generatedSecret = "asdfgh";
-			}
-		}
-	}, {
-		intro: "You are doing well. Press this button to save new public key\n\t\t\t\t\tin <strong>the local storage</strong> (of your browser).\n\t\t\t\t\tPlease don't worry about public keys safety.\n\t\t\t\t\tHowever, keep them in the private space.",
-		preProcess: function preProcess() {
-			if (!this.enteredPublicKeyName) {
-				this.enteredPublicKeyName = "noname";
-			}
-			_publicKeyStorageJs2["default"].removePublicKey(this.enteredPublicKeyName);
-		}
-	}, {
-		intro: "Your secret has been saved by means of <strong>passphrase</strong>\n\t\t\t\t\tand <strong>public key</strong>. Now let's try to restore your secret.\n\t\t\t\t\tPlease press this button to change mode.",
-		preProcess: function preProcess() {
-			if (!_publicKeyStorageJs2["default"].doesPublicKeyNameExist(this.enteredPublicKeyName)) {
-				_publicKeyStorageJs2["default"].setPublicKey(this.enteredPublicKeyName, this.computedPublicKey);
-			}
-		}
-	}, {
-		intro: "Enter the name of the secret once again (public key name).",
-		preProcess: function preProcess() {
-			this.isDirectMode = true;
-		}
-	}, {
-		intro: "Great job. Here is your secret.",
-		preProcess: function preProcess() {
-			if (this.enteredPublicKeyName !== this.chosenPublicKeyName) {
-				this.chosenPublicKeyName = this.enteredPublicKeyName;
-			}
-		}
-	}])
-};
-
-exports["default"] = {
-	methods: {
-		startIntro: function startIntro() {
-			var _this = this;
-
-			introJs().setOptions(INTRO_OPTIONS).onbeforechange(function (node) {
-				Vue.config.async = false;
-				var currentStepIndex = $(node).data("step-index") || 0;
-				for (var stepIndex = 0; stepIndex <= currentStepIndex; stepIndex++) {
-					var step = INTRO_OPTIONS.steps[stepIndex];
-					if (step.preProcess) {
-						step.preProcess.call(_this);
-					}
-				}
-			}).oncomplete(function () {
-				Vue.config.async = true;
-			}).onexit(function () {
-				Vue.config.async = true;
-			}).start();
-		}
-	}
-};
-
-function prepareSteps(steps) {
-	steps.forEach(computeStepElement);
-	return steps;
-}
-
-function computeStepElement(step, index) {
-	if (index) {
-		step.element = "[data-step-index='" + index + "']";
-	} else {
-		// Zero step goes without element, because it is introductory words only
-	}
-}
-module.exports = exports["default"];
-
-},{"./public-key-storage.js":95,"babel-runtime/helpers/interop-require-default":11}],99:[function(require,module,exports){
-"use strict";
-
-var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _cryptoJs = require("./crypto.js");
-
-var _utilsStringToBufferJs = require("../../utils/string-to-buffer.js");
-
-var _utilsBufferToBase64Js = require("../../utils/buffer-to-base64.js");
-
-var _secretGeneratorFieldJsSecretGeneratorFieldJs = require("../secret-generator-field/js/secret-generator-field.js");
-
-var _secretGeneratorFieldJsSecretGeneratorFieldJs2 = _interopRequireDefault(_secretGeneratorFieldJsSecretGeneratorFieldJs);
-
-var _publicKeyWriterFieldPublicKeyWriterFieldJs = require("../public-key-writer-field/public-key-writer-field.js");
-
-var _publicKeyWriterFieldPublicKeyWriterFieldJs2 = _interopRequireDefault(_publicKeyWriterFieldPublicKeyWriterFieldJs);
-
-exports["default"] = {
-	data: {
-		generatedSecret: "",
-		enteredPublicKeyName: "",
-		computedPublicKey: "",
-		publicKeyComputationError: undefined
-	},
-	watch: {
-		"passphrase + generatedSecret": "updateComputedPublicKey"
-	},
-	methods: {
-		updateComputedPublicKey: function updateComputedPublicKey() {
-			var _this = this;
-
-			if (this.passphrase && this.generatedSecret) {
-				try {
-					(0, _cryptoJs.computePublicKey)(this.passphrase, (0, _utilsStringToBufferJs.stringToBuffer)(this.generatedSecret)).then(function (publicKey) {
-						_this.computedPublicKey = (0, _utilsBufferToBase64Js.bufferToBase64)(publicKey);
-						_this.publicKeyComputationError = undefined;
-					})["catch"](handleComputationError.bind(this));
-				} catch (ex) {
-					handleComputationError.call(this, ex);
-				}
-			} else {
-				this.computedPublicKey = "";
-				this.publicKeyComputationError = undefined;
-			}
-
-			function handleComputationError(ex) {
-				console.warn(ex);
-				this.computedPublicKey = "";
-				this.publicKeyComputationError = ex;
-			}
-		}
-	},
-	components: {
-		"secret-generator-field": _secretGeneratorFieldJsSecretGeneratorFieldJs2["default"],
-		"public-key-writer-field": _publicKeyWriterFieldPublicKeyWriterFieldJs2["default"]
-	}
-};
-module.exports = exports["default"];
-
-},{"../../utils/buffer-to-base64.js":108,"../../utils/string-to-buffer.js":114,"../public-key-writer-field/public-key-writer-field.js":103,"../secret-generator-field/js/secret-generator-field.js":107,"./crypto.js":93,"babel-runtime/helpers/interop-require-default":11}],100:[function(require,module,exports){
-"use strict";
-
-var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _secretFormDirectModeMixinJs = require("./secret-form-direct-mode-mixin.js");
-
-var _secretFormDirectModeMixinJs2 = _interopRequireDefault(_secretFormDirectModeMixinJs);
-
-var _secretFormReverseModeMixinJs = require("./secret-form-reverse-mode-mixin.js");
-
-var _secretFormReverseModeMixinJs2 = _interopRequireDefault(_secretFormReverseModeMixinJs);
-
-var _secretFormIntroMixinJs = require("./secret-form-intro-mixin.js");
-
-var _secretFormIntroMixinJs2 = _interopRequireDefault(_secretFormIntroMixinJs);
-
-var _passphraseFieldPassphraseFieldJs = require("../passphrase-field/passphrase-field.js");
-
-var _passphraseFieldPassphraseFieldJs2 = _interopRequireDefault(_passphraseFieldPassphraseFieldJs);
-
-var _jsPublicKeyStorageJs = require("../js/public-key-storage.js");
-
-var _jsPublicKeyStorageJs2 = _interopRequireDefault(_jsPublicKeyStorageJs);
-
-exports["default"] = new Vue({
-	el: "#secret-form",
-	mixins: [_secretFormDirectModeMixinJs2["default"], _secretFormReverseModeMixinJs2["default"], _secretFormIntroMixinJs2["default"]],
-	data: {
-		isDirectMode: Boolean(_jsPublicKeyStorageJs2["default"].entries.length),
-		passphrase: ""
-	},
-	computed: {
-		isReverseMode: function isReverseMode() {
-			return !this.isDirectMode;
-		}
-	},
-	methods: {
-		toggleMode: function toggleMode() {
-			this.isDirectMode = !this.isDirectMode;
-		}
-	},
-	components: {
-		"passphrase-field": _passphraseFieldPassphraseFieldJs2["default"]
-	}
-});
-module.exports = exports["default"];
-
-},{"../js/public-key-storage.js":95,"../passphrase-field/passphrase-field.js":101,"./secret-form-direct-mode-mixin.js":97,"./secret-form-intro-mixin.js":98,"./secret-form-reverse-mode-mixin.js":99,"babel-runtime/helpers/interop-require-default":11}],101:[function(require,module,exports){
+},{"babel-runtime/core-js/map":2,"babel-runtime/core-js/set":7,"babel-runtime/core-js/symbol":8,"babel-runtime/helpers/class-call-check":9,"babel-runtime/helpers/create-class":10}],94:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3176,7 +2740,7 @@ exports["default"] = Vue.extend({
 });
 module.exports = exports["default"];
 
-},{}],102:[function(require,module,exports){
+},{}],95:[function(require,module,exports){
 "use strict";
 
 var _Symbol = require("babel-runtime/core-js/symbol")["default"];
@@ -3187,9 +2751,9 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _jsPublicKeyStorageJs = require("../js/public-key-storage.js");
+var _publicKeyStorage = require("public-key-storage");
 
-var _jsPublicKeyStorageJs2 = _interopRequireDefault(_jsPublicKeyStorageJs);
+var _publicKeyStorage2 = _interopRequireDefault(_publicKeyStorage);
 
 var UNOBSERVE_METHOD = _Symbol();
 
@@ -3212,19 +2776,19 @@ exports["default"] = Vue.extend({
 	created: function created() {
 		var _this = this;
 
-		this[UNOBSERVE_METHOD] = _jsPublicKeyStorageJs2["default"].observe(function () {
-			_this.entries = _jsPublicKeyStorageJs2["default"].entries;
-			_this.publicKey = _jsPublicKeyStorageJs2["default"].getPublicKey(_this.publicKeyName);
+		this[UNOBSERVE_METHOD] = _publicKeyStorage2["default"].observe(function () {
+			_this.entries = _publicKeyStorage2["default"].entries;
+			_this.publicKey = _publicKeyStorage2["default"].getPublicKey(_this.publicKeyName);
 		});
 	},
 	data: function data() {
 		return {
-			entries: _jsPublicKeyStorageJs2["default"].entries
+			entries: _publicKeyStorage2["default"].entries
 		};
 	},
 	watch: {
 		publicKeyName: function publicKeyName(_publicKeyName) {
-			this.publicKey = _jsPublicKeyStorageJs2["default"].getPublicKey(_publicKeyName);
+			this.publicKey = _publicKeyStorage2["default"].getPublicKey(_publicKeyName);
 		}
 	},
 	computed: {
@@ -3249,7 +2813,7 @@ exports["default"] = Vue.extend({
 			var fileReader = new FileReader();
 			fileReader.onload = function () {
 				try {
-					_jsPublicKeyStorageJs2["default"].entries = JSON.parse(fileReader.result);
+					_publicKeyStorage2["default"].entries = JSON.parse(fileReader.result);
 				} catch (ex) {
 					console.warn(ex);
 				}
@@ -3270,7 +2834,7 @@ function getFileInputForImport() {
 }
 module.exports = exports["default"];
 
-},{"../js/public-key-storage.js":95,"babel-runtime/core-js/symbol":8,"babel-runtime/helpers/interop-require-default":11}],103:[function(require,module,exports){
+},{"babel-runtime/core-js/symbol":8,"babel-runtime/helpers/interop-require-default":11,"public-key-storage":93}],96:[function(require,module,exports){
 "use strict";
 
 var _Symbol = require("babel-runtime/core-js/symbol")["default"];
@@ -3281,9 +2845,9 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _jsPublicKeyStorageJs = require("../js/public-key-storage.js");
+var _publicKeyStorage = require("public-key-storage");
 
-var _jsPublicKeyStorageJs2 = _interopRequireDefault(_jsPublicKeyStorageJs);
+var _publicKeyStorage2 = _interopRequireDefault(_publicKeyStorage);
 
 var UNOBSERVE_METHOD = _Symbol();
 
@@ -3308,7 +2872,7 @@ exports["default"] = Vue.extend({
 		}
 	},
 	created: function created() {
-		this[UNOBSERVE_METHOD] = _jsPublicKeyStorageJs2["default"].observe(recomputeSavedPublicKey.bind(this));
+		this[UNOBSERVE_METHOD] = _publicKeyStorage2["default"].observe(recomputeSavedPublicKey.bind(this));
 		recomputeSavedPublicKey.call(this);
 	},
 	watch: {
@@ -3331,7 +2895,7 @@ exports["default"] = Vue.extend({
 			return this.publicKey && this.publicKeyName;
 		},
 		isDefault: function isDefault() {
-			return !this.isSaved() && !this.isReadyForSave();
+			return !this.isSaved && !this.isReadyForSave;
 		}
 	},
 	methods: {
@@ -3339,7 +2903,7 @@ exports["default"] = Vue.extend({
 			if (this.isSaved || !this.isReadyForSave) {
 				return;
 			}
-			if (_jsPublicKeyStorageJs2["default"].doesPublicKeyNameExist(this.publicKeyName)) {
+			if (_publicKeyStorage2["default"].doesPublicKeyNameExist(this.publicKeyName)) {
 				swal({
 					type: "warning",
 					title: "Are you sure?",
@@ -3347,8 +2911,8 @@ exports["default"] = Vue.extend({
 					showCancelButton: true,
 					confirmButtonText: "Rewrite"
 				}, savePublicKey.bind(this));
-			} else if (_jsPublicKeyStorageJs2["default"].doesPublicKeyExist(this.publicKey)) {
-				var oldName = _jsPublicKeyStorageJs2["default"].getPublicKeyName(this.publicKey);
+			} else if (_publicKeyStorage2["default"].doesPublicKeyExist(this.publicKey)) {
+				var oldName = _publicKeyStorage2["default"].getPublicKeyName(this.publicKey);
 				swal({
 					type: "warning",
 					title: "Are you sure?",
@@ -3367,15 +2931,15 @@ exports["default"] = Vue.extend({
 });
 
 function savePublicKey() {
-	_jsPublicKeyStorageJs2["default"].setPublicKey(this.publicKeyName, this.publicKey);
+	_publicKeyStorage2["default"].setPublicKey(this.publicKeyName, this.publicKey);
 }
 
 function recomputeSavedPublicKey() {
-	this.savedPublicKey = _jsPublicKeyStorageJs2["default"].getPublicKey(this.publicKeyName);
+	this.savedPublicKey = _publicKeyStorage2["default"].getPublicKey(this.publicKeyName);
 }
 module.exports = exports["default"];
 
-},{"../js/public-key-storage.js":95,"babel-runtime/core-js/symbol":8,"babel-runtime/helpers/interop-require-default":11}],104:[function(require,module,exports){
+},{"babel-runtime/core-js/symbol":8,"babel-runtime/helpers/interop-require-default":11,"public-key-storage":93}],97:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3409,7 +2973,296 @@ exports["default"] = Vue.extend({
 });
 module.exports = exports["default"];
 
-},{}],105:[function(require,module,exports){
+},{}],98:[function(require,module,exports){
+"use strict";
+
+var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _crypto = require("crypto");
+
+var _utilsStringToBuffer = require("utils/string-to-buffer");
+
+var _utilsBufferToBase64 = require("utils/buffer-to-base64");
+
+var _secretFormPublicKeyReaderField = require("secret-form/public-key-reader-field");
+
+var _secretFormPublicKeyReaderField2 = _interopRequireDefault(_secretFormPublicKeyReaderField);
+
+var _secretFormSecretField = require("secret-form/secret-field");
+
+var _secretFormSecretField2 = _interopRequireDefault(_secretFormSecretField);
+
+exports["default"] = {
+	data: {
+		chosenPublicKey: "",
+		chosenPublicKeyName: "",
+		computedSecret: "",
+		secretComputationError: undefined
+	},
+	watch: {
+		"passphrase + chosenPublicKey": "updateComputedSecret"
+	},
+	methods: {
+		updateComputedSecret: function updateComputedSecret() {
+			var _this = this;
+
+			if (this.passphrase && this.chosenPublicKey) {
+				try {
+					(0, _crypto.computeSecret)(this.passphrase, (0, _utilsBufferToBase64.base64ToBuffer)(this.chosenPublicKey)).then(function (secret) {
+						_this.computedSecret = (0, _utilsStringToBuffer.bufferToString)(secret);
+						_this.secretComputationError = undefined;
+					})["catch"](handleComputationError.bind(this));
+				} catch (ex) {
+					handleComputationError.call(this, ex);
+				}
+			} else {
+				this.computedSecret = "";
+				this.secretComputationError = undefined;
+			}
+
+			function handleComputationError(ex) {
+				console.warn(ex);
+				this.computedSecret = "";
+				this.secretComputationError = ex;
+			}
+		}
+	},
+	components: {
+		"public-key-reader-field": _secretFormPublicKeyReaderField2["default"],
+		"secret-field": _secretFormSecretField2["default"]
+	}
+};
+module.exports = exports["default"];
+
+},{"babel-runtime/helpers/interop-require-default":11,"crypto":92,"secret-form/public-key-reader-field":95,"secret-form/secret-field":97,"utils/buffer-to-base64":104,"utils/string-to-buffer":107}],99:[function(require,module,exports){
+"use strict";
+
+var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _publicKeyStorage = require("public-key-storage");
+
+var _publicKeyStorage2 = _interopRequireDefault(_publicKeyStorage);
+
+var INTRO_OPTIONS = {
+	tooltipPosition: "auto",
+	showBullets: false,
+	showProgress: true,
+	showButtons: true,
+	scrollToElement: true,
+	showStepNumbers: false,
+	keyboardNavigation: false,
+	steps: prepareSteps([{
+		intro: "<strong>In Mind Notes</strong> is here to help you keep your secrets\n\t\t\t\t\tin the most safe place... <strong>in your mind</strong>."
+	}, {
+		intro: "Please think up <strong>the strongest passphrase</strong> you can remember."
+	}, {
+		intro: "Generate <strong>your secret</strong>\n\t\t\t\t\tto use it in any <strong>service</strong> you want:\n\t\t\t\t\tmail, social network, online banking, ...",
+		preProcess: function preProcess() {
+			if (!this.passphrase) {
+				this.passphrase = "qwerty";
+			}
+			this.isDirectMode = false;
+		}
+	}, {
+		intro: "Name your secret. Appropriate service name is the better choice.\n\t\t\t\t\tFor example <strong>facebook</strong> or <strong>mail.ru</strong>.",
+		preProcess: function preProcess() {
+			if (!this.generatedSecret) {
+				this.generatedSecret = "asdfgh";
+			}
+		}
+	}, {
+		intro: "You are doing well. Press this button to save new public key\n\t\t\t\t\tin <strong>the local storage</strong> (of your browser).\n\t\t\t\t\tPlease don't worry about public keys safety.\n\t\t\t\t\tHowever, keep them in the private space.",
+		preProcess: function preProcess() {
+			if (!this.enteredPublicKeyName) {
+				this.enteredPublicKeyName = "noname";
+			}
+			_publicKeyStorage2["default"].removePublicKey(this.enteredPublicKeyName);
+		}
+	}, {
+		intro: "Your secret has been saved by means of <strong>passphrase</strong>\n\t\t\t\t\tand <strong>public key</strong>. Now let's try to restore your secret.\n\t\t\t\t\tPlease press this button to change mode.",
+		preProcess: function preProcess() {
+			if (!_publicKeyStorage2["default"].doesPublicKeyNameExist(this.enteredPublicKeyName)) {
+				_publicKeyStorage2["default"].setPublicKey(this.enteredPublicKeyName, this.computedPublicKey);
+			}
+		}
+	}, {
+		intro: "Enter the name of the secret once again (public key name).",
+		preProcess: function preProcess() {
+			this.isDirectMode = true;
+		}
+	}, {
+		intro: "Great job. Here is your secret.",
+		preProcess: function preProcess() {
+			if (this.enteredPublicKeyName !== this.chosenPublicKeyName) {
+				this.chosenPublicKeyName = this.enteredPublicKeyName;
+			}
+		}
+	}])
+};
+
+exports["default"] = {
+	methods: {
+		startIntro: function startIntro() {
+			var _this = this;
+
+			introJs().setOptions(INTRO_OPTIONS).onbeforechange(function (node) {
+				Vue.config.async = false;
+				var currentStepIndex = $(node).data("step-index") || 0;
+				for (var stepIndex = 0; stepIndex <= currentStepIndex; stepIndex++) {
+					var step = INTRO_OPTIONS.steps[stepIndex];
+					if (step.preProcess) {
+						step.preProcess.call(_this);
+					}
+				}
+			}).oncomplete(function () {
+				Vue.config.async = true;
+			}).onexit(function () {
+				Vue.config.async = true;
+			}).start();
+		}
+	}
+};
+
+function prepareSteps(steps) {
+	steps.forEach(computeStepElement);
+	return steps;
+}
+
+function computeStepElement(step, index) {
+	if (index) {
+		step.element = "[data-step-index='" + index + "']";
+	} else {
+		// Zero step goes without element, because it is introductory words only
+	}
+}
+module.exports = exports["default"];
+
+},{"babel-runtime/helpers/interop-require-default":11,"public-key-storage":93}],100:[function(require,module,exports){
+"use strict";
+
+var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _crypto = require("crypto");
+
+var _utilsStringToBuffer = require("utils/string-to-buffer");
+
+var _utilsBufferToBase64 = require("utils/buffer-to-base64");
+
+var _secretFormSecretGeneratorField = require("secret-form/secret-generator-field");
+
+var _secretFormSecretGeneratorField2 = _interopRequireDefault(_secretFormSecretGeneratorField);
+
+var _secretFormPublicKeyWriterField = require("secret-form/public-key-writer-field");
+
+var _secretFormPublicKeyWriterField2 = _interopRequireDefault(_secretFormPublicKeyWriterField);
+
+exports["default"] = {
+	data: {
+		generatedSecret: "",
+		enteredPublicKeyName: "",
+		computedPublicKey: "",
+		publicKeyComputationError: undefined
+	},
+	watch: {
+		"passphrase + generatedSecret": "updateComputedPublicKey"
+	},
+	methods: {
+		updateComputedPublicKey: function updateComputedPublicKey() {
+			var _this = this;
+
+			if (this.passphrase && this.generatedSecret) {
+				try {
+					(0, _crypto.computePublicKey)(this.passphrase, (0, _utilsStringToBuffer.stringToBuffer)(this.generatedSecret)).then(function (publicKey) {
+						_this.computedPublicKey = (0, _utilsBufferToBase64.bufferToBase64)(publicKey);
+						_this.publicKeyComputationError = undefined;
+					})["catch"](handleComputationError.bind(this));
+				} catch (ex) {
+					handleComputationError.call(this, ex);
+				}
+			} else {
+				this.computedPublicKey = "";
+				this.publicKeyComputationError = undefined;
+			}
+
+			function handleComputationError(ex) {
+				console.warn(ex);
+				this.computedPublicKey = "";
+				this.publicKeyComputationError = ex;
+			}
+		}
+	},
+	components: {
+		"secret-generator-field": _secretFormSecretGeneratorField2["default"],
+		"public-key-writer-field": _secretFormPublicKeyWriterField2["default"]
+	}
+};
+module.exports = exports["default"];
+
+},{"babel-runtime/helpers/interop-require-default":11,"crypto":92,"secret-form/public-key-writer-field":96,"secret-form/secret-generator-field":103,"utils/buffer-to-base64":104,"utils/string-to-buffer":107}],101:[function(require,module,exports){
+"use strict";
+
+var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _secretFormDirectModeMixinJs = require("./secret-form-direct-mode-mixin.js");
+
+var _secretFormDirectModeMixinJs2 = _interopRequireDefault(_secretFormDirectModeMixinJs);
+
+var _secretFormReverseModeMixinJs = require("./secret-form-reverse-mode-mixin.js");
+
+var _secretFormReverseModeMixinJs2 = _interopRequireDefault(_secretFormReverseModeMixinJs);
+
+var _secretFormIntroMixinJs = require("./secret-form-intro-mixin.js");
+
+var _secretFormIntroMixinJs2 = _interopRequireDefault(_secretFormIntroMixinJs);
+
+var _secretFormPassphraseField = require("secret-form/passphrase-field");
+
+var _secretFormPassphraseField2 = _interopRequireDefault(_secretFormPassphraseField);
+
+var _publicKeyStorage = require("public-key-storage");
+
+var _publicKeyStorage2 = _interopRequireDefault(_publicKeyStorage);
+
+exports["default"] = new Vue({
+	el: "#secret-form",
+	mixins: [_secretFormDirectModeMixinJs2["default"], _secretFormReverseModeMixinJs2["default"], _secretFormIntroMixinJs2["default"]],
+	data: {
+		isDirectMode: Boolean(_publicKeyStorage2["default"].entries.length),
+		passphrase: ""
+	},
+	computed: {
+		isReverseMode: function isReverseMode() {
+			return !this.isDirectMode;
+		}
+	},
+	methods: {
+		toggleMode: function toggleMode() {
+			this.isDirectMode = !this.isDirectMode;
+		}
+	},
+	components: {
+		"passphrase-field": _secretFormPassphraseField2["default"]
+	}
+});
+module.exports = exports["default"];
+
+},{"./secret-form-direct-mode-mixin.js":98,"./secret-form-intro-mixin.js":99,"./secret-form-reverse-mode-mixin.js":100,"babel-runtime/helpers/interop-require-default":11,"public-key-storage":93,"secret-form/passphrase-field":94}],102:[function(require,module,exports){
 "use strict";
 
 var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
@@ -3420,23 +3273,23 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _utilsGeneratorsCharsJs = require("../../../utils/generators/chars.js");
+var _utilsGeneratorsChars = require("utils/generators/chars");
 
-var _utilsGeneratorsCharsJs2 = _interopRequireDefault(_utilsGeneratorsCharsJs);
+var _utilsGeneratorsChars2 = _interopRequireDefault(_utilsGeneratorsChars);
 
-var _utilsGeneratorsRandomCharsJs = require("../../../utils/generators/random-chars.js");
+var _utilsGeneratorsRandomChars = require("utils/generators/random-chars");
 
-var _utilsGeneratorsRandomCharsJs2 = _interopRequireDefault(_utilsGeneratorsRandomCharsJs);
+var _utilsGeneratorsRandomChars2 = _interopRequireDefault(_utilsGeneratorsRandomChars);
 
 exports.generateSecret = generateSecret;
 exports.filterAlphabet = filterAlphabet;
 
-var ABC = [].concat(_toConsumableArray((0, _utilsGeneratorsCharsJs2["default"])("!", "~")));
+var ABC = [].concat(_toConsumableArray((0, _utilsGeneratorsChars2["default"])("!", "~")));
 
 function generateSecret(length) {
 	var alphabet = arguments.length <= 1 || arguments[1] === undefined ? ABC : arguments[1];
 
-	return [].concat(_toConsumableArray((0, _utilsGeneratorsRandomCharsJs2["default"])(length, alphabet))).join("");
+	return [].concat(_toConsumableArray((0, _utilsGeneratorsRandomChars2["default"])(length, alphabet))).join("");
 }
 
 function filterAlphabet(regExp) {
@@ -3447,53 +3300,14 @@ function filterAlphabet(regExp) {
 	});
 }
 
-},{"../../../utils/generators/chars.js":110,"../../../utils/generators/random-chars.js":112,"babel-runtime/helpers/interop-require-default":11,"babel-runtime/helpers/to-consumable-array":12}],106:[function(require,module,exports){
-"use strict";
-
-var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
-
-var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
-
-var _generateSecretJs = require("./generate-secret.js");
-
-var _utilsGeneratorsCharsJs = require("../../../utils/generators/chars.js");
-
-var _utilsGeneratorsCharsJs2 = _interopRequireDefault(_utilsGeneratorsCharsJs);
-
-chai.config.includeStack = true;
-
-var expect = chai.expect;
-
-describe("[Secret generator module]", function () {
-
-	describe("filterAlphabet", function () {
-		it("should reduce alphabet according to regular expression", function () {
-			expect((0, _generateSecretJs.filterAlphabet)(/[A-Z]/)).to.deep.equal([].concat(_toConsumableArray((0, _utilsGeneratorsCharsJs2["default"])("A", "Z"))));
-		});
-	});
-
-	describe("generateSecret", function () {
-
-		var SECRET_LEN = 10;
-
-		it("should return string with exact length", function () {
-			expect((0, _generateSecretJs.generateSecret)(SECRET_LEN)).to.be.a("string").and.to.have.length(SECRET_LEN);
-		});
-
-		it("should generate chars from specified alphabet", function () {
-			expect((0, _generateSecretJs.generateSecret)(SECRET_LEN, (0, _generateSecretJs.filterAlphabet)(/[A-Z]/))).to.match(/^[A-Z]+$/);
-		});
-	});
-});
-
-},{"../../../utils/generators/chars.js":110,"./generate-secret.js":105,"babel-runtime/helpers/interop-require-default":11,"babel-runtime/helpers/to-consumable-array":12}],107:[function(require,module,exports){
+},{"babel-runtime/helpers/interop-require-default":11,"babel-runtime/helpers/to-consumable-array":12,"utils/generators/chars":105,"utils/generators/random-chars":106}],103:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _generateSecretJs = require("./generate-secret.js");
+var _secretFormSecretGeneratorFieldGenerateSecret = require("secret-form/secret-generator-field/generate-secret");
 
 var DEFAULT_ALPHABET_REGEXP = /[0-9a-zA-Z_]/;
 var DEFAULT_SECRET_LENGTH_VARIANT = { secretLength: 32, label: "Long" };
@@ -3524,8 +3338,8 @@ exports["default"] = Vue.extend({
 	},
 	methods: {
 		generateSecret: function generateSecret() {
-			var alphabet = (0, _generateSecretJs.filterAlphabet)(this.currentAlphabetRegExp);
-			this.secret = (0, _generateSecretJs.generateSecret)(this.currentSecretLengthVariant.secretLength, alphabet);
+			var alphabet = (0, _secretFormSecretGeneratorFieldGenerateSecret.filterAlphabet)(this.currentAlphabetRegExp);
+			this.secret = (0, _secretFormSecretGeneratorFieldGenerateSecret.generateSecret)(this.currentSecretLengthVariant.secretLength, alphabet);
 			Vue.nextTick(this.selectSecret.bind(this));
 		},
 		chooseAlphabet: function chooseAlphabet(alphabetRegExp) {
@@ -3543,14 +3357,14 @@ exports["default"] = Vue.extend({
 });
 module.exports = exports["default"];
 
-},{"./generate-secret.js":105}],108:[function(require,module,exports){
+},{"secret-form/secret-generator-field/generate-secret":102}],104:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _stringToBufferJs = require("./string-to-buffer.js");
+var _utilsStringToBuffer = require("utils/string-to-buffer");
 
 exports.bufferToBase64 = bufferToBase64;
 exports.base64ToBuffer = base64ToBuffer;
@@ -3562,7 +3376,7 @@ function bufferToBase64(buffer) {
 	if (buffer.byteLength === 0) {
 		return "";
 	}
-	return btoa((0, _stringToBufferJs.bufferToString)(buffer, Uint8Array));
+	return btoa((0, _utilsStringToBuffer.bufferToString)(buffer, Uint8Array));
 }
 
 function base64ToBuffer(base64) {
@@ -3572,53 +3386,10 @@ function base64ToBuffer(base64) {
 	if (!base64) {
 		return new ArrayBuffer(0);
 	}
-	return (0, _stringToBufferJs.stringToBuffer)(atob(base64), Uint8Array);
+	return (0, _utilsStringToBuffer.stringToBuffer)(atob(base64), Uint8Array);
 }
 
-},{"./string-to-buffer.js":114}],109:[function(require,module,exports){
-"use strict";
-
-var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
-
-var _bufferToBase64Js = require("./buffer-to-base64.js");
-
-chai.config.includeStack = true;
-
-var expect = chai.expect;
-
-describe("[Base64 converter module]", function () {
-
-	var randomBuffer = undefined;
-
-	beforeEach(function () {
-		randomBuffer = generateRandomBuffer();
-	});
-
-	describe("bufferToBase64", function () {
-		it("should return string", function () {
-			expect((0, _bufferToBase64Js.bufferToBase64)(randomBuffer)).to.be.a("string").and.to.have.length.above(0);
-		});
-	});
-
-	describe("base64ToBuffer", function () {
-		it("should work symmetrically to bufferToBase64", function () {
-			var buffer = (0, _bufferToBase64Js.base64ToBuffer)((0, _bufferToBase64Js.bufferToBase64)(randomBuffer));
-			expect(toArray(buffer)).to.deep.equal(toArray(randomBuffer));
-		});
-	});
-});
-
-function generateRandomBuffer() {
-	var result = new Uint8Array(10);
-	window.crypto.getRandomValues(result);
-	return result.buffer;
-}
-
-function toArray(buffer) {
-	return [].concat(_toConsumableArray(new Uint8Array(buffer)));
-}
-
-},{"./buffer-to-base64.js":108,"babel-runtime/helpers/to-consumable-array":12}],110:[function(require,module,exports){
+},{"utils/string-to-buffer":107}],105:[function(require,module,exports){
 "use strict";
 
 var _regeneratorRuntime = require("babel-runtime/regenerator")["default"];
@@ -3659,35 +3430,7 @@ function chars(fromChar, toChar) {
 
 module.exports = exports["default"];
 
-},{"babel-runtime/regenerator":89}],111:[function(require,module,exports){
-"use strict";
-
-var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
-
-var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
-
-var _charsJs = require("./chars.js");
-
-var _charsJs2 = _interopRequireDefault(_charsJs);
-
-chai.config.includeStack = true;
-
-var expect = chai.expect;
-
-describe("[Chars generator module]", function () {
-
-	describe("chars generator", function () {
-		it("should return valid alphabetic range", function () {
-			expect([].concat(_toConsumableArray((0, _charsJs2["default"])("A", "C")))).to.deep.equal(["A", "B", "C"]);
-		});
-
-		it("should return valid numeric range", function () {
-			expect([].concat(_toConsumableArray((0, _charsJs2["default"])("1", "3")))).to.deep.equal(["1", "2", "3"]);
-		});
-	});
-});
-
-},{"./chars.js":110,"babel-runtime/helpers/interop-require-default":11,"babel-runtime/helpers/to-consumable-array":12}],112:[function(require,module,exports){
+},{"babel-runtime/regenerator":89}],106:[function(require,module,exports){
 "use strict";
 
 var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
@@ -3721,38 +3464,7 @@ function randomChars(count, alphabet) {
 
 module.exports = exports["default"];
 
-},{"babel-runtime/helpers/to-consumable-array":12,"babel-runtime/regenerator":89}],113:[function(require,module,exports){
-"use strict";
-
-var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
-
-var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
-
-var _randomCharsJs = require("./random-chars.js");
-
-var _randomCharsJs2 = _interopRequireDefault(_randomCharsJs);
-
-chai.config.includeStack = true;
-
-var expect = chai.expect;
-
-describe("[Random chars generator module]", function () {
-
-	describe("randomChars generator", function () {
-		var RND_SEQUENCE_LEN = 10;
-
-		it("should generate random sequence of specified length", function () {
-			expect([].concat(_toConsumableArray((0, _randomCharsJs2["default"])(RND_SEQUENCE_LEN, "abc")))).to.have.length(RND_SEQUENCE_LEN);
-		});
-
-		it("should generate chars from specified alphabet", function () {
-			var randomStr = [].concat(_toConsumableArray((0, _randomCharsJs2["default"])(RND_SEQUENCE_LEN, "abc123"))).join("");
-			expect(randomStr).to.match(/^[abc123]+$/);
-		});
-	});
-});
-
-},{"./random-chars.js":112,"babel-runtime/helpers/interop-require-default":11,"babel-runtime/helpers/to-consumable-array":12}],114:[function(require,module,exports){
+},{"babel-runtime/helpers/to-consumable-array":12,"babel-runtime/regenerator":89}],107:[function(require,module,exports){
 "use strict";
 
 var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
@@ -3791,22 +3503,295 @@ function bufferToString(buffer) {
 	return String.fromCharCode.apply(String, _toConsumableArray(array));
 }
 
-},{"babel-runtime/helpers/to-consumable-array":12}],115:[function(require,module,exports){
+},{"babel-runtime/helpers/to-consumable-array":12}],108:[function(require,module,exports){
+"use strict";
+
+var _crypto = require("crypto");
+
+var _utilsStringToBuffer = require("utils/string-to-buffer");
+
+chai.config.includeStack = true;
+
+var expect = chai.expect;
+
+describe("[Crypto module]", function () {
+
+	describe("computePublicKey", function () {
+
+		var PASSPHRASE_STR = "123456qwerty";
+		var SECRET_STR = "asdfg12345";
+
+		it("should work symmetrically to computeSecret", function () {
+			var secret = (0, _utilsStringToBuffer.stringToBuffer)(SECRET_STR);
+			return expect((0, _crypto.computePublicKey)(PASSPHRASE_STR, secret).then(function (publicKey) {
+				return (0, _crypto.computeSecret)(PASSPHRASE_STR, publicKey);
+			}).then(_utilsStringToBuffer.bufferToString)).to.eventually.equal(SECRET_STR);
+		});
+	});
+});
+
+},{"crypto":92,"utils/string-to-buffer":107}],109:[function(require,module,exports){
+"use strict";
+
+var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
+
+var _publicKeyStorage = require("public-key-storage");
+
+var _publicKeyStorage2 = _interopRequireDefault(_publicKeyStorage);
+
+chai.config.includeStack = true;
+
+var expect = chai.expect;
+
+describe("[Public key storage module]", function () {
+
+	describe("publicKeyStorage", function () {
+		var PUBLIC_KEY_ENTRY_LIST = [{ publicKeyName: "foo", publicKey: "123456" }, { publicKeyName: "Foo", publicKey: "654321" }, { publicKeyName: "bar", publicKey: "qwerty" }, { publicKeyName: "bAr", publicKey: "ytrewq" }, { publicKeyName: "baz", publicKey: "asdfgh" }, { publicKeyName: "baZ", publicKey: "hgfdsa" }, { publicKeyName: "qux", publicKey: "zxcvbn" }, { publicKeyName: "QUX", publicKey: "nbvcxz" }];
+
+		var PUBLIC_KEY = PUBLIC_KEY_ENTRY_LIST[0];
+
+		beforeEach(function () {
+			window.localStorage.clear();
+		});
+
+		it("should return all public keys by \"entries\" field", function () {
+			_publicKeyStorage2["default"].entries = PUBLIC_KEY_ENTRY_LIST;
+			expect(entrtyListToMap(_publicKeyStorage2["default"].entries)).to.deep.equal(entrtyListToMap(PUBLIC_KEY_ENTRY_LIST));
+		});
+
+		it("should replace public key with same name", function () {
+			var publicKeyName = PUBLIC_KEY.publicKeyName;
+			var publicKey = PUBLIC_KEY.publicKey;
+
+			_publicKeyStorage2["default"].setPublicKey(publicKeyName, publicKey);
+			expect(_publicKeyStorage2["default"].entries).to.have.length(1);
+			expect(_publicKeyStorage2["default"].getPublicKey(publicKeyName)).to.equal(publicKey);
+			_publicKeyStorage2["default"].setPublicKey(publicKeyName, "new-public-key");
+			expect(_publicKeyStorage2["default"].entries).to.have.length(1);
+			expect(_publicKeyStorage2["default"].getPublicKey(publicKeyName)).to.equal("new-public-key");
+		});
+
+		it("should rename public key entry with same public key inside", function () {
+			var publicKeyName = PUBLIC_KEY.publicKeyName;
+			var publicKey = PUBLIC_KEY.publicKey;
+
+			_publicKeyStorage2["default"].setPublicKey(publicKeyName, publicKey);
+			expect(_publicKeyStorage2["default"].entries).to.have.length(1);
+			expect(_publicKeyStorage2["default"].getPublicKey(publicKeyName)).to.equal(publicKey);
+			_publicKeyStorage2["default"].setPublicKey("new-name", publicKey);
+			expect(_publicKeyStorage2["default"].entries).to.have.length(1);
+			expect(_publicKeyStorage2["default"].getPublicKey("new-name")).to.equal(publicKey);
+		});
+
+		it("should remove public key by name", function () {
+			_publicKeyStorage2["default"].entries = PUBLIC_KEY_ENTRY_LIST;
+			var publicKeyName = PUBLIC_KEY_ENTRY_LIST[5].publicKeyName;
+
+			_publicKeyStorage2["default"].removePublicKey(publicKeyName);
+			var expectedPublicKeysMap = entrtyListToMap(PUBLIC_KEY_ENTRY_LIST);
+			delete expectedPublicKeysMap[publicKeyName];
+			expect(entrtyListToMap(_publicKeyStorage2["default"].entries)).to.deep.equal(expectedPublicKeysMap);
+		});
+
+		it("should notify observers on entries update", function () {
+			var observer = chai.spy();
+			_publicKeyStorage2["default"].observe(observer);
+			_publicKeyStorage2["default"].entries = PUBLIC_KEY_ENTRY_LIST;
+			expect(observer).to.have.been.called.once();
+		});
+
+		it("should notify observers on setPublicKey", function () {
+			var observer = chai.spy();
+			_publicKeyStorage2["default"].observe(observer);
+			var publicKeyName = PUBLIC_KEY.publicKeyName;
+			var publicKey = PUBLIC_KEY.publicKey;
+
+			_publicKeyStorage2["default"].setPublicKey(publicKeyName, publicKey);
+			expect(observer).to.have.been.called.once();
+		});
+
+		it("should notify observers on removePublicKey", function () {
+			var observer = chai.spy();
+			_publicKeyStorage2["default"].entries = PUBLIC_KEY_ENTRY_LIST;
+			_publicKeyStorage2["default"].observe(observer);
+			expect(observer).to.not.have.been.called();
+			var publicKeyName = PUBLIC_KEY_ENTRY_LIST[5].publicKeyName;
+
+			_publicKeyStorage2["default"].removePublicKey(publicKeyName);
+			expect(observer).to.have.been.called.once();
+		});
+
+		it("should NOT notify abandoned observers", function () {
+			var observer = chai.spy();
+			var unobserve = _publicKeyStorage2["default"].observe(observer);
+			unobserve();
+			_publicKeyStorage2["default"].entries = PUBLIC_KEY_ENTRY_LIST;
+			expect(observer).to.not.have.been.called();
+		});
+	});
+});
+
+function entrtyListToMap(entryList) {
+	return _(entryList).indexBy("publicKeyName").mapValues("publicKey").value();
+}
+
+},{"babel-runtime/helpers/interop-require-default":11,"public-key-storage":93}],110:[function(require,module,exports){
 "use strict";
 
 var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
 
 var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
 
-var _stringToBufferJs = require("./string-to-buffer.js");
+var _secretFormSecretGeneratorFieldGenerateSecret = require("secret-form/secret-generator-field/generate-secret");
 
-var _generatorsCharsJs = require("./generators/chars.js");
+var _utilsGeneratorsChars = require("utils/generators/chars");
 
-var _generatorsCharsJs2 = _interopRequireDefault(_generatorsCharsJs);
+var _utilsGeneratorsChars2 = _interopRequireDefault(_utilsGeneratorsChars);
 
-var _generatorsRandomCharsJs = require("./generators/random-chars.js");
+chai.config.includeStack = true;
 
-var _generatorsRandomCharsJs2 = _interopRequireDefault(_generatorsRandomCharsJs);
+var expect = chai.expect;
+
+describe("[Secret generator module]", function () {
+
+	describe("filterAlphabet", function () {
+		it("should reduce alphabet according to regular expression", function () {
+			expect((0, _secretFormSecretGeneratorFieldGenerateSecret.filterAlphabet)(/[A-Z]/)).to.deep.equal([].concat(_toConsumableArray((0, _utilsGeneratorsChars2["default"])("A", "Z"))));
+		});
+	});
+
+	describe("generateSecret", function () {
+
+		var SECRET_LEN = 10;
+
+		it("should return string with exact length", function () {
+			expect((0, _secretFormSecretGeneratorFieldGenerateSecret.generateSecret)(SECRET_LEN)).to.be.a("string").and.to.have.length(SECRET_LEN);
+		});
+
+		it("should generate chars from specified alphabet", function () {
+			expect((0, _secretFormSecretGeneratorFieldGenerateSecret.generateSecret)(SECRET_LEN, (0, _secretFormSecretGeneratorFieldGenerateSecret.filterAlphabet)(/[A-Z]/))).to.match(/^[A-Z]+$/);
+		});
+	});
+});
+
+},{"babel-runtime/helpers/interop-require-default":11,"babel-runtime/helpers/to-consumable-array":12,"secret-form/secret-generator-field/generate-secret":102,"utils/generators/chars":105}],111:[function(require,module,exports){
+"use strict";
+
+var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
+
+var _utilsBufferToBase64 = require("utils/buffer-to-base64");
+
+chai.config.includeStack = true;
+
+var expect = chai.expect;
+
+describe("[Base64 converter module]", function () {
+
+	var randomBuffer = undefined;
+
+	beforeEach(function () {
+		randomBuffer = generateRandomBuffer();
+	});
+
+	describe("bufferToBase64", function () {
+		it("should return string", function () {
+			expect((0, _utilsBufferToBase64.bufferToBase64)(randomBuffer)).to.be.a("string").and.to.have.length.above(0);
+		});
+	});
+
+	describe("base64ToBuffer", function () {
+		it("should work symmetrically to bufferToBase64", function () {
+			var buffer = (0, _utilsBufferToBase64.base64ToBuffer)((0, _utilsBufferToBase64.bufferToBase64)(randomBuffer));
+			expect(toArray(buffer)).to.deep.equal(toArray(randomBuffer));
+		});
+	});
+});
+
+function generateRandomBuffer() {
+	var result = new Uint8Array(10);
+	window.crypto.getRandomValues(result);
+	return result.buffer;
+}
+
+function toArray(buffer) {
+	return [].concat(_toConsumableArray(new Uint8Array(buffer)));
+}
+
+},{"babel-runtime/helpers/to-consumable-array":12,"utils/buffer-to-base64":104}],112:[function(require,module,exports){
+"use strict";
+
+var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
+
+var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
+
+var _utilsGeneratorsChars = require("utils/generators/chars");
+
+var _utilsGeneratorsChars2 = _interopRequireDefault(_utilsGeneratorsChars);
+
+chai.config.includeStack = true;
+
+var expect = chai.expect;
+
+describe("[Chars generator module]", function () {
+
+	describe("chars generator", function () {
+		it("should return valid alphabetic range", function () {
+			expect([].concat(_toConsumableArray((0, _utilsGeneratorsChars2["default"])("A", "C")))).to.deep.equal(["A", "B", "C"]);
+		});
+
+		it("should return valid numeric range", function () {
+			expect([].concat(_toConsumableArray((0, _utilsGeneratorsChars2["default"])("1", "3")))).to.deep.equal(["1", "2", "3"]);
+		});
+	});
+});
+
+},{"babel-runtime/helpers/interop-require-default":11,"babel-runtime/helpers/to-consumable-array":12,"utils/generators/chars":105}],113:[function(require,module,exports){
+"use strict";
+
+var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
+
+var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
+
+var _utilsGeneratorsRandomChars = require("utils/generators/random-chars");
+
+var _utilsGeneratorsRandomChars2 = _interopRequireDefault(_utilsGeneratorsRandomChars);
+
+chai.config.includeStack = true;
+
+var expect = chai.expect;
+
+describe("[Random chars generator module]", function () {
+
+	describe("randomChars generator", function () {
+		var RND_SEQUENCE_LEN = 10;
+
+		it("should generate random sequence of specified length", function () {
+			expect([].concat(_toConsumableArray((0, _utilsGeneratorsRandomChars2["default"])(RND_SEQUENCE_LEN, "abc")))).to.have.length(RND_SEQUENCE_LEN);
+		});
+
+		it("should generate chars from specified alphabet", function () {
+			var randomStr = [].concat(_toConsumableArray((0, _utilsGeneratorsRandomChars2["default"])(RND_SEQUENCE_LEN, "abc123"))).join("");
+			expect(randomStr).to.match(/^[abc123]+$/);
+		});
+	});
+});
+
+},{"babel-runtime/helpers/interop-require-default":11,"babel-runtime/helpers/to-consumable-array":12,"utils/generators/random-chars":106}],114:[function(require,module,exports){
+"use strict";
+
+var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
+
+var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
+
+var _utilsStringToBuffer = require("utils/string-to-buffer");
+
+var _utilsGeneratorsChars = require("utils/generators/chars");
+
+var _utilsGeneratorsChars2 = _interopRequireDefault(_utilsGeneratorsChars);
+
+var _utilsGeneratorsRandomChars = require("utils/generators/random-chars");
+
+var _utilsGeneratorsRandomChars2 = _interopRequireDefault(_utilsGeneratorsRandomChars);
 
 chai.config.includeStack = true;
 
@@ -3819,39 +3804,39 @@ describe("[String converter module]", function () {
 
 	beforeEach(function () {
 		randomStr = generateRandomStr();
-		randomBuffer = (0, _stringToBufferJs.stringToBuffer)(randomStr);
+		randomBuffer = (0, _utilsStringToBuffer.stringToBuffer)(randomStr);
 	});
 
 	describe("stringToBuffer", function () {
 		it("should return non-empty ArrayBuffer", function () {
-			expect((0, _stringToBufferJs.stringToBuffer)(randomStr)).to.be.an["instanceof"](ArrayBuffer).and.to.satisfy(function (buffer) {
+			expect((0, _utilsStringToBuffer.stringToBuffer)(randomStr)).to.be.an["instanceof"](ArrayBuffer).and.to.satisfy(function (buffer) {
 				return buffer.byteLength > 0;
 			});
 		});
 
 		it("should throw error in case of invalid argument", function () {
-			expect(_stringToBufferJs.stringToBuffer).to["throw"](Error, /Invalid argument/);
+			expect(_utilsStringToBuffer.stringToBuffer).to["throw"](Error, /Invalid argument/);
 		});
 	});
 
 	describe("bufferToString", function () {
 		it("should return non-empty string", function () {
-			expect((0, _stringToBufferJs.bufferToString)(randomBuffer)).to.be.a("string").and.to.have.length.above(0);
+			expect((0, _utilsStringToBuffer.bufferToString)(randomBuffer)).to.be.a("string").and.to.have.length.above(0);
 		});
 
 		it("should work symmetrically to stringToBuffer", function () {
-			expect((0, _stringToBufferJs.bufferToString)(randomBuffer)).to.be.equal(randomStr);
+			expect((0, _utilsStringToBuffer.bufferToString)(randomBuffer)).to.be.equal(randomStr);
 		});
 
 		it("should throw error in case of invalid argument", function () {
-			expect(_stringToBufferJs.bufferToString).to["throw"](Error, /Invalid argument/);
+			expect(_utilsStringToBuffer.bufferToString).to["throw"](Error, /Invalid argument/);
 		});
 	});
 });
 
 function generateRandomStr() {
-	var abc = [].concat(_toConsumableArray((0, _generatorsCharsJs2["default"])("A", "Z")), _toConsumableArray((0, _generatorsCharsJs2["default"])("a", "z")), _toConsumableArray((0, _generatorsCharsJs2["default"])("0", "9")));
-	return [].concat(_toConsumableArray((0, _generatorsRandomCharsJs2["default"])(10, abc))).join("");
+	var abc = [].concat(_toConsumableArray((0, _utilsGeneratorsChars2["default"])("A", "Z")), _toConsumableArray((0, _utilsGeneratorsChars2["default"])("a", "z")), _toConsumableArray((0, _utilsGeneratorsChars2["default"])("0", "9")));
+	return [].concat(_toConsumableArray((0, _utilsGeneratorsRandomChars2["default"])(10, abc))).join("");
 }
 
-},{"./generators/chars.js":110,"./generators/random-chars.js":112,"./string-to-buffer.js":114,"babel-runtime/helpers/interop-require-default":11,"babel-runtime/helpers/to-consumable-array":12}]},{},[92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115]);
+},{"babel-runtime/helpers/interop-require-default":11,"babel-runtime/helpers/to-consumable-array":12,"utils/generators/chars":105,"utils/generators/random-chars":106,"utils/string-to-buffer":107}]},{},[108,109,110,111,112,113,114,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107]);

@@ -1,4 +1,4 @@
-import randomChars from "./random-chars.js";
+import randomChars from "utils/generators/random-chars";
 
 chai.config.includeStack = true;
 

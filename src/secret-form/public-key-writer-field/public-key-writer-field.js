@@ -1,4 +1,4 @@
-import publicKeyStorage from "../js/public-key-storage.js";
+import publicKeyStorage from "public-key-storage";
 
 const UNOBSERVE_METHOD = Symbol();
 
@@ -46,7 +46,7 @@ export default Vue.extend({
 			return this.publicKey && this.publicKeyName;
 		},
 		isDefault: function () {
-			return !this.isSaved() && !this.isReadyForSave();
+			return !this.isSaved && !this.isReadyForSave;
 		}
 	},
 	methods: {
