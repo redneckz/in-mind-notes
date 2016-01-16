@@ -19,7 +19,7 @@ export default Vue.extend({
 			default: "-1"
 		}
 	},
-	data: function () {
+	data() {
 		return {
 			alphabetRegExpList: [/[0-9a-zA-Z~!@#$%^&*_=]/, DEFAULT_ALPHABET_REGEXP, /[0-9a-z_]/, /[0-9]/],
 			currentAlphabetRegExp: DEFAULT_ALPHABET_REGEXP,
@@ -32,20 +32,20 @@ export default Vue.extend({
 		};
 	},
 	methods: {
-		generateSecret: function () {
+		generateSecret() {
 			let alphabet = filterAlphabet(this.currentAlphabetRegExp);
 			this.secret = generateSecret(this.currentSecretLengthVariant.secretLength, alphabet);
 			Vue.nextTick(this.selectSecret.bind(this));
 		},
-		chooseAlphabet: function (alphabetRegExp) {
+		chooseAlphabet(alphabetRegExp) {
 			this.currentAlphabetRegExp = alphabetRegExp;
 			this.generateSecret();
 		},
-		chooseSecretLength: function (secretLengthVariant) {
+		chooseSecretLength(secretLengthVariant) {
 			this.currentSecretLengthVariant = secretLengthVariant;
 			this.generateSecret();
 		},
-		selectSecret: function () {
+		selectSecret() {
 			this.$el.querySelector("input").select();
 		}
 	}

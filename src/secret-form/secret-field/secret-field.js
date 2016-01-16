@@ -14,12 +14,12 @@ export default Vue.extend({
 		}
 	},
 	computed: {
-		hasError: function () {
+		hasError() {
 			return Boolean(this.error);
 		}
 	},
 	methods: {
-		selectSecret: function () {
+		selectSecret() {
 			this.$el.querySelector("input").select();
 		}
 	}

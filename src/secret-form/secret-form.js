@@ -14,12 +14,12 @@ export default new Vue({
 		passphrase: "",
 	},
 	computed: {
-		isReverseMode: function () {
+		isReverseMode() {
 			return !this.isDirectMode;
 		}
 	},
 	methods: {
-		toggleMode: function () {
+		toggleMode() {
 			this.isDirectMode = !this.isDirectMode;
 		}
 	},

@@ -16,7 +16,7 @@ export default {
 		"passphrase + generatedSecret": "updateComputedPublicKey"
 	},
 	methods: {
-		updateComputedPublicKey: function () {
+		updateComputedPublicKey() {
 			if (this.passphrase && this.generatedSecret) {
 				try {
 					computePublicKey(this.passphrase, stringToBuffer(this.generatedSecret)).then(publicKey => {

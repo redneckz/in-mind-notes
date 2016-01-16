@@ -16,7 +16,7 @@ export default {
 		"passphrase + chosenPublicKey": "updateComputedSecret"
 	},
 	methods: {
-		updateComputedSecret: function () {
+		updateComputedSecret() {
 			if (this.passphrase && this.chosenPublicKey) {
 				try {
 					computeSecret(this.passphrase, base64ToBuffer(this.chosenPublicKey)).then(secret => {

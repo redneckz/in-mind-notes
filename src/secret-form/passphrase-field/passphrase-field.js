@@ -7,40 +7,40 @@ export default Vue.extend({
 		}
 	},
 	computed: {
-		passphraseFieldType: function () {
+		passphraseFieldType() {
 			return this.isPassphraseVisible ? "text" : "password";
 		},
-		isBestPassphrase: function () {
+		isBestPassphrase() {
 			return this.passphraseScore === 4;
 		},
-		isStrongPassphrase: function () {
+		isStrongPassphrase() {
 			return this.passphraseScore === 3;
 		},
-		isNormalPassphrase: function () {
+		isNormalPassphrase() {
 			return this.passphraseScore === 2;
 		},
-		isWeakPassphrase: function () {
+		isWeakPassphrase() {
 			return this.passphraseScore < 2;
 		},
-		passphraseScorePercentage: function () {
+		passphraseScorePercentage() {
 			if (this.passphrase) {
 				return Math.round((this.passphraseScore + 1) * 100 / 5);
 			} else {
 				return 0;
 			}
 		},
-		passphraseScore: function () {
+		passphraseScore() {
 			let passphraseStat = zxcvbn(this.passphrase);
 			return passphraseStat.score;
 		}
 	},
-	data: function () {
+	data() {
 		return {
 			isPassphraseVisible: false
 		};
 	},
 	methods: {
-		togglePassphraseVisibility: function () {
+		togglePassphraseVisibility() {
 			this.isPassphraseVisible = !this.isPassphraseVisible;
 		}
 	}

@@ -18,24 +18,24 @@ export default Vue.extend({
 			default: "-1"
 		}
 	},
-	created: function () {
+	created() {
 		this[UNOBSERVE_METHOD] = publicKeyStorage.observe(() => {
 			this.entries = publicKeyStorage.entries;
 			this.publicKey = publicKeyStorage.getPublicKey(this.publicKeyName);
 		});
 	},
-	data: function () {
+	data() {
 		return {
 			entries: publicKeyStorage.entries
 		};
 	},
 	watch: {
-		publicKeyName: function (publicKeyName) {
+		publicKeyName(publicKeyName) {
 			this.publicKey = publicKeyStorage.getPublicKey(publicKeyName);
 		}
 	},
 	computed: {
-		entriesDownloadHref: function () {
+		entriesDownloadHref() {
 			if (this.entries && this.entries.length) {
 				let content = JSON.stringify(this.entries);
 				return `data:text/json;charset=utf-8,${encodeURIComponent(content)}`;
@@ -45,10 +45,10 @@ export default Vue.extend({
 		}
 	},
 	methods: {
-		openFileChooserForImport: function () {
+		openFileChooserForImport() {
 			getFileInputForImport.call(this).click();
 		},
-		importPublicKeys: function () {
+		importPublicKeys() {
 			let fileInput = getFileInputForImport.call(this);
 			if (!fileInput.files || !fileInput.files.length) {
 				return;
@@ -64,11 +64,11 @@ export default Vue.extend({
 			};
 			fileReader.readAsText(fileInput.files[0]);
 		},
-		exportPublicKeys: function () {
+		exportPublicKeys() {
 			this.$el.querySelector("a[download]").click();
 		}
 	},
-	destroyed: function () {
+	destroyed() {
 		this[UNOBSERVE_METHOD]();
 	}
 });

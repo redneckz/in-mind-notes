@@ -22,35 +22,35 @@ export default Vue.extend({
 			default: "-1"
 		}
 	},
-	created: function () {
+	created() {
 		this[UNOBSERVE_METHOD] = publicKeyStorage.observe(recomputeSavedPublicKey.bind(this));
 		recomputeSavedPublicKey.call(this);
 	},
 	watch: {
 		publicKeyName: recomputeSavedPublicKey
 	},
-	data: function ()  {
+	data()  {
 		return {
 			savedPublicKey: null
 		};
 	},
 	computed: {
-		hasError: function () {
+		hasError() {
 			return Boolean(this.error);
 		},
-		isSaved: function () {
+		isSaved() {
 			let samePublicKey = this.savedPublicKey === this.publicKey;
 			return this.publicKeyName && samePublicKey;
 		},
-		isReadyForSave: function () {
+		isReadyForSave() {
 			return this.publicKey && this.publicKeyName;
 		},
-		isDefault: function () {
+		isDefault() {
 			return !this.isSaved && !this.isReadyForSave;
 		}
 	},
 	methods: {
-		tryToSavePublicKey: function () {
+		tryToSavePublicKey() {
 			if (this.isSaved || !this.isReadyForSave) {
 				return;
 			}
@@ -76,7 +76,7 @@ export default Vue.extend({
 			}
 		}
 	},
-	destroyed: function () {
+	destroyed() {
 		this[UNOBSERVE_METHOD]();
 	}
 });

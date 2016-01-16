@@ -8,31 +8,54 @@ const INTRO_OPTIONS = {
 	scrollToElement: true,
 	showStepNumbers: false,
 	keyboardNavigation: false,
-	steps: prepareSteps([
+	steps: prepareIntroSteps([
 		{
 			intro: `<strong>In Mind Notes</strong> is here to help you keep your secrets
 					in the most safe place... <strong>in your mind</strong>.`
 		},
 		{
-			intro: `Please think up <strong>the strongest passphrase</strong> you can remember.`
+			intro: `Please think up <strong>the strongest passphrase</strong> you can remember.`,
+			postProcess() {
+				if (!this.passphrase) {
+					this.passphrase = "qwerty";
+				}
+			}
 		},
 		{
 			intro: `Generate <strong>your secret</strong>
 					to use it in any <strong>service</strong> you want:
 					mail, social network, online banking, ...`,
-			preProcess: function () {
-				if (!this.passphrase) {
-					this.passphrase = "qwerty";
-				}
+			init(stepInitSPI) {
+				return this.$watch("generatedSecret", generatedSecret => {
+					if (stepInitSPI.isCurrentStep && generatedSecret) {
+						stepInitSPI.nextStep();
+					}
+				});
+			},
+			preProcess() {
 				this.isDirectMode = false;
+			},
+			postProcess() {
+				if (!this.generatedSecret) {
+					this.generatedSecret = "asdfgh";
+				}
+			}
+		},
+		{
+			intro: `<strong>Secret</strong> has been generated. Here it is.
+					It can be used as very strong password. Let's go to the next step.`,
+			postProcess() {
+				if (!this.generatedSecret) {
+					this.generatedSecret = "asdfgh";
+				}
 			}
 		},
 		{
 			intro: `Name your secret. Appropriate service name is the better choice.
 					For example <strong>facebook</strong> or <strong>mail.ru</strong>.`,
-			preProcess: function () {
-				if (!this.generatedSecret) {
-					this.generatedSecret = "asdfgh";
+			postProcess() {
+				if (!this.enteredPublicKeyName) {
+					this.enteredPublicKeyName = "noname";
 				}
 			}
 		},
@@ -41,70 +64,121 @@ const INTRO_OPTIONS = {
 					in <strong>the local storage</strong> (of your browser).
 					Please don't worry about public keys safety.
 					However, keep them in the private space.`,
-			preProcess: function () {
-				if (!this.enteredPublicKeyName) {
-					this.enteredPublicKeyName = "noname";
-				}
+			init(stepInitSPI) {
+				return publicKeyStorage.observe(() => {
+					if (stepInitSPI.isCurrentStep && publicKeyStorage.doesPublicKeyNameExist(this.enteredPublicKeyName)) {
+						stepInitSPI.nextStep();
+					}
+				});
+			},
+			preProcess() {
 				publicKeyStorage.removePublicKey(this.enteredPublicKeyName);
-			}
-		},
-		{
-			intro: `Your secret has been saved by means of <strong>passphrase</strong>
-					and <strong>public key</strong>. Now let's try to restore your secret.
-					Please press this button to change mode.`,
-			preProcess: function () {
+			},
+			postProcess() {
 				if (!publicKeyStorage.doesPublicKeyNameExist(this.enteredPublicKeyName)) {
 					publicKeyStorage.setPublicKey(this.enteredPublicKeyName, this.computedPublicKey);
 				}
 			}
 		},
 		{
-			intro: `Enter the name of the secret once again (public key name).`,
-			preProcess: function () {
-				this.isDirectMode = true;
+			intro: `Your secret has been saved by means of <strong>passphrase</strong>
+					and <strong>public key</strong>. Now let's try to restore your secret.
+					Please press this button to change mode.`,
+			init(stepInitSPI) {
+				return this.$watch("isDirectMode", isDirectMode => {
+					if (stepInitSPI.isCurrentStep && isDirectMode) {
+						stepInitSPI.nextStep();
+					}
+				});
+			},
+			postProcess() {
+				if (!this.isDirectMode) {
+					this.isDirectMode = true;
+				}
 			}
 		},
 		{
-			intro: `Great job. Here is your secret.`,
-			preProcess: function () {
+			intro: `Enter the name of the secret once again (public key name).`,
+			postProcess() {
 				if (this.enteredPublicKeyName !== this.chosenPublicKeyName) {
 					this.chosenPublicKeyName = this.enteredPublicKeyName;
 				}
 			}
+		},
+		{
+			intro: `Great job. Here is your secret.`
 		}
 	])
 };
 
+const DESTROYERS_FIELD = Symbol();
+
 export default {
 	methods: {
-		startIntro: function () {
-			introJs().setOptions(INTRO_OPTIONS).onbeforechange(node => {
-				Vue.config.async = false;
+		startIntro() {
+			let intro = introJs();
+			initIntro.call(this, intro);
+			intro.setOptions(INTRO_OPTIONS).onbeforechange(node => {
 				let currentStepIndex = $(node).data("step-index") || 0;
-				for (let stepIndex = 0; stepIndex <= currentStepIndex; stepIndex++) {
-					let step = INTRO_OPTIONS.steps[stepIndex];
-					if (step.preProcess) {
-						step.preProcess.call(this);
-					}
+				for (let stepIndex = 0; stepIndex < currentStepIndex; stepIndex++) {
+					processStep.call(this, stepIndex, "postProcess");
 				}
-			}).oncomplete(() => {
-				Vue.config.async = true;
-			}).onexit(() => {
-				Vue.config.async = true;
-			}).start();
+				processStep.call(this, currentStepIndex, "preProcess");
+			}).oncomplete(destroyIntro.bind(this)).onexit(destroyIntro.bind(this))
+					.start();
 		}
 	}
 };
 
-function prepareSteps(steps) {
-	steps.forEach(computeStepElement);
+function prepareIntroSteps(steps) {
+	steps.forEach((step, index) => {
+		if (index) {
+			step.element = `[data-step-index='${index}']`;
+		} else {
+			// Zero step goes without element, because it is introductory words only
+		}
+	});
 	return steps;
 }
 
-function computeStepElement(step, index) {
-	if (index) {
-		step.element = `[data-step-index='${index}']`;
-	} else {
-		// Zero step goes without element, because it is introductory words only
+function initIntro(intro) {
+	Vue.config.async = false;
+	this[DESTROYERS_FIELD] = [];
+	INTRO_OPTIONS.steps.forEach((step, stepIndex) => {
+		if (!step.init) {
+			return;
+		}
+		let destroyer = step.init.call(this, createStepInitSPI.call(this, stepIndex, intro));
+		this[DESTROYERS_FIELD].push(destroyer);
+	});
+}
+
+function createStepInitSPI(stepIndex, intro) {
+	return {
+		get isCurrentStep() {
+			return stepIndex === intro._currentStep;
+		},
+		nextStep() {
+			intro.goToStep(1 + stepIndex + 1);
+		}
+	};
+}
+
+function destroyIntro() {
+	Vue.config.async = true;
+	this[DESTROYERS_FIELD].forEach(destroyer => {
+		if (destroyer) {
+			destroyer();
+		}
+	});
+}
+
+function processStep(stepIndex, processorName) {
+	if ((stepIndex < 0) || (stepIndex >= INTRO_OPTIONS.steps.length))  {
+		return;
+	}
+	let step = INTRO_OPTIONS.steps[stepIndex];
+	if (processorName in step) {
+		step[processorName].call(this);
 	}
 }
