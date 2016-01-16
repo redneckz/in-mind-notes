@@ -1,6 +1,6 @@
-import directModeMixin from "./secret-form-direct-mode-mixin.js";
-import reverseModeMixin from "./secret-form-reverse-mode-mixin.js";
-import introMixin from "./secret-form-intro-mixin.js";
+import directModeMixin from "secret-form-direct-mode-mixin";
+import reverseModeMixin from "secret-form-reverse-mode-mixin";
+import introMixin from "secret-form-intro-mixin";
 
 import PassphraseField from "secret-form/passphrase-field";
 

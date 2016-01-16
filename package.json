@@ -35,7 +35,11 @@
 		"vueify-insert-css": "^1.0.0"
 	},
 	"browser": {
-		"secret-form": "./src/secret-form.js",
+		"secret-form": "./src/secret-form/secret-form.js",
+		"secret-form-direct-mode-mixin": "./src/secret-form/secret-form-direct-mode-mixin.js",
+		"secret-form-reverse-mode-mixin": "./src/secret-form/secret-form-reverse-mode-mixin.js",
+		"secret-form-intro-mixin": "./src/secret-form/intro/secret-form-intro-mixin.js",
+		"intro-definition": "./src/secret-form/intro/intro-definition.js",
 		"secret-form/passphrase-field": "./src/secret-form/passphrase-field/passphrase-field.js",
 		"secret-form/public-key-reader-field": "./src/secret-form/public-key-reader-field/public-key-reader-field.js",
 		"secret-form/secret-field": "./src/secret-form/secret-field/secret-field.js",
