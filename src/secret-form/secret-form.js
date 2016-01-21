@@ -3,11 +3,12 @@ import reverseModeMixin from "secret-form-reverse-mode-mixin";
 import introMixin from "secret-form-intro-mixin";
 
 import PassphraseField from "secret-form/passphrase-field";
+import HotKeysSection from "secret-form/hot-keys-section";
 
 import publicKeyStorage from "public-key-storage";
 
 export default new Vue({
-	el: "#secret-form",
+	el: "#secret-form-container",
 	mixins: [directModeMixin, reverseModeMixin, introMixin],
 	data: {
 		isDirectMode: Boolean(publicKeyStorage.entries.length),
@@ -24,6 +25,7 @@ export default new Vue({
 		}
 	},
 	components: {
-		"passphrase-field": PassphraseField
+		"passphrase-field": PassphraseField,
+		"hot-keys-section": HotKeysSection
 	}
 });

@@ -2,7 +2,7 @@ module.exports = function (grunt) {
 	grunt.config.merge({
 		jade: {
 			options: {
-				pretty: true,
+				pretty: false,
 			},
 			indexPage: {
 				files: [{
