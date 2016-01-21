@@ -2530,7 +2530,7 @@ function computePrivateKey(passphraseStr) {
 	});
 }
 
-},{"utils/string-to-buffer":118}],95:[function(require,module,exports){
+},{"utils/string-to-buffer":117}],95:[function(require,module,exports){
 "use strict";
 
 var _createClass = require("babel-runtime/helpers/create-class")["default"];
@@ -2695,35 +2695,6 @@ module.exports = exports["default"];
 },{"babel-runtime/core-js/map":2,"babel-runtime/core-js/set":8,"babel-runtime/core-js/symbol":9,"babel-runtime/helpers/class-call-check":10,"babel-runtime/helpers/create-class":11}],96:[function(require,module,exports){
 "use strict";
 
-var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _hotKey = require("./hot-key");
-
-var _hotKey2 = _interopRequireDefault(_hotKey);
-
-var _secretForm = require("secret-form");
-
-var _secretForm2 = _interopRequireDefault(_secretForm);
-
-exports["default"] = new _hotKey2["default"]({
-	keyCode: 68, // D
-	description: "Direct mode",
-	handle: function handle() {
-		_secretForm2["default"].isDirectMode = true;
-		Vue.nextTick(function () {
-			_secretForm2["default"].$refs.publicKeyReaderField.$el.querySelector("input").select();
-		});
-	}
-});
-module.exports = exports["default"];
-
-},{"./hot-key":97,"babel-runtime/helpers/interop-require-default":12,"secret-form":112}],97:[function(require,module,exports){
-"use strict";
-
 var _createClass = require("babel-runtime/helpers/create-class")["default"];
 
 var _classCallCheck = require("babel-runtime/helpers/class-call-check")["default"];
@@ -2783,7 +2754,7 @@ var HotKey = (function () {
 exports["default"] = HotKey;
 module.exports = exports["default"];
 
-},{"babel-runtime/core-js/symbol":9,"babel-runtime/helpers/class-call-check":10,"babel-runtime/helpers/create-class":11}],98:[function(require,module,exports){
+},{"babel-runtime/core-js/symbol":9,"babel-runtime/helpers/class-call-check":10,"babel-runtime/helpers/create-class":11}],97:[function(require,module,exports){
 "use strict";
 
 var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
@@ -2809,7 +2780,7 @@ function getHotKey(event) {
 	return KEY_CODE_TO_HOT_KEY_MAP[event.which];
 }
 
-},{"./hot-keys-list":99,"babel-runtime/helpers/interop-require-default":12}],99:[function(require,module,exports){
+},{"./hot-keys-list":98,"babel-runtime/helpers/interop-require-default":12}],98:[function(require,module,exports){
 "use strict";
 
 var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
@@ -2833,7 +2804,7 @@ var _importPublicKeysHotKey2 = _interopRequireDefault(_importPublicKeysHotKey);
 exports["default"] = [_passphraseSelectionHotKey2["default"], _secretGenerationHotKey2["default"], _importPublicKeysHotKey2["default"]];
 module.exports = exports["default"];
 
-},{"./import-public-keys-hot-key":101,"./passphrase-selection-hot-key":102,"./secret-generation-hot-key":103,"babel-runtime/helpers/interop-require-default":12}],100:[function(require,module,exports){
+},{"./import-public-keys-hot-key":100,"./passphrase-selection-hot-key":101,"./secret-generation-hot-key":102,"babel-runtime/helpers/interop-require-default":12}],99:[function(require,module,exports){
 "use strict";
 
 var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
@@ -2856,7 +2827,7 @@ exports["default"] = Vue.extend({
 });
 module.exports = exports["default"];
 
-},{"./hot-keys-list":99,"babel-runtime/helpers/interop-require-default":12}],101:[function(require,module,exports){
+},{"./hot-keys-list":98,"babel-runtime/helpers/interop-require-default":12}],100:[function(require,module,exports){
 "use strict";
 
 var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
@@ -2884,7 +2855,7 @@ exports["default"] = new _hotKey2["default"]({
 });
 module.exports = exports["default"];
 
-},{"./hot-key":97,"babel-runtime/helpers/interop-require-default":12,"secret-form":112}],102:[function(require,module,exports){
+},{"./hot-key":96,"babel-runtime/helpers/interop-require-default":12,"secret-form":111}],101:[function(require,module,exports){
 "use strict";
 
 var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
@@ -2912,7 +2883,7 @@ exports["default"] = new _hotKey2["default"]({
 });
 module.exports = exports["default"];
 
-},{"./hot-key":97,"babel-runtime/helpers/interop-require-default":12,"secret-form":112}],103:[function(require,module,exports){
+},{"./hot-key":96,"babel-runtime/helpers/interop-require-default":12,"secret-form":111}],102:[function(require,module,exports){
 "use strict";
 
 var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
@@ -2939,7 +2910,7 @@ exports["default"] = new _hotKey2["default"]({
 });
 module.exports = exports["default"];
 
-},{"./hot-key":97,"babel-runtime/helpers/interop-require-default":12,"secret-form":112}],104:[function(require,module,exports){
+},{"./hot-key":96,"babel-runtime/helpers/interop-require-default":12,"secret-form":111}],103:[function(require,module,exports){
 "use strict";
 
 var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
@@ -3064,7 +3035,7 @@ function prepareIntroSteps(steps) {
 }
 module.exports = exports["default"];
 
-},{"babel-runtime/helpers/interop-require-default":12,"public-key-storage":95}],105:[function(require,module,exports){
+},{"babel-runtime/helpers/interop-require-default":12,"public-key-storage":95}],104:[function(require,module,exports){
 "use strict";
 
 var _Symbol = require("babel-runtime/core-js/symbol")["default"];
@@ -3154,7 +3125,7 @@ function destroyIntro() {
 }
 module.exports = exports["default"];
 
-},{"babel-runtime/core-js/object/define-properties":4,"babel-runtime/core-js/symbol":9,"babel-runtime/helpers/interop-require-default":12,"intro-definition":104}],106:[function(require,module,exports){
+},{"babel-runtime/core-js/object/define-properties":4,"babel-runtime/core-js/symbol":9,"babel-runtime/helpers/interop-require-default":12,"intro-definition":103}],105:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3209,7 +3180,7 @@ exports["default"] = Vue.extend({
 });
 module.exports = exports["default"];
 
-},{}],107:[function(require,module,exports){
+},{}],106:[function(require,module,exports){
 "use strict";
 
 var _Symbol = require("babel-runtime/core-js/symbol")["default"];
@@ -3303,7 +3274,7 @@ function getFileInputForImport() {
 }
 module.exports = exports["default"];
 
-},{"babel-runtime/core-js/symbol":9,"babel-runtime/helpers/interop-require-default":12,"public-key-storage":95}],108:[function(require,module,exports){
+},{"babel-runtime/core-js/symbol":9,"babel-runtime/helpers/interop-require-default":12,"public-key-storage":95}],107:[function(require,module,exports){
 "use strict";
 
 var _Symbol = require("babel-runtime/core-js/symbol")["default"];
@@ -3408,7 +3379,7 @@ function recomputeSavedPublicKey() {
 }
 module.exports = exports["default"];
 
-},{"babel-runtime/core-js/symbol":9,"babel-runtime/helpers/interop-require-default":12,"public-key-storage":95}],109:[function(require,module,exports){
+},{"babel-runtime/core-js/symbol":9,"babel-runtime/helpers/interop-require-default":12,"public-key-storage":95}],108:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3442,7 +3413,7 @@ exports["default"] = Vue.extend({
 });
 module.exports = exports["default"];
 
-},{}],110:[function(require,module,exports){
+},{}],109:[function(require,module,exports){
 "use strict";
 
 var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
@@ -3507,7 +3478,7 @@ exports["default"] = {
 };
 module.exports = exports["default"];
 
-},{"babel-runtime/helpers/interop-require-default":12,"crypto":94,"secret-form/public-key-reader-field":107,"secret-form/secret-field":109,"utils/buffer-to-base64":115,"utils/string-to-buffer":118}],111:[function(require,module,exports){
+},{"babel-runtime/helpers/interop-require-default":12,"crypto":94,"secret-form/public-key-reader-field":106,"secret-form/secret-field":108,"utils/buffer-to-base64":114,"utils/string-to-buffer":117}],110:[function(require,module,exports){
 "use strict";
 
 var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
@@ -3572,7 +3543,7 @@ exports["default"] = {
 };
 module.exports = exports["default"];
 
-},{"babel-runtime/helpers/interop-require-default":12,"crypto":94,"secret-form/public-key-writer-field":108,"secret-form/secret-generator-field":114,"utils/buffer-to-base64":115,"utils/string-to-buffer":118}],112:[function(require,module,exports){
+},{"babel-runtime/helpers/interop-require-default":12,"crypto":94,"secret-form/public-key-writer-field":107,"secret-form/secret-generator-field":113,"utils/buffer-to-base64":114,"utils/string-to-buffer":117}],111:[function(require,module,exports){
 "use strict";
 
 var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
@@ -3629,7 +3600,7 @@ exports["default"] = new Vue({
 });
 module.exports = exports["default"];
 
-},{"babel-runtime/helpers/interop-require-default":12,"public-key-storage":95,"secret-form-direct-mode-mixin":110,"secret-form-intro-mixin":105,"secret-form-reverse-mode-mixin":111,"secret-form/hot-keys-section":100,"secret-form/passphrase-field":106}],113:[function(require,module,exports){
+},{"babel-runtime/helpers/interop-require-default":12,"public-key-storage":95,"secret-form-direct-mode-mixin":109,"secret-form-intro-mixin":104,"secret-form-reverse-mode-mixin":110,"secret-form/hot-keys-section":99,"secret-form/passphrase-field":105}],112:[function(require,module,exports){
 "use strict";
 
 var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
@@ -3667,7 +3638,7 @@ function filterAlphabet(regExp) {
 	});
 }
 
-},{"babel-runtime/helpers/interop-require-default":12,"babel-runtime/helpers/to-consumable-array":13,"utils/generators/chars":116,"utils/generators/random-chars":117}],114:[function(require,module,exports){
+},{"babel-runtime/helpers/interop-require-default":12,"babel-runtime/helpers/to-consumable-array":13,"utils/generators/chars":115,"utils/generators/random-chars":116}],113:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3724,7 +3695,7 @@ exports["default"] = Vue.extend({
 });
 module.exports = exports["default"];
 
-},{"secret-form/secret-generator-field/generate-secret":113}],115:[function(require,module,exports){
+},{"secret-form/secret-generator-field/generate-secret":112}],114:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3756,7 +3727,7 @@ function base64ToBuffer(base64) {
 	return (0, _utilsStringToBuffer.stringToBuffer)(atob(base64), Uint8Array);
 }
 
-},{"utils/string-to-buffer":118}],116:[function(require,module,exports){
+},{"utils/string-to-buffer":117}],115:[function(require,module,exports){
 "use strict";
 
 var _regeneratorRuntime = require("babel-runtime/regenerator")["default"];
@@ -3797,7 +3768,7 @@ function chars(fromChar, toChar) {
 
 module.exports = exports["default"];
 
-},{"babel-runtime/regenerator":91}],117:[function(require,module,exports){
+},{"babel-runtime/regenerator":91}],116:[function(require,module,exports){
 "use strict";
 
 var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
@@ -3831,7 +3802,7 @@ function randomChars(count, alphabet) {
 
 module.exports = exports["default"];
 
-},{"babel-runtime/helpers/to-consumable-array":13,"babel-runtime/regenerator":91}],118:[function(require,module,exports){
+},{"babel-runtime/helpers/to-consumable-array":13,"babel-runtime/regenerator":91}],117:[function(require,module,exports){
 "use strict";
 
 var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
@@ -3870,7 +3841,7 @@ function bufferToString(buffer) {
 	return String.fromCharCode.apply(String, _toConsumableArray(array));
 }
 
-},{"babel-runtime/helpers/to-consumable-array":13}],119:[function(require,module,exports){
+},{"babel-runtime/helpers/to-consumable-array":13}],118:[function(require,module,exports){
 "use strict";
 
 var _crypto = require("crypto");
@@ -3897,7 +3868,7 @@ describe("[Crypto module]", function () {
 	});
 });
 
-},{"crypto":94,"utils/string-to-buffer":118}],120:[function(require,module,exports){
+},{"crypto":94,"utils/string-to-buffer":117}],119:[function(require,module,exports){
 "use strict";
 
 var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
@@ -4002,7 +3973,7 @@ function entrtyListToMap(entryList) {
 	return _(entryList).indexBy("publicKeyName").mapValues("publicKey").value();
 }
 
-},{"babel-runtime/helpers/interop-require-default":12,"public-key-storage":95}],121:[function(require,module,exports){
+},{"babel-runtime/helpers/interop-require-default":12,"public-key-storage":95}],120:[function(require,module,exports){
 "use strict";
 
 var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
@@ -4041,7 +4012,7 @@ describe("[Secret generator module]", function () {
 	});
 });
 
-},{"babel-runtime/helpers/interop-require-default":12,"babel-runtime/helpers/to-consumable-array":13,"secret-form/secret-generator-field/generate-secret":113,"utils/generators/chars":116}],122:[function(require,module,exports){
+},{"babel-runtime/helpers/interop-require-default":12,"babel-runtime/helpers/to-consumable-array":13,"secret-form/secret-generator-field/generate-secret":112,"utils/generators/chars":115}],121:[function(require,module,exports){
 "use strict";
 
 var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
@@ -4084,7 +4055,7 @@ function toArray(buffer) {
 	return [].concat(_toConsumableArray(new Uint8Array(buffer)));
 }
 
-},{"babel-runtime/helpers/to-consumable-array":13,"utils/buffer-to-base64":115}],123:[function(require,module,exports){
+},{"babel-runtime/helpers/to-consumable-array":13,"utils/buffer-to-base64":114}],122:[function(require,module,exports){
 "use strict";
 
 var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
@@ -4112,7 +4083,7 @@ describe("[Chars generator module]", function () {
 	});
 });
 
-},{"babel-runtime/helpers/interop-require-default":12,"babel-runtime/helpers/to-consumable-array":13,"utils/generators/chars":116}],124:[function(require,module,exports){
+},{"babel-runtime/helpers/interop-require-default":12,"babel-runtime/helpers/to-consumable-array":13,"utils/generators/chars":115}],123:[function(require,module,exports){
 "use strict";
 
 var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
@@ -4143,7 +4114,7 @@ describe("[Random chars generator module]", function () {
 	});
 });
 
-},{"babel-runtime/helpers/interop-require-default":12,"babel-runtime/helpers/to-consumable-array":13,"utils/generators/random-chars":117}],125:[function(require,module,exports){
+},{"babel-runtime/helpers/interop-require-default":12,"babel-runtime/helpers/to-consumable-array":13,"utils/generators/random-chars":116}],124:[function(require,module,exports){
 "use strict";
 
 var _toConsumableArray = require("babel-runtime/helpers/to-consumable-array")["default"];
@@ -4206,4 +4177,4 @@ function generateRandomStr() {
 	return [].concat(_toConsumableArray((0, _utilsGeneratorsRandomChars2["default"])(10, abc))).join("");
 }
 
-},{"babel-runtime/helpers/interop-require-default":12,"babel-runtime/helpers/to-consumable-array":13,"utils/generators/chars":116,"utils/generators/random-chars":117,"utils/string-to-buffer":118}]},{},[119,120,121,122,123,124,125,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118]);
+},{"babel-runtime/helpers/interop-require-default":12,"babel-runtime/helpers/to-consumable-array":13,"utils/generators/chars":115,"utils/generators/random-chars":116,"utils/string-to-buffer":117}]},{},[118,119,120,121,122,123,124,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117]);
