@@ -1,7 +1,7 @@
 import {generateSecret, filterAlphabet} from "secret-form/secret-generator-field/generate-secret";
 
 const DEFAULT_ALPHABET_REGEXP = /[0-9a-zA-Z_]/;
-const DEFAULT_SECRET_LENGTH_VARIANT = {secretLength: 32, label: "Long"};
+const DEFAULT_SECRET_LENGTH_VARIANT = {secretLength: 16, label: "Medium"};
 
 export default Vue.extend({
 	template: "#secret-generator-field-template",
@@ -25,8 +25,8 @@ export default Vue.extend({
 			currentAlphabetRegExp: DEFAULT_ALPHABET_REGEXP,
 			secretLengthVariantList: [
 				{secretLength: 8, label: "Short"},
-				{secretLength: 16, label: "Medium"},
-				DEFAULT_SECRET_LENGTH_VARIANT
+				DEFAULT_SECRET_LENGTH_VARIANT,
+				{secretLength: 32, label: "Long"}
 			],
 			currentSecretLengthVariant: DEFAULT_SECRET_LENGTH_VARIANT
 		};
