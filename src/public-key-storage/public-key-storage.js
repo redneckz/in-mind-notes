@@ -9,8 +9,17 @@ class PublicKeyStorage {
 		initPublicKeyToPublicKeyNameMap.call(this);
 	}
 
+	get isEmpty() {
+		let firstEntry = entries.call(this).next();
+		return firstEntry.done;
+	}
+
+	get isNotEmpty() {
+		return !this.isEmpty;
+	}
+
 	get entries() {
-		return getEntries.call(this);
+		return [...entries.call(this)];
 	}
 
 	set entries(newEntries) {
@@ -61,17 +70,15 @@ function initPublicKeyToPublicKeyNameMap() {
 	});
 }
 
-function getEntries() {
-	let result = [];
+function* entries() {
 	for (let i = 0; i < this.storage.length; i++) {
 		let storageItemKey = this.storage.key(i);
 		if (isAppropriateStorageItemKey(storageItemKey)) {
-			let publicKeyName = toPublicKeyName(storageItemKey);
-			let publicKey = this.storage.getItem(storageItemKey);
-			result.push({publicKeyName, publicKey});
+			let publicKeyName = toPublicKeyName(storageItemKey),
+			publicKey = this.storage.getItem(storageItemKey);
+			yield {publicKey, publicKeyName};
 		}
 	}
-	return result;
 }
 
 function setEntries(newEntries) {
