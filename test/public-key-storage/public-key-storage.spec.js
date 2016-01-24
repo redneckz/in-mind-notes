@@ -24,39 +24,63 @@ describe("[Public key storage module]", function () {
 			window.localStorage.clear();
 		});
 
-		it("should return all public keys by \"entries\" field", function () {
-			publicKeyStorage.entries = PUBLIC_KEY_ENTRY_LIST;
-			expect(entrtyListToMap(publicKeyStorage.entries))
-					.to.deep.equal(entrtyListToMap(PUBLIC_KEY_ENTRY_LIST));
+		describe("entries", function () {
+			it("should represent all public keys", function () {
+				publicKeyStorage.entries = PUBLIC_KEY_ENTRY_LIST;
+				expect(entrtyListToMap(publicKeyStorage.entries))
+						.to.deep.equal(entrtyListToMap(PUBLIC_KEY_ENTRY_LIST));
+			});
 		});
 
-		it("should replace public key with same name", function () {
-			let {publicKeyName, publicKey} = PUBLIC_KEY;
-			publicKeyStorage.setPublicKey(publicKeyName, publicKey);
-			expect(publicKeyStorage.entries).to.have.length(1);
-			expect(publicKeyStorage.getPublicKey(publicKeyName)).to.equal(publicKey);
-			publicKeyStorage.setPublicKey(publicKeyName, "new-public-key");
-			expect(publicKeyStorage.entries).to.have.length(1);
-			expect(publicKeyStorage.getPublicKey(publicKeyName)).to.equal("new-public-key");
+		describe("isEmpty", function () {
+			it("should reflect the absence of public keys", function () {
+				expect(publicKeyStorage.isEmpty).to.equal(true);
+				publicKeyStorage.entries = PUBLIC_KEY_ENTRY_LIST;
+				expect(publicKeyStorage.isEmpty).to.equal(false);
+			});
 		});
 
-		it("should rename public key entry with same public key inside", function () {
-			let {publicKeyName, publicKey} = PUBLIC_KEY;
-			publicKeyStorage.setPublicKey(publicKeyName, publicKey);
-			expect(publicKeyStorage.entries).to.have.length(1);
-			expect(publicKeyStorage.getPublicKey(publicKeyName)).to.equal(publicKey);
-			publicKeyStorage.setPublicKey("new-name", publicKey);
-			expect(publicKeyStorage.entries).to.have.length(1);
-			expect(publicKeyStorage.getPublicKey("new-name")).to.equal(publicKey);
+		describe("isNotEmpty", function () {
+			it("should reflect the presence of public keys", function () {
+				expect(publicKeyStorage.isNotEmpty).to.equal(false);
+				publicKeyStorage.entries = PUBLIC_KEY_ENTRY_LIST;
+				expect(publicKeyStorage.isNotEmpty).to.equal(true);
+			});
 		});
 
-		it("should remove public key by name", function () {
-			publicKeyStorage.entries = PUBLIC_KEY_ENTRY_LIST;
-			let {publicKeyName} = PUBLIC_KEY_ENTRY_LIST[5];
-			publicKeyStorage.removePublicKey(publicKeyName);
-			let expectedPublicKeysMap = entrtyListToMap(PUBLIC_KEY_ENTRY_LIST);
-			delete expectedPublicKeysMap[publicKeyName];
-			expect(entrtyListToMap(publicKeyStorage.entries)).to.deep.equal(expectedPublicKeysMap);
+		describe("setPublicKey", function () {
+			it("should store public key", function () {
+				let {publicKeyName, publicKey} = PUBLIC_KEY;
+				publicKeyStorage.setPublicKey(publicKeyName, publicKey);
+				expect(publicKeyStorage.entries).to.deep.equal([PUBLIC_KEY]);
+			});
+
+			it("should replace public key with same name", function () {
+				let {publicKeyName, publicKey} = PUBLIC_KEY;
+				publicKeyStorage.setPublicKey(publicKeyName, publicKey);
+				publicKeyStorage.setPublicKey(publicKeyName, "new-public-key");
+				let expectedPublicKey = {publicKeyName, publicKey: "new-public-key"};
+				expect(publicKeyStorage.entries).to.deep.equal([expectedPublicKey]);
+			});
+
+			it("should rename public key entry with same public key inside", function () {
+				let {publicKeyName, publicKey} = PUBLIC_KEY;
+				publicKeyStorage.setPublicKey(publicKeyName, publicKey);
+				publicKeyStorage.setPublicKey("new-name", publicKey);
+				let expectedPublicKey = {publicKeyName: "new-name", publicKey};
+				expect(publicKeyStorage.entries).to.deep.equal([expectedPublicKey]);
+			});
+		});
+
+		describe("removePublicKey", function () {
+			it("should remove public key by name", function () {
+				publicKeyStorage.entries = PUBLIC_KEY_ENTRY_LIST;
+				let {publicKeyName} = PUBLIC_KEY_ENTRY_LIST[5];
+				publicKeyStorage.removePublicKey(publicKeyName);
+				let expectedPublicKeysMap = entrtyListToMap(PUBLIC_KEY_ENTRY_LIST);
+				delete expectedPublicKeysMap[publicKeyName];
+				expect(entrtyListToMap(publicKeyStorage.entries)).to.deep.equal(expectedPublicKeysMap);
+			});
 		});
 
 		it("should notify observers on entries update", function () {
