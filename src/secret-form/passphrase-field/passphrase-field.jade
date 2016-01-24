@@ -16,4 +16,4 @@ template#passphrase-field-template
 						role='progressbar', aria-valuemin='0', aria-valuemax='100',
 						v-bind:aria-valuenow='passphraseScorePercentage',
 						v-bind:class='{"progress-bar-success": isBestPassphrase || isStrongPassphrase, "progress-bar-warning": isNormalPassphrase, "progress-bar-danger": isWeakPassphrase}',
-						v-bind:style='{width: passphraseScorePercentage + "%"}')			
+						v-bind:style='{width: passphraseScorePercentage + "%"}')
