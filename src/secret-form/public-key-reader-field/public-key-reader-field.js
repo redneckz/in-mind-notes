@@ -60,12 +60,15 @@ export default Vue.extend({
 				} catch (ex) {
 					console.warn(ex);
 				}
-
 			};
 			fileReader.readAsText(fileInput.files[0]);
 		},
 		exportPublicKeys() {
-			this.$el.querySelector("a[download]").click();
+			if (publicKeyStorage.isNotEmpty) {
+				this.$el.querySelector("a[download]").click();
+			} else {
+				swal("No public keys to export");
+			}
 		}
 	},
 	destroyed() {
