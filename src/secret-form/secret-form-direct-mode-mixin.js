@@ -6,11 +6,13 @@ import PublicKeyReaderField from "secret-form/public-key-reader-field";
 import SecretField from "secret-form/secret-field";
 
 export default {
-	data: {
-		chosenPublicKey: "",
-		chosenPublicKeyName: "",
-		computedSecret: "",
-		secretComputationError: undefined
+	data: function () {
+		return {
+			chosenPublicKey: "",
+			chosenPublicKeyName: "",
+			computedSecret: "",
+			secretComputationError: undefined
+		};
 	},
 	watch: {
 		"passphrase + chosenPublicKey": "updateComputedSecret"

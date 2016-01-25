@@ -9,9 +9,11 @@ import publicKeyStorage from "public-key-storage";
 export default Vue.extend({
 	template: "#secret-form-template",
 	mixins: [directModeMixin, reverseModeMixin, introMixin],
-	data: {
-		isDirectMode: Boolean(publicKeyStorage.entries.length),
-		passphrase: "",
+	data: function () {
+		return {
+			isDirectMode: Boolean(publicKeyStorage.entries.length),
+			passphrase: "",
+		};
 	},
 	computed: {
 		isReverseMode() {

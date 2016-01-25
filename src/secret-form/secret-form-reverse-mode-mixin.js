@@ -6,11 +6,13 @@ import SecretGeneratorField from "secret-form/secret-generator-field";
 import PublicKeyWriterField from "secret-form/public-key-writer-field";
 
 export default {
-	data: {
-		generatedSecret: "",
-		enteredPublicKeyName: "",
-		computedPublicKey: "",
-		publicKeyComputationError: undefined
+	data: function () {
+		return {
+			generatedSecret: "",
+			enteredPublicKeyName: "",
+			computedPublicKey: "",
+			publicKeyComputationError: undefined
+		};
 	},
 	watch: {
 		"passphrase + generatedSecret": "updateComputedPublicKey"
