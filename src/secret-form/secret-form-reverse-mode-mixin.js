@@ -6,7 +6,7 @@ import SecretGeneratorField from "secret-form/secret-generator-field";
 import PublicKeyWriterField from "secret-form/public-key-writer-field";
 
 export default {
-	data: function () {
+	data() {
 		return {
 			generatedSecret: "",
 			enteredPublicKeyName: "",

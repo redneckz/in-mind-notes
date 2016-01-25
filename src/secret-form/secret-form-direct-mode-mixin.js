@@ -6,7 +6,7 @@ import PublicKeyReaderField from "secret-form/public-key-reader-field";
 import SecretField from "secret-form/secret-field";
 
 export default {
-	data: function () {
+	data() {
 		return {
 			chosenPublicKey: "",
 			chosenPublicKeyName: "",
