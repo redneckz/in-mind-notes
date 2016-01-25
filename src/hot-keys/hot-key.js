@@ -4,21 +4,35 @@ const HANDLE_METHOD = Symbol();
 
 export default class HotKey { // enum
 	static get values() {
-		return [HotKey.PASSPHRASE_SELECTION_HOT_KEY,
+		return [HotKey.PASSPHRASE_ENTER_HOT_KEY,
+				HotKey.PUBLIC_KEY_CHOOSE_HOT_KEY,
 				HotKey.SECRET_GENERATION_HOT_KEY,
 				HotKey.IMPORT_PUBLIC_KEYS_HOT_KEY,
 				HotKey.EXPORT_PUBLIC_KEYS_HOT_KEY];
 	}
 
-	static get PASSPHRASE_SELECTION_HOT_KEY() {
+	static get PASSPHRASE_ENTER_HOT_KEY() {
 		return new HotKey({
 			keyCode: 80, // P
-			description: "Select passphrase",
+			description: "Enter passphrase",
 			handle(indexPage) {
+				let secretForm = indexPage.$refs.secretForm,
+					passphraseField = secretForm.$refs.passphraseField;
+				passphraseField.$el.querySelector("input").select();
+			}
+		});
+	}
+
+	static get PUBLIC_KEY_CHOOSE_HOT_KEY() {
+		return new HotKey({
+			keyCode: 75, // K
+			description: "Choose public key",
+			handle(indexPage) {
+				let secretForm = indexPage.$refs.secretForm;
+				secretForm.isDirectMode = true;
 				Vue.nextTick(function () {
-					let secretForm = indexPage.$refs.secretForm,
-						passphraseField = secretForm.$refs.passphraseField;
-					passphraseField.$el.querySelector("input").select();
+					let publicKeyReaderField = secretForm.$refs.publicKeyReaderField;
+					publicKeyReaderField.$el.querySelector("input").select();
 				});
 			}
 		});
@@ -29,10 +43,12 @@ export default class HotKey { // enum
 			keyCode: 82, // R
 			description: "Generate new secret",
 			handle(indexPage) {
-				let secretForm = indexPage.$refs.secretForm,
-					secretGeneratorField = secretForm.$refs.secretGeneratorField;
+				let secretForm = indexPage.$refs.secretForm;
 				secretForm.isDirectMode = false;
-				secretGeneratorField.generateSecret();
+				Vue.nextTick(function () {
+					let secretGeneratorField = secretForm.$refs.secretGeneratorField;
+					secretGeneratorField.generateSecret();
+				});
 			}
 		});
 	}
@@ -42,9 +58,10 @@ export default class HotKey { // enum
 			keyCode: 73, // I
 			description: "Import public keys from file",
 			handle(indexPage) {
+				let secretForm = indexPage.$refs.secretForm;
+				secretForm.isDirectMode = true;
 				Vue.nextTick(function () {
-					let secretForm = indexPage.$refs.secretForm,
-						publicKeyReaderField = secretForm.$refs.publicKeyReaderField;
+					let publicKeyReaderField = secretForm.$refs.publicKeyReaderField;
 					publicKeyReaderField.openFileChooserForImport();
 				});
 			}
@@ -56,9 +73,10 @@ export default class HotKey { // enum
 			keyCode: 69, // E
 			description: "Export public keys to file",
 			handle(indexPage) {
+				let secretForm = indexPage.$refs.secretForm;
+				secretForm.isDirectMode = true;
 				Vue.nextTick(function () {
-					let secretForm = indexPage.$refs.secretForm,
-						publicKeyReaderField = secretForm.$refs.publicKeyReaderField;
+					let publicKeyReaderField = secretForm.$refs.publicKeyReaderField;
 					publicKeyReaderField.exportPublicKeys();
 				});
 			}

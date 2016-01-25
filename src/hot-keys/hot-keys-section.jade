@@ -1,6 +1,8 @@
 template#hot-keys-section-template
 	.container
-		p.small.text-muted.text-right(v-for='hotKey in hotKeysList')
-			| {{hotKey.description}}&nbsp;
+		hr
+		p.small.text-muted(v-for='hotKey in hotKeysList')
 			kbd
 				| Ctrl+Alt+{{hotKey.char}}
+			| &nbsp;&nbsp;{{hotKey.description}}
+		hr
