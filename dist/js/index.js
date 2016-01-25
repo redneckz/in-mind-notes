@@ -2551,19 +2551,33 @@ var HotKey = (function () {
 		key: "values",
 		// enum
 		get: function get() {
-			return [HotKey.PASSPHRASE_SELECTION_HOT_KEY, HotKey.SECRET_GENERATION_HOT_KEY, HotKey.IMPORT_PUBLIC_KEYS_HOT_KEY, HotKey.EXPORT_PUBLIC_KEYS_HOT_KEY];
+			return [HotKey.PASSPHRASE_ENTER_HOT_KEY, HotKey.PUBLIC_KEY_CHOOSE_HOT_KEY, HotKey.SECRET_GENERATION_HOT_KEY, HotKey.IMPORT_PUBLIC_KEYS_HOT_KEY, HotKey.EXPORT_PUBLIC_KEYS_HOT_KEY];
 		}
 	}, {
-		key: "PASSPHRASE_SELECTION_HOT_KEY",
+		key: "PASSPHRASE_ENTER_HOT_KEY",
 		get: function get() {
 			return new HotKey({
 				keyCode: 80, // P
-				description: "Select passphrase",
+				description: "Enter passphrase",
 				handle: function handle(indexPage) {
+					var secretForm = indexPage.$refs.secretForm,
+					    passphraseField = secretForm.$refs.passphraseField;
+					passphraseField.$el.querySelector("input").select();
+				}
+			});
+		}
+	}, {
+		key: "PUBLIC_KEY_CHOOSE_HOT_KEY",
+		get: function get() {
+			return new HotKey({
+				keyCode: 75, // K
+				description: "Choose public key",
+				handle: function handle(indexPage) {
+					var secretForm = indexPage.$refs.secretForm;
+					secretForm.isDirectMode = true;
 					Vue.nextTick(function () {
-						var secretForm = indexPage.$refs.secretForm,
-						    passphraseField = secretForm.$refs.passphraseField;
-						passphraseField.$el.querySelector("input").select();
+						var publicKeyReaderField = secretForm.$refs.publicKeyReaderField;
+						publicKeyReaderField.$el.querySelector("input").select();
 					});
 				}
 			});
@@ -2575,10 +2589,12 @@ var HotKey = (function () {
 				keyCode: 82, // R
 				description: "Generate new secret",
 				handle: function handle(indexPage) {
-					var secretForm = indexPage.$refs.secretForm,
-					    secretGeneratorField = secretForm.$refs.secretGeneratorField;
+					var secretForm = indexPage.$refs.secretForm;
 					secretForm.isDirectMode = false;
-					secretGeneratorField.generateSecret();
+					Vue.nextTick(function () {
+						var secretGeneratorField = secretForm.$refs.secretGeneratorField;
+						secretGeneratorField.generateSecret();
+					});
 				}
 			});
 		}
@@ -2589,9 +2605,10 @@ var HotKey = (function () {
 				keyCode: 73, // I
 				description: "Import public keys from file",
 				handle: function handle(indexPage) {
+					var secretForm = indexPage.$refs.secretForm;
+					secretForm.isDirectMode = true;
 					Vue.nextTick(function () {
-						var secretForm = indexPage.$refs.secretForm,
-						    publicKeyReaderField = secretForm.$refs.publicKeyReaderField;
+						var publicKeyReaderField = secretForm.$refs.publicKeyReaderField;
 						publicKeyReaderField.openFileChooserForImport();
 					});
 				}
@@ -2604,9 +2621,10 @@ var HotKey = (function () {
 				keyCode: 69, // E
 				description: "Export public keys to file",
 				handle: function handle(indexPage) {
+					var secretForm = indexPage.$refs.secretForm;
+					secretForm.isDirectMode = true;
 					Vue.nextTick(function () {
-						var secretForm = indexPage.$refs.secretForm,
-						    publicKeyReaderField = secretForm.$refs.publicKeyReaderField;
+						var publicKeyReaderField = secretForm.$refs.publicKeyReaderField;
 						publicKeyReaderField.exportPublicKeys();
 					});
 				}
@@ -3499,11 +3517,13 @@ var _secretFormSecretField = require("secret-form/secret-field");
 var _secretFormSecretField2 = _interopRequireDefault(_secretFormSecretField);
 
 exports["default"] = {
-	data: {
-		chosenPublicKey: "",
-		chosenPublicKeyName: "",
-		computedSecret: "",
-		secretComputationError: undefined
+	data: function data() {
+		return {
+			chosenPublicKey: "",
+			chosenPublicKeyName: "",
+			computedSecret: "",
+			secretComputationError: undefined
+		};
 	},
 	watch: {
 		"passphrase + chosenPublicKey": "updateComputedSecret"
@@ -3564,11 +3584,13 @@ var _secretFormPublicKeyWriterField = require("secret-form/public-key-writer-fie
 var _secretFormPublicKeyWriterField2 = _interopRequireDefault(_secretFormPublicKeyWriterField);
 
 exports["default"] = {
-	data: {
-		generatedSecret: "",
-		enteredPublicKeyName: "",
-		computedPublicKey: "",
-		publicKeyComputationError: undefined
+	data: function data() {
+		return {
+			generatedSecret: "",
+			enteredPublicKeyName: "",
+			computedPublicKey: "",
+			publicKeyComputationError: undefined
+		};
 	},
 	watch: {
 		"passphrase + generatedSecret": "updateComputedPublicKey"
@@ -3637,9 +3659,11 @@ var _publicKeyStorage2 = _interopRequireDefault(_publicKeyStorage);
 exports["default"] = Vue.extend({
 	template: "#secret-form-template",
 	mixins: [_secretFormDirectModeMixin2["default"], _secretFormReverseModeMixin2["default"], _secretFormIntroMixin2["default"]],
-	data: {
-		isDirectMode: Boolean(_publicKeyStorage2["default"].entries.length),
-		passphrase: ""
+	data: function data() {
+		return {
+			isDirectMode: Boolean(_publicKeyStorage2["default"].entries.length),
+			passphrase: ""
+		};
 	},
 	computed: {
 		isReverseMode: function isReverseMode() {
