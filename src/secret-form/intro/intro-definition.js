@@ -1,7 +1,6 @@
 import publicKeyStorage from "public-key-storage";
 
 export default {
-	tooltipPosition: "auto",
 	showBullets: false,
 	showProgress: true,
 	showButtons: true,
@@ -15,6 +14,7 @@ export default {
 		},
 		{
 			intro: `Please think up <strong>the strongest passphrase</strong> you can remember.`,
+			position: "bottom",
 			postProcess() {
 				if (!this.passphrase) {
 					this.passphrase = "qwerty";
@@ -25,6 +25,7 @@ export default {
 			intro: `Generate <strong>your secret</strong>
 					to use it in any <strong>service</strong> you want:
 					mail, social network, online banking, ...`,
+			position: "right",
 			init(stepInitSPI) {
 				return this.$watch("generatedSecret", generatedSecret => {
 					if (stepInitSPI.isCurrentStep && generatedSecret) {
@@ -44,6 +45,7 @@ export default {
 		{
 			intro: `<strong>Secret</strong> has been generated. Here it is.
 					It can be used as very strong password. Let's go to the next step.`,
+			position: "bottom",
 			preProcess() {
 				this.isDirectMode = false;
 			},
@@ -56,6 +58,7 @@ export default {
 		{
 			intro: `Name your secret. Appropriate service name is the better choice.
 					For example <strong>facebook</strong> or <strong>mail.ru</strong>.`,
+			position: "top",
 			preProcess() {
 				this.isDirectMode = false;
 			},
@@ -70,6 +73,7 @@ export default {
 					in <strong>the local storage</strong> (of your browser).
 					Please don't worry about public keys safety.
 					However, keep them in the private space.`,
+			position: "left",
 			init(stepInitSPI) {
 				return publicKeyStorage.observe(() => {
 					if (stepInitSPI.isCurrentStep && publicKeyStorage.doesPublicKeyNameExist(this.enteredPublicKeyName)) {
@@ -91,6 +95,7 @@ export default {
 			intro: `Your secret has been saved by means of <strong>passphrase</strong>
 					and <strong>public key</strong>. Now let's try to restore your secret.
 					Please press this button to change mode.`,
+			position: "bottom",
 			init(stepInitSPI) {
 				return this.$watch("isDirectMode", isDirectMode => {
 					if (stepInitSPI.isCurrentStep && isDirectMode) {
@@ -106,6 +111,7 @@ export default {
 		},
 		{
 			intro: `Enter the name of the secret once again (public key name).`,
+			position: "bottom",
 			postProcess() {
 				if (this.enteredPublicKeyName !== this.chosenPublicKeyName) {
 					this.chosenPublicKeyName = this.enteredPublicKeyName;
@@ -113,7 +119,8 @@ export default {
 			}
 		},
 		{
-			intro: `Great job. Here is your secret.`
+			intro: `Great job. Here is your secret.`,
+			position: "top",
 		}
 	])
 };
