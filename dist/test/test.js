@@ -3000,7 +3000,6 @@ var _publicKeyStorage = require("public-key-storage");
 var _publicKeyStorage2 = _interopRequireDefault(_publicKeyStorage);
 
 exports["default"] = {
-	tooltipPosition: "auto",
 	showBullets: false,
 	showProgress: true,
 	showButtons: true,
@@ -3011,6 +3010,7 @@ exports["default"] = {
 		intro: "<strong>In Mind Notes</strong> is here to help you keep your secrets\n\t\t\t\t\tin the most safe place... <strong>in your mind</strong>."
 	}, {
 		intro: "Please think up <strong>the strongest passphrase</strong> you can remember.",
+		position: "bottom",
 		postProcess: function postProcess() {
 			if (!this.passphrase) {
 				this.passphrase = "qwerty";
@@ -3018,6 +3018,7 @@ exports["default"] = {
 		}
 	}, {
 		intro: "Generate <strong>your secret</strong>\n\t\t\t\t\tto use it in any <strong>service</strong> you want:\n\t\t\t\t\tmail, social network, online banking, ...",
+		position: "right",
 		init: function init(stepInitSPI) {
 			return this.$watch("generatedSecret", function (generatedSecret) {
 				if (stepInitSPI.isCurrentStep && generatedSecret) {
@@ -3035,6 +3036,7 @@ exports["default"] = {
 		}
 	}, {
 		intro: "<strong>Secret</strong> has been generated. Here it is.\n\t\t\t\t\tIt can be used as very strong password. Let's go to the next step.",
+		position: "bottom",
 		preProcess: function preProcess() {
 			this.isDirectMode = false;
 		},
@@ -3045,6 +3047,7 @@ exports["default"] = {
 		}
 	}, {
 		intro: "Name your secret. Appropriate service name is the better choice.\n\t\t\t\t\tFor example <strong>facebook</strong> or <strong>mail.ru</strong>.",
+		position: "top",
 		preProcess: function preProcess() {
 			this.isDirectMode = false;
 		},
@@ -3055,6 +3058,7 @@ exports["default"] = {
 		}
 	}, {
 		intro: "You are doing well. Press this button to save new public key\n\t\t\t\t\tin <strong>the local storage</strong> (of your browser).\n\t\t\t\t\tPlease don't worry about public keys safety.\n\t\t\t\t\tHowever, keep them in the private space.",
+		position: "left",
 		init: function init(stepInitSPI) {
 			var _this = this;
 
@@ -3075,6 +3079,7 @@ exports["default"] = {
 		}
 	}, {
 		intro: "Your secret has been saved by means of <strong>passphrase</strong>\n\t\t\t\t\tand <strong>public key</strong>. Now let's try to restore your secret.\n\t\t\t\t\tPlease press this button to change mode.",
+		position: "bottom",
 		init: function init(stepInitSPI) {
 			return this.$watch("isDirectMode", function (isDirectMode) {
 				if (stepInitSPI.isCurrentStep && isDirectMode) {
@@ -3089,13 +3094,15 @@ exports["default"] = {
 		}
 	}, {
 		intro: "Enter the name of the secret once again (public key name).",
+		position: "bottom",
 		postProcess: function postProcess() {
 			if (this.enteredPublicKeyName !== this.chosenPublicKeyName) {
 				this.chosenPublicKeyName = this.enteredPublicKeyName;
 			}
 		}
 	}, {
-		intro: "Great job. Here is your secret."
+		intro: "Great job. Here is your secret.",
+		position: "top"
 	}])
 };
 
@@ -3413,9 +3420,6 @@ exports["default"] = Vue.extend({
 		},
 		isReadyForSave: function isReadyForSave() {
 			return this.publicKey && this.publicKeyName;
-		},
-		isDefault: function isDefault() {
-			return !this.isSaved && !this.isReadyForSave;
 		}
 	},
 	methods: {
