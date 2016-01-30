@@ -15,7 +15,7 @@ module.exports = function (grunt) {
 			},
 			testSources: {
 				src: ['test/**/*.js', 'src/**/*.js'],
-				dest: 'dist/test/js/test.js'
+				dest: 'dist/test/test.js'
 			}
 		}
 	});

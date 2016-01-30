@@ -16,7 +16,7 @@ module.exports = function(grunt) {
 	grunt.file.expand('grunt-config/grunt-task-*.js').forEach(loadGruntConfigPart);
 
 	// Default task
-	grunt.registerTask('default', ['clean', 'vendor', 'jshint', 'js', 'less', 'jade', 'mocha_slimer']);
+	grunt.registerTask('default', ['clean', 'vendor', 'jshint', 'js', 'less', 'jade', 'karma:dev']);
 
 	// START Utils
 
