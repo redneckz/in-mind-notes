@@ -44,9 +44,6 @@ export default Vue.extend({
 		},
 		isReadyForSave() {
 			return this.publicKey && this.publicKeyName;
-		},
-		isDefault() {
-			return !this.isSaved && !this.isReadyForSave;
 		}
 	},
 	methods: {
