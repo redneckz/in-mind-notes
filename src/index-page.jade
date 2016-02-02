@@ -13,12 +13,12 @@ html(lang='en', manifest="manifest.cache")
 		link(href='dist/css/vendor.css', rel='stylesheet')
 		link(href='dist/css/index.css', rel='stylesheet')
 	body
-		include ./secret-form/secret-form.jade
-		include ./hot-keys/hot-keys-section.jade
+		include secret-form/secret-form
+		include hot-keys/hot-keys-section
 		
 		secret-form(v-ref:secret-form)
-		hot-keys-section
-		include footer/footer.jade
+		hot-keys-section(v-ref:hot-keys-section)
+		include footer/footer
 		
 		script(src='dist/js/vendor.js')
 		script(src='dist/js/index.js')

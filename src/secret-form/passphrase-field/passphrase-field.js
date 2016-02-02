@@ -1,4 +1,8 @@
+import PassphraseFieldScore from "./__score/passphrase-field__score";
+import PassphraseFieldEyeButton from "./__eye-button/passphrase-field__eye-button";
+
 export default Vue.extend({
+	mixins: [PassphraseFieldScore, PassphraseFieldEyeButton],
 	template: "#passphrase-field-template",
 	props: {
 		passphrase: {
@@ -9,39 +13,6 @@ export default Vue.extend({
 	computed: {
 		passphraseFieldType() {
 			return this.isPassphraseVisible ? "text" : "password";
-		},
-		isBestPassphrase() {
-			return this.passphraseScore === 4;
-		},
-		isStrongPassphrase() {
-			return this.passphraseScore === 3;
-		},
-		isNormalPassphrase() {
-			return this.passphraseScore === 2;
-		},
-		isWeakPassphrase() {
-			return this.passphraseScore < 2;
-		},
-		passphraseScorePercentage() {
-			if (this.passphrase) {
-				return Math.round((this.passphraseScore + 1) * 100 / 5);
-			} else {
-				return 0;
-			}
-		},
-		passphraseScore() {
-			let passphraseStat = zxcvbn(this.passphrase);
-			return passphraseStat.score;
-		}
-	},
-	data() {
-		return {
-			isPassphraseVisible: false
-		};
-	},
-	methods: {
-		togglePassphraseVisibility() {
-			this.isPassphraseVisible = !this.isPassphraseVisible;
 		}
 	}
 });
