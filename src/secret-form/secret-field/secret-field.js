@@ -1,4 +1,7 @@
+import SelectSecretButton from "./__select-secret-button/secret-field__select-secret-button";
+
 export default Vue.extend({
+	mixins: [SelectSecretButton],
 	template: "#secret-field-template",
 	props: {
 		secret: {
@@ -16,11 +19,6 @@ export default Vue.extend({
 	computed: {
 		hasError() {
 			return Boolean(this.error);
-		}
-	},
-	methods: {
-		selectSecret() {
-			this.$el.querySelector("input").select();
 		}
 	}
 });
