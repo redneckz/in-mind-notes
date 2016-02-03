@@ -1,7 +1,7 @@
-import SelectSecretButton from "./__select-secret-button/secret-field__select-secret-button";
+import SelectionButton from "./__selection-button/secret-field__selection-button";
 
 export default Vue.extend({
-	mixins: [SelectSecretButton],
+	mixins: [SelectionButton],
 	template: "#secret-field-template",
 	props: {
 		secret: {

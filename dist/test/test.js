@@ -3521,12 +3521,12 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _selectSecretButtonSecretField__selectSecretButton = require("./__select-secret-button/secret-field__select-secret-button");
+var _selectionButtonSecretField__selectionButton = require("./__selection-button/secret-field__selection-button");
 
-var _selectSecretButtonSecretField__selectSecretButton2 = _interopRequireDefault(_selectSecretButtonSecretField__selectSecretButton);
+var _selectionButtonSecretField__selectionButton2 = _interopRequireDefault(_selectionButtonSecretField__selectionButton);
 
 exports["default"] = Vue.extend({
-	mixins: [_selectSecretButtonSecretField__selectSecretButton2["default"]],
+	mixins: [_selectionButtonSecretField__selectionButton2["default"]],
 	template: "#secret-field-template",
 	props: {
 		secret: {
@@ -3549,7 +3549,7 @@ exports["default"] = Vue.extend({
 });
 module.exports = exports["default"];
 
-},{"./__select-secret-button/secret-field__select-secret-button":107,"babel-runtime/helpers/interop-require-default":12}],109:[function(require,module,exports){
+},{"./__selection-button/secret-field__selection-button":107,"babel-runtime/helpers/interop-require-default":12}],109:[function(require,module,exports){
 "use strict";
 
 var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
