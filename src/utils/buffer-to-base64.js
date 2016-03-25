@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 import {stringToBuffer, bufferToString} from "utils/string-to-buffer";
 
 export {bufferToBase64, base64ToBuffer};

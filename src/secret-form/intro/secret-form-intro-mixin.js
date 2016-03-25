@@ -1,3 +1,7 @@
+import Vue from "vue";
+import $ from "jquery";
+import introJs from "intro.js";
+
 import introDefinition from "intro-definition";
 
 const DESTROYERS_FIELD = Symbol();
@@ -47,7 +51,7 @@ function processStep(currentStepIndex) {
 }
 
 function invokeStepProcessor(stepIndex, processorName) {
-	if ((stepIndex < 0) || (stepIndex >= introDefinition.steps.length))  {
+	if ((stepIndex < 0) || (stepIndex >= introDefinition.steps.length)) {
 		return;
 	}
 	let step = introDefinition.steps[stepIndex];

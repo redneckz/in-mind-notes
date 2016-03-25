@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 const STORAGE_ITEM_KEY_PREFIX = "35a5bcbb-edc7-4e48-ad29-dc9b2fc2fd54-pk-";
 const PK_TO_PK_NAME_MAP_FIELD = Symbol();
 const OBSERVERS_FIELD = Symbol();
@@ -114,7 +116,8 @@ function removePublicKey(publicKeyName) {
 }
 
 function notifyObservers() {
-	this[OBSERVERS_FIELD].forEach(observer => observer.call(this));
+	let entries = this.entries;
+	this[OBSERVERS_FIELD].forEach(observer => observer.call(this, entries));
 }
 
 function isAppropriateStorageItemKey(storageItemKey) {
