@@ -3,7 +3,8 @@
 		.col-md-12
 			.input-group.input-group-lg
 				span.input-group-btn
-					gen-button(v-bind:secret.sync='secret',
+					gen-button(v-ref:gen-button,
+							v-bind:secret.sync='secret',
 							v-bind:alphabet-reg-exp='alphabetRegExp',
 							v-bind:secret-length='secretLengthVariant.secretLength')
 					gen-mode-dropdown(

@@ -2,14 +2,16 @@
 	button.public-key-reader-field__export-button.btn.btn-default.btn-lg(
 			v-on:click='exportPublicKeys',
 			title='Export public keys',
-			v-bind:disabled='!entriesDownloadHref',
 			type='button', tabindex='-1')
 		span.glyphicon.glyphicon-export
 		a(v-bind:href='entriesDownloadHref', download='public-keys.json', style='display: none;')
 </template>
 
+<style lang="sass">
+	@import "sweetalert";
+</style>
+
 <script>
-	import Vue from "vue";
 	import swal from "sweetalert";
 
 	import publicKeyStorage from "public-key-storage";
@@ -32,9 +34,7 @@
 			exportPublicKeys() {
 				if (publicKeyStorage.isNotEmpty) {
 					computeEntriesDownloadHref.call(this);
-					Vue.nextTick(() => {
-						this.$el.querySelector("a[download]").click();
-					});
+					this.$el.querySelector("a[download]").click();
 				} else {
 					swal("No public keys to export");
 				}

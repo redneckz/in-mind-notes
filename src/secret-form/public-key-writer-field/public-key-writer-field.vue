@@ -16,6 +16,10 @@
 						span(v-show='!isSaved').glyphicon.glyphicon-floppy-save
 </template>
 
+<style lang="sass">
+	@import "sweetalert";
+</style>
+
 <script>
 	import swal from "sweetalert";
 

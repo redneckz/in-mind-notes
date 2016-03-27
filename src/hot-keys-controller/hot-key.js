@@ -8,9 +8,7 @@ export default class HotKey { // enum
 	static get values() {
 		return [HotKey.PASSPHRASE_ENTER_HOT_KEY,
 				HotKey.PUBLIC_KEY_CHOOSE_HOT_KEY,
-				HotKey.SECRET_GENERATION_HOT_KEY,
-				HotKey.IMPORT_PUBLIC_KEYS_HOT_KEY,
-				HotKey.EXPORT_PUBLIC_KEYS_HOT_KEY];
+				HotKey.SECRET_GENERATION_HOT_KEY];
 	}
 
 	static get PASSPHRASE_ENTER_HOT_KEY() {
@@ -48,38 +46,9 @@ export default class HotKey { // enum
 				let secretForm = indexPage.$refs.secretForm;
 				secretForm.isDirectMode = false;
 				Vue.nextTick(function () {
-					let secretGeneratorField = secretForm.$refs.secretGeneratorField;
-					secretGeneratorField.generateSecret();
-				});
-			}
-		});
-	}
-
-	static get IMPORT_PUBLIC_KEYS_HOT_KEY() {
-		return new HotKey({
-			keyCode: 73, // I
-			description: "Import public keys from file",
-			handle(indexPage) {
-				let secretForm = indexPage.$refs.secretForm;
-				secretForm.isDirectMode = true;
-				Vue.nextTick(function () {
-					let publicKeyReaderField = secretForm.$refs.publicKeyReaderField;
-					publicKeyReaderField.openFileChooserForImport();
-				});
-			}
-		});
-	}
-
-	static get EXPORT_PUBLIC_KEYS_HOT_KEY() {
-		return new HotKey({
-			keyCode: 69, // E
-			description: "Export public keys to file",
-			handle(indexPage) {
-				let secretForm = indexPage.$refs.secretForm;
-				secretForm.isDirectMode = true;
-				Vue.nextTick(function () {
-					let publicKeyReaderField = secretForm.$refs.publicKeyReaderField;
-					publicKeyReaderField.exportPublicKeys();
+					let secretGeneratorField = secretForm.$refs.secretGeneratorField,
+						genButton = secretGeneratorField.$refs.genButton;
+					genButton.generateSecret();
 				});
 			}
 		});
@@ -104,7 +73,8 @@ export default class HotKey { // enum
 	}
 
 	isActivated(event) {
-		return (event.metaKey || event.ctrlKey) && event.altKey && (this.keyCode === event.which);
+		let keyCode = event.key || event.which;
+		return (event.metaKey || event.ctrlKey) && event.altKey && (this.keyCode === keyCode);
 	}
 
 	handle(event) {

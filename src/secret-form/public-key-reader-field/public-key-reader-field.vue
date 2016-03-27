@@ -9,8 +9,8 @@
 					option(v-for='entry in entries', v-bind:value='entry.publicKeyName')
 						| {{entry.publicKey}}
 				span.input-group-btn
-					import-button
-					export-button
+					import-button(v-ref:import-button)
+					export-button(v-ref:export-button)
 </template>
 
 <script>

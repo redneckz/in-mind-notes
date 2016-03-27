@@ -1,5 +1,4 @@
 import _ from "lodash";
-import $ from "jquery";
 
 import HotKey from "hot-key";
 
@@ -11,7 +10,7 @@ export default class HotKeysController {
 	}
 
 	constructor(indexPage) {
-		$(document).on("keydown", onKeyDown.bind(this, indexPage));
+		document.addEventListener("keydown", onKeyDown.bind(this, indexPage));
 	}
 }
 
@@ -25,5 +24,5 @@ function onKeyDown(indexPage, event) {
 }
 
 function getHotKey(event) {
-	return KEY_CODE_TO_HOT_KEY_MAP[event.which];
+	return KEY_CODE_TO_HOT_KEY_MAP[event.key || event.which];
 }

@@ -5,16 +5,12 @@
 </template>
 
 <style lang="less">
-	@import "../node_modules/bootstrap/less/bootstrap";
-	@import "../node_modules/sweetalert/dist/sweetalert.css";
-
+	@import "bootstrap";
 	@import "./form-control/_readonly/form-control_readonly";
 </style>
 
 <script>
-	import jQuery from "jquery";
-	window.jQuery = jQuery;
-	import "bootstrap";
+	import "bootstrap-jquery";
 
 	import SecretForm from "secret-form";
 	import HotKeysSection from "hot-keys-section";

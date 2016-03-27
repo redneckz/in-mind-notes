@@ -43,6 +43,7 @@
 </template>
 
 <style lang="less">
+	@import "../../node_modules/intro.js/introjs.css";
 	@import "./_v-cloak/secret-form_v-cloak";
 </style>
 

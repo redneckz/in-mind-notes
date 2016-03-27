@@ -29,9 +29,9 @@
     ]
   },
   "dependencies": {
-    "bootstrap": "^3.3.6",
+    "bootstrap-jquery": "^3.3.2",
     "intro.js": "latest",
-    "jquery": "latest",
+    "jquery": "^2.2.2",
     "lodash": "^3.10.1",
     "sweetalert": "latest",
     "vue": "latest",
@@ -65,6 +65,7 @@
     "karma-mocha-reporter": "^1.1.5",
     "less": "^2.6.0",
     "mocha": "^2.4.5",
+    "node-sass": "^3.4.2",
     "npm-run-all": "^1.5.1",
     "proxyquireify": "^3.1.1",
     "uglify-js": "^2.5.0",
@@ -86,7 +87,7 @@
     "secret-form/public-key-writer-field": "./src/secret-form/public-key-writer-field/public-key-writer-field.vue",
     "hot-keys-section": "./src/hot-keys-section/hot-keys-section.vue",
     "footer": "./src/footer/footer.vue",
-	"hot-key": "./src/hot-keys-controller/hot-key.js",
+    "hot-key": "./src/hot-keys-controller/hot-key.js",
     "hot-keys-controller": "./src/hot-keys-controller/hot-keys-controller.js",
     "crypto": "./src/crypto/crypto.js",
     "public-key-storage": "./src/public-key-storage/public-key-storage.js",

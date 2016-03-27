@@ -1,6 +1,5 @@
 import Vue from "vue";
-import $ from "jquery";
-import introJs from "intro.js";
+import {introJs} from "intro.js";
 
 import introDefinition from "intro-definition";
 
@@ -27,7 +26,7 @@ function initIntro() {
 		}
 	});
 	return intro.setOptions(introDefinition).onbeforechange(node => {
-		let currentStepIndex = $(node).data("step-index") || 0;
+		let currentStepIndex = node.getAttribute("data-step-index") || 0;
 		processStep.call(this, currentStepIndex);
 	}).oncomplete(destroyIntro.bind(this)).onexit(destroyIntro.bind(this));
 }
