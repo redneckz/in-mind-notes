@@ -120,7 +120,7 @@ export default {
 		},
 		{
 			intro: `Great job. Here is your secret.`,
-			position: "top",
+			position: "top"
 		}
 	])
 };

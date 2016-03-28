@@ -24,6 +24,7 @@ preview-application.html
 
 # NPM
 node_modules/
+*.log
 
 # Bower
 bower_components/

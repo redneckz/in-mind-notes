@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 export {stringToBuffer, bufferToString};
 
 function stringToBuffer(str, ArrayType = Uint16Array) {

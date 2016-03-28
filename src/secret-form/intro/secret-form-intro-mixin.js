@@ -1,3 +1,6 @@
+import Vue from "vue";
+import {introJs} from "intro.js";
+
 import introDefinition from "intro-definition";
 
 const DESTROYERS_FIELD = Symbol();
@@ -23,7 +26,7 @@ function initIntro() {
 		}
 	});
 	return intro.setOptions(introDefinition).onbeforechange(node => {
-		let currentStepIndex = $(node).data("step-index") || 0;
+		let currentStepIndex = node.getAttribute("data-step-index") || 0;
 		processStep.call(this, currentStepIndex);
 	}).oncomplete(destroyIntro.bind(this)).onexit(destroyIntro.bind(this));
 }
@@ -47,7 +50,7 @@ function processStep(currentStepIndex) {
 }
 
 function invokeStepProcessor(stepIndex, processorName) {
-	if ((stepIndex < 0) || (stepIndex >= introDefinition.steps.length))  {
+	if ((stepIndex < 0) || (stepIndex >= introDefinition.steps.length)) {
 		return;
 	}
 	let step = introDefinition.steps[stepIndex];

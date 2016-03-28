@@ -1,8 +1,0 @@
-template#hot-keys-section-template
-	.hot-keys-section.container
-		hr
-		p.small.text-muted(v-for='hotKey in hotKeysList')
-			kbd
-				| Ctrl+Alt+{{hotKey.char}}
-			| &nbsp;&nbsp;{{hotKey.description}}
-		hr

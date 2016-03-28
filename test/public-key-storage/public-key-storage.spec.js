@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 import publicKeyStorage from "public-key-storage";
 
 chai.config.includeStack = true;
