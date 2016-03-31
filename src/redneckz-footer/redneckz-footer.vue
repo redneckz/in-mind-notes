@@ -1,4 +1,4 @@
 <template lang="jade">
-	footer.footer.container
+	footer.redneckz-footer.container
 		p.text-center.text-muted.small © 2015, Redneckz
 </template>

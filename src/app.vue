@@ -1,7 +1,7 @@
 <template lang="jade">
 	secret-form(v-ref:secret-form)
 	hot-keys-section(v-ref:hot-keys-section)
-	footer
+	redneckz-footer
 </template>
 
 <style lang="less">
@@ -15,7 +15,7 @@
 
 	import SecretForm from "secret-form";
 	import HotKeysSection from "hot-keys-section";
-	import Footer from "footer";
+	import RedneckzFooter from "redneckz-footer";
 
 	import HotKeysController from "hot-keys-controller";
 
@@ -26,7 +26,7 @@
 		components: {
 			SecretForm,
 			HotKeysSection,
-			Footer
+			RedneckzFooter
 		}
 	};
 </script>

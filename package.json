@@ -86,7 +86,7 @@
     "secret-form/secret-generator-field": "./src/secret-form/secret-generator-field/secret-generator-field.vue",
     "secret-form/public-key-writer-field": "./src/secret-form/public-key-writer-field/public-key-writer-field.vue",
     "hot-keys-section": "./src/hot-keys-section/hot-keys-section.vue",
-    "footer": "./src/footer/footer.vue",
+    "redneckz-footer": "./src/redneckz-footer/redneckz-footer.vue",
     "hot-key": "./src/hot-keys-controller/hot-key.js",
     "hot-keys-controller": "./src/hot-keys-controller/hot-keys-controller.js",
     "crypto": "./src/crypto/crypto.js",
