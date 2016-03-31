@@ -6,6 +6,7 @@
 
 <style lang="less">
 	@import "bootstrap";
+	@icon-font-path: "./fonts/";
 	@import "./form-control/_readonly/form-control_readonly";
 </style>
 
