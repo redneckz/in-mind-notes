@@ -1,6 +1,6 @@
 import Vue from "vue";
 
-const KEY_CODE_FIELD = Symbol();
+const KEY_FIELD = Symbol();
 const DESCRIPTION_FIELD = Symbol();
 const HANDLE_METHOD = Symbol();
 
@@ -13,7 +13,7 @@ export default class HotKey { // enum
 
 	static get PASSPHRASE_ENTER_HOT_KEY() {
 		return new HotKey({
-			keyCode: 80, // P
+			key: "P",
 			description: "Enter passphrase",
 			handle(indexPage) {
 				let secretForm = indexPage.$refs.secretForm,
@@ -25,7 +25,7 @@ export default class HotKey { // enum
 
 	static get PUBLIC_KEY_CHOOSE_HOT_KEY() {
 		return new HotKey({
-			keyCode: 75, // K
+			key: "K",
 			description: "Choose public key",
 			handle(indexPage) {
 				let secretForm = indexPage.$refs.secretForm;
@@ -40,7 +40,7 @@ export default class HotKey { // enum
 
 	static get SECRET_GENERATION_HOT_KEY() {
 		return new HotKey({
-			keyCode: 82, // R
+			key: "R",
 			description: "Generate new secret",
 			handle(indexPage) {
 				let secretForm = indexPage.$refs.secretForm;
@@ -54,18 +54,14 @@ export default class HotKey { // enum
 		});
 	}
 
-	constructor({keyCode, description, handle}) {
-		this[KEY_CODE_FIELD] = keyCode;
+	constructor({key, description, handle}) {
+		this[KEY_FIELD] = key;
 		this[DESCRIPTION_FIELD] = description;
 		this[HANDLE_METHOD] = handle;
 	}
 
-	get keyCode() {
-		return this[KEY_CODE_FIELD];
-	}
-
-	get char() {
-		return String.fromCharCode(this.keyCode);
+	get key() {
+		return this[KEY_FIELD];
 	}
 
 	get description() {
@@ -73,8 +69,7 @@ export default class HotKey { // enum
 	}
 
 	isActivated(event) {
-		let keyCode = event.key || event.which;
-		return (event.metaKey || event.ctrlKey) && event.altKey && (this.keyCode === keyCode);
+		return (event.metaKey || event.ctrlKey) && event.altKey && (this.key === event.key.toUpperCase());
 	}
 
 	handle(event) {
